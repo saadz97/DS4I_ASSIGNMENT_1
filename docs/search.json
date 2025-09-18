@@ -1,0 +1,37 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Avalanche Hazard Forecasting",
+    "section": "",
+    "text": "This website presents the work for Assignment 1 of the STA5073Z - Data Science for Industry 2025 course at the University of Cape Town.\nOur project focuses on constructing and evaluating a neural network model to predict the Forecasted Avalanche Hazard (FAH) using a 15-year archive of data from the Scottish Avalanche Information Service (SAIS). By combining topographic, meteorological, and snow pack test data, we aim to model the complex decision-making process of expert avalanche forecasters."
+  },
+  {
+    "objectID": "index.html#project-overview",
+    "href": "index.html#project-overview",
+    "title": "Avalanche Hazard Forecasting",
+    "section": "",
+    "text": "This website presents the work for Assignment 1 of the STA5073Z - Data Science for Industry 2025 course at the University of Cape Town.\nOur project focuses on constructing and evaluating a neural network model to predict the Forecasted Avalanche Hazard (FAH) using a 15-year archive of data from the Scottish Avalanche Information Service (SAIS). By combining topographic, meteorological, and snow pack test data, we aim to model the complex decision-making process of expert avalanche forecasters."
+  },
+  {
+    "objectID": "index.html#project-deliverables",
+    "href": "index.html#project-deliverables",
+    "title": "Avalanche Hazard Forecasting",
+    "section": "Project Deliverables",
+    "text": "Project Deliverables\n\n:material-file-document: Scientific Report\nThe main project report detailing our methodology, analysis, and findings.\n:material-robot-excited: LLM Reflection\nA critical assessment of how we used large language models (e.g., ChatGPT) to assist with this project."
+  },
+  {
+    "objectID": "index.html#group-members",
+    "href": "index.html#group-members",
+    "title": "Avalanche Hazard Forecasting",
+    "section": "Group Members",
+    "text": "Group Members\n\n\n\nName\nStudent Number\n\n\n\n\n[Group Member 1 Name]\n[Student Number]\n\n\n[Group Member 2 Name]\n[Student Number]\n\n\n[Group Member 3 Name]\n[Student Number]\n\n\n[Group Member 4 Name]\n[Student Number]\n\n\n[Group Member 5 Name]\n[Student Number]"
+  },
+  {
+    "objectID": "index.html#repository-structure",
+    "href": "index.html#repository-structure",
+    "title": "Avalanche Hazard Forecasting",
+    "section": "Repository Structure",
+    "text": "Repository Structure"
+  }
+]

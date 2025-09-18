@@ -1,0 +1,40 @@
+---
+title: "Avalanche Hazard Forecasting"
+format: html
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Project Overview
+
+This website presents the work for **Assignment 1** of the STA5073Z - Data Science for Industry 2025 course at the University of Cape Town.
+
+Our project focuses on constructing and evaluating a neural network model to predict the **Forecasted Avalanche Hazard (FAH)** using a 15-year archive of data from the Scottish Avalanche Information Service (SAIS). By combining topographic, meteorological, and snow pack test data, we aim to model the complex decision-making process of expert avalanche forecasters.
+
+## Project Deliverables
+
+-   **[:material-file-document: Scientific Report](report.html)**  
+    The main project report detailing our methodology, analysis, and findings.
+
+-   **[:material-robot-excited: LLM Reflection](llm-reflection.html)**  
+    A critical assessment of how we used large language models (e.g., ChatGPT) to assist with this project.
+
+## Group Members
+
+| Name | Student Number |
+| :--- | :--- |
+| [Group Member 1 Name] | [Student Number] |
+| [Group Member 2 Name] | [Student Number] |
+| [Group Member 3 Name] | [Student Number] |
+| [Group Member 4 Name] | [Student Number] |
+| [Group Member 5 Name] | [Student Number] |
+
+## Repository Structure
+
+
+
+
+
+

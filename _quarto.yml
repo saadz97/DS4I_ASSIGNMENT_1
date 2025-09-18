@@ -1,0 +1,22 @@
+# _quarto.yml
+project:
+  type: website
+  output-dir: docs # Critical! GitHub Pages looks for files in /docs or root
+
+website:
+  title: "Avalanche Hazard Forecasting" # Your website's title
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+  page-footer: 
+    right: 
+      - icon: github
+        href: https://github.com/saadz97/DS4I_ASSIGNMENT_1 # Replace with your repo
+
+format:
+  html:
+    theme: cosmo # A good, clean theme. Others: flatly, journal, lumen
+    css: styles.css # Optional: for custom CSS overrides
+    toc: true # Table of contents for your pages
+    toc-depth: 2
