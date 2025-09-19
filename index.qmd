@@ -25,13 +25,11 @@ set.seed(123)
 ```
 
 :::{.hero}
-# Neural Network Avalanche Hazard Prediction {.text-center}
+# Avalanche Hazard Forecasting using  {.text-center}
 
 :::{.hero-subtitle}
-Leveraging 15 years of Scottish avalanche data to predict forecasted avalanche hazard using advanced machine learning techniques for enhanced mountain safety.
+Predicting forecasted avalanche hazard levels from 15 years of Scottish data using a neural network.
 :::
-
-[Explore the Research](#overview){.cta-button}
 :::
 
 ## Overview {#overview}
@@ -40,50 +38,22 @@ Leveraging 15 years of Scottish avalanche data to predict forecasted avalanche h
 
 :::{.card}
 ### 🎯 Objective
-Develop and evaluate a neural network model to predict the Forecasted Avalanche Hazard (FAH) across six Scottish forecasting regions using comprehensive weather, terrain, and snowpack data.
+Develop and evaluate a neural network model......
 :::
 
 :::{.card}
 ### 📊 Dataset  
-15 years of Scottish avalanche data containing 10,671 records with 34 variables including weather conditions, snow pack measurements, and terrain features.
+15 years of Scottish avalanche data. 10,671 records with 34 variables.....
 :::
 
 :::{.card}
 ### 🧠 Approach
-Implementation of neural network architectures with proper train/validation/test splits, feature importance analysis, and comprehensive model evaluation.
+How did we go about this?
 :::
 
 :::
 
-:::{.metric-grid}
-
-:::{.metric}
-:::{.metric-value}10,671:::
-:::{.metric-label}Total Records:::
-:::
-
-:::{.metric}
-:::{.metric-value}34:::
-:::{.metric-label}Variables:::
-:::
-
-:::{.metric}
-:::{.metric-value}15:::
-:::{.metric-label}Years of Data:::
-:::
-
-:::{.metric}
-:::{.metric-value}6:::
-:::{.metric-label}Forecasting Regions:::
-:::
-
-:::
-
-```{r}
-#| label: data-overview
-#| eval: false
-#| echo: true
-
+```{r data-overview, eval = FALSE, echo = TRUE}
 # Data loading and initial exploration
 # This code will be executed once actual data is available
 
@@ -105,9 +75,7 @@ print(missing_summary)
 summary(scottish_avalanche_data)
 ```
 
-```{r}
-#| label: fake-data-display
-#| echo: false
+```{r fake-data-display, echo = FALSE}
 
 # Create fake summary table for display purposes
 fake_summary <- data.frame(
@@ -134,27 +102,27 @@ kable(fake_summary,
 
 :::{.hazard-level .level-1}
 **Level 1**  
-LOW
+This is 1 (?)
 :::
 
 :::{.hazard-level .level-2}
 **Level 2**  
-MODERATE
+This is 2 (?)
 :::
 
 :::{.hazard-level .level-3}
 **Level 3**  
-CONSIDERABLE
+This is 3 (?)
 :::
 
 :::{.hazard-level .level-4}
 **Level 4**  
-HIGH
+This is 4 (?)
 :::
 
 :::{.hazard-level .level-5}
 **Level 5**  
-EXTREME
+This is 5 (?)
 :::
 
 :::
@@ -163,39 +131,35 @@ EXTREME
 
 :::{.card}
 ### 🌍 Location/Topography Features
-- Forecasting region (Lochaber, Glen Coe, Creag Meagaidh, Southern Cairngorms, Northern Cairngorms, Torridon)
-- Elevation data (500-1500m)
-- Slope characteristics (gradient, curvature)
-- Aspect information (N, NE, E, SE, S, SW, W, NW)
-- Terrain complexity metrics
+- Forecasting region (......)
+- Add
+- The
+- features
+- here
 :::
 
 :::{.card}
 ### 🌦️ Weather Conditions
-- Temperature measurements (min, max, mean)
-- Wind speed and direction
-- Precipitation data (rain, snow)
-- Humidity levels
-- Atmospheric pressure
-- Cloud cover percentage
+- Temperature measurements...
+- Add
+the 
+features
+here
+
 :::
 
 :::{.card}
 ### ❄️ Snow Pack Measurements  
-- Snow depth (total and new)
-- Snow density estimations
-- Layer stability indicators
-- Temperature gradients in snowpack
-- Surface conditions (crust, soft, wind-packed)
+- Snow....
+add 
+the
+features
+here
 :::
 
 :::
 
-```{r}
-#| label: correlation-analysis
-#| eval: false
-#| echo: true
-
+```{r correlation-analysis, eval = FALSE, echo =TRUE}
 # Correlation analysis of environmental variables
 # This code will analyze relationships between variables once data is loaded
 
@@ -225,10 +189,7 @@ print("Highly correlated variable pairs:")
 print(high_cor)
 ```
 
-```{r}
-#| label: fake-correlation-table
-#| echo: false
-
+```{r fake-correlation-table, echo = FALSE}
 # Fake correlation data for display
 fake_correlations <- data.frame(
   Variable_1 = c("Forecasted_Hazard", "Snow_Depth", "Temperature_Min", "Wind_Speed", "Precipitation"),
@@ -247,27 +208,23 @@ kable(fake_correlations,
 :::{.methodology-flow}
 
 :::{.flow-step}
-Data Preprocessing
+Data Preprocessing???
 :::
 
 :::{.flow-step}
-Feature Engineering  
+Train/Val/Test Split????
 :::
 
 :::{.flow-step}
-Train/Val/Test Split
+Neural Network Design???
 :::
 
 :::{.flow-step}
-Neural Network Design
+Model Training????
 :::
 
 :::{.flow-step}
-Model Training
-:::
-
-:::{.flow-step}
-Evaluation
+Evaluation????
 :::
 
 :::
@@ -276,81 +233,18 @@ Evaluation
 
 :::{.card}
 ### 🔧 Data Preprocessing
-Comprehensive data cleaning, handling missing values, outlier detection, and feature scaling to prepare the dataset for neural network training.
+Fore example: "Comprehensive data cleaning, handling missing values, outlier detection, and feature scaling to prepare the dataset for neural network training."
 
-```r
-# Data preprocessing pipeline
-library(VIM)  # for missing data visualization
-library(caret)
-
-# Visualize missing data patterns
-VIM::aggr(scottish_avalanche_data, col = c('navyblue','red'), 
-          numbers = TRUE, sortVars = TRUE)
-
-# Handle missing values using multiple imputation
-library(mice)
-imputed_data <- mice(scottish_avalanche_data, m = 5, method = 'pmm')
-complete_data <- complete(imputed_data)
-
-# Remove outliers using IQR method
-remove_outliers <- function(x) {
-  Q1 <- quantile(x, 0.25, na.rm = TRUE)
-  Q3 <- quantile(x, 0.75, na.rm = TRUE)
-  IQR <- Q3 - Q1
-  x[x < (Q1 - 1.5 * IQR) | x > (Q3 + 1.5 * IQR)] <- NA
-  return(x)
-}
-
-# Apply outlier removal to numeric columns
-numeric_cols <- sapply(complete_data, is.numeric)
-complete_data[numeric_cols] <- lapply(complete_data[numeric_cols], remove_outliers)
-
-# Feature scaling using standardization
-preProcess_model <- preProcess(complete_data, method = c("center", "scale"))
-scaled_data <- predict(preProcess_model, complete_data)
-```
 :::
 
 :::{.card}
 ### 🧠 Neural Network Architecture
-Implementation of deep neural networks using TensorFlow/Keras through R's reticulate package, with multiple hidden layers and dropout regularization.
-
-```r
-# Neural network model using reticulate to interface with Python/Keras
-library(reticulate)
-library(tensorflow)
-library(keras)
-
-# Define neural network architecture
-model <- keras_model_sequential() %>%
-  layer_dense(units = 128, activation = 'relu', 
-              input_shape = c(ncol(X_train))) %>%
-  layer_dropout(rate = 0.3) %>%
-  layer_dense(units = 64, activation = 'relu') %>%
-  layer_dropout(rate = 0.3) %>%
-  layer_dense(units = 32, activation = 'relu') %>%
-  layer_dropout(rate = 0.2) %>%
-  layer_dense(units = 5, activation = 'softmax')  # 5 hazard levels
-
-# Compile the model
-model %>% compile(
-  loss = 'sparse_categorical_crossentropy',
-  optimizer = optimizer_adam(learning_rate = 0.001),
-  metrics = c('accuracy')
-)
-
-# Model summary
-summary(model)
-```
+For example:"Implementation of deep neural networks using TensorFlow/Keras through R's reticulate package, with multiple hidden layers and dropout regularization".
 :::
 
 :::
 
-```{r}
-#| label: train-test-split
-#| eval: false
-#| echo: true
-
+```{r train-test-split, eval = FALSE, echo = TRUE}
 # Data splitting strategy
 library(caret)
 
@@ -385,17 +279,14 @@ cat("Validation samples:", nrow(val_data), "\n")
 cat("Test samples:", nrow(test_data), "\n")
 ```
 
-```{r}
-#| label: fake-split-summary
-#| echo: false
+```{r fake-split-summary, echo=FALSE}
 
 # Create fake data split summary table
 split_summary <- data.frame(
   Dataset = c("Training", "Validation", "Test", "Total"),
   Samples = c(6403, 2134, 2134, 10671),
   Percentage = c("60%", "20%", "20%", "100%"),
-  Class_Distribution = c("Balanced", "Balanced", "Balanced", "Original")
-)
+  Class_Distribution = c("Balanced", "Balanced", "Balanced", "Original"))
 
 kable(split_summary, 
       caption = "Data Split Summary") %>%
@@ -404,67 +295,23 @@ kable(split_summary,
 
 :::{.card}
 ### 📊 Model Evaluation Strategy
-Comprehensive evaluation using multiple metrics appropriate for multi-class classification problems in safety-critical applications:
+We used....
 
-- **Accuracy:** Overall classification performance across all hazard levels
-- **Precision & Recall:** Class-specific performance metrics for each hazard level
-- **F1-Score:** Harmonic mean of precision and recall, weighted by class frequency
-- **Confusion Matrix:** Detailed analysis of classification errors and patterns
-- **ROC-AUC:** Multi-class area under the receiver operating characteristic curve
-- **Cross-Validation:** K-fold validation for robust performance estimation
-- **Class-Specific Metrics:** Individual performance analysis for critical high-risk classes
+- **Accuracy:** .....
+- ad more here
 
-```r
-# Model evaluation framework
-library(MLmetrics)
-library(pROC)
-
-# Function to calculate comprehensive metrics
-evaluate_model <- function(y_true, y_pred, y_prob = NULL) {
-  
-  # Basic metrics
-  accuracy <- Accuracy(y_true, y_pred)
-  precision <- Precision(y_true, y_pred, average = "weighted")
-  recall <- Recall(y_true, y_pred, average = "weighted") 
-  f1 <- F1_Score(y_true, y_pred, average = "weighted")
-  
-  # Confusion matrix
-  conf_matrix <- confusionMatrix(factor(y_pred), factor(y_true))
-  
-  # Multi-class AUC if probabilities provided
-  if (!is.null(y_prob)) {
-    multiclass_auc <- multiclass.roc(y_true, y_prob)$auc
-  } else {
-    multiclass_auc <- NA
-  }
-  
-  return(list(
-    accuracy = accuracy,
-    precision = precision,
-    recall = recall,
-    f1 = f1,
-    confusion_matrix = conf_matrix,
-    auc = multiclass_auc
-  ))
-}
-```
 :::
 
 ## Results & Analysis {#results}
 
-```{r}
-#| label: training-history
-#| eval: false
-#| echo: true
-
+```{r training-history, eval = FALSE, echo = TRUE}
 # Neural network training
 # Set up callbacks for training monitoring
 callbacks_list <- list(
   callback_early_stopping(monitor = "val_loss", patience = 10, restore_best_weights = TRUE),
   callback_reduce_lr_on_plateau(monitor = "val_loss", factor = 0.5, patience = 5),
   callback_model_checkpoint("best_avalanche_model.h5", monitor = "val_accuracy", 
-                           save_best_only = TRUE)
-)
+                           save_best_only = TRUE))
 
 # Train the model
 history <- model %>% fit(
@@ -473,8 +320,7 @@ history <- model %>% fit(
   batch_size = 32,
   validation_data = list(X_val, y_val),
   callbacks = callbacks_list,
-  verbose = 1
-)
+  verbose = 1)
 
 # Plot training history
 plot(history)
@@ -485,17 +331,13 @@ predictions <- best_model %>% predict(X_test)
 predicted_classes <- apply(predictions, 1, which.max) - 1
 ```
 
-```{r}
-#| label: fake-performance-metrics
-#| echo: false
-
+```{r fake-performance-metrics, echo = FALSE}
 # Create fake performance metrics table
 performance_results <- data.frame(
   Metric = c("Overall Accuracy", "Weighted Precision", "Weighted Recall", "Weighted F1-Score", 
             "Macro F1-Score", "Cohen's Kappa", "Multi-class AUC", "Training Time"),
   Value = c("0.847", "0.851", "0.847", "0.845", "0.763", "0.789", "0.923", "47 minutes"),
-  Standard_Error = c("±0.012", "±0.015", "±0.012", "±0.014", "±0.023", "±0.018", "±0.008", "N/A")
-)
+  Standard_Error = c("±0.012", "±0.015", "±0.012", "±0.014", "±0.023", "±0.018", "±0.008", "N/A"))
 
 kable(performance_results, 
       caption = "Neural Network Performance Summary") %>%
@@ -503,10 +345,7 @@ kable(performance_results,
 ```
 
 
-```{r}
-#| label: fake-confusion-matrix
-#| echo: false
-
+```{r fake-confusion-matrix, echo = FALSE}
 library(dplyr)
 library(tidyr)
 library(kableExtra)
@@ -819,7 +658,7 @@ kable(seasonal_performance,
 :::{.feature-grid}
 
 :::{.card}
-### 🤖 ChatGPT & Claude Utilization
+### 🤖 ChatGPT & Claude Utilization (This text is example!!!!)
 **Code Development:** Assisted with neural network architecture design, hyperparameter tuning strategies, and debugging complex TensorFlow/Keras implementations.
 
 **Data Analysis:** Provided guidance on appropriate evaluation metrics for imbalanced multi-class problems and suggested advanced visualization techniques for model interpretation.
@@ -830,7 +669,7 @@ kable(seasonal_performance,
 :::
 
 :::{.card}
-### 📝 Critical Assessment & Limitations
+### 📝 Critical Assessment & Limitations (This text is example!!!!)
 **Strengths:**
 - Rapid prototyping and code generation
 - Comprehensive literature synthesis
@@ -1057,7 +896,7 @@ kable(deployment_metrics,
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
-## Conclusions & Future Work {#conclusions}
+## Conclusions & Future Work (This text is example!!!!) {#conclusions}
 
 :::{.feature-grid}
 
@@ -1091,254 +930,12 @@ kable(deployment_metrics,
 
 :::
 
-## Technical Implementation Details {#implementation}
-
-```{r}
-#| label: production-architecture
-#| eval: false
-#| echo: true
-
-# Complete production system architecture
-# This represents the full technical stack for operational deployment
-
-# Database connection and data pipeline
-library(DBI)
-library(RPostgres)
-
-# Connect to operational database
-conn <- dbConnect(RPostgres::Postgres(),
-                 dbname = "avalanche_prediction_db",
-                 host = "prod-server.example.com", 
-                 port = 5432,
-                 user = Sys.getenv("DB_USER"),
-                 password = Sys.getenv("DB_PASSWORD"))
-
-# Automated data ingestion pipeline
-ingest_weather_data <- function() {
-  
-  # Fetch latest weather observations
-  weather_query <- "
-    SELECT * FROM weather_observations 
-    WHERE observation_time > NOW() - INTERVAL '24 hours'
-    AND quality_flag = 'GOOD'
-    ORDER BY observation_time DESC
-  "
-  
-  weather_data <- dbGetQuery(conn, weather_query)
-  
-  # Data quality checks
-  if (nrow(weather_data) < 100) {
-    stop("Insufficient recent weather data")
-  }
-  
-  # Feature engineering pipeline
-  processed_data <- weather_data %>%
-    engineer_snow_features() %>%
-    calculate_stability_indices() %>%
-    add_terrain_interactions() %>%
-    apply_preprocessing_pipeline()
-  
-  return(processed_data)
-}
-
-# Batch prediction pipeline
-run_daily_predictions <- function() {
-  
-  # Load latest data
-  current_data <- ingest_weather_data()
-  
-  # Generate predictions for all regions
-  predictions <- data.frame()
-  
-  regions <- c("Lochaber", "Glen Coe", "Creag Meagaidh", 
-              "Southern Cairngorms", "Northern Cairngorms", "Torridon")
-  
-  for (region in regions) {
-    region_data <- current_data %>% filter(forecasting_region == region)
-    
-    if (nrow(region_data) > 0) {
-      pred <- model %>% predict(as.matrix(region_data))
-      
-      predictions <- rbind(predictions, data.frame(
-        region = region,
-        prediction_date = Sys.Date(),
-        hazard_level = which.max(pred),
-        confidence = max(pred),
-        model_version = "v2.1.0"
-      ))
-    }
-  }
-  
-  # Store predictions in database
-  dbWriteTable(conn, "daily_predictions", predictions, append = TRUE)
-  
-  # Generate forecast bulletins
-  generate_forecast_bulletins(predictions)
-  
-  return(predictions)
-}
-
-# Model retraining pipeline
-schedule_model_retraining <- function() {
-  
-  # Check if retraining is needed (monthly or performance-based)
-  last_training <- dbGetQuery(conn, "SELECT MAX(training_date) FROM model_versions")
-  days_since_training <- as.numeric(Sys.Date() - last_training[[1]])
-  
-  recent_performance <- calculate_recent_performance()
-  
-  if (days_since_training > 30 || recent_performance < 0.80) {
-    
-    message("Initiating model retraining...")
-    
-    # Fetch expanded training dataset
-    training_data <- dbGetQuery(conn, "
-      SELECT * FROM avalanche_observations 
-      WHERE observation_date > '2008-01-01'
-      AND data_quality = 'VALIDATED'
-    ")
-    
-    # Retrain model with latest data
-    new_model <- retrain_neural_network(training_data)
-    
-    # Validate new model performance
-    validation_results <- validate_model(new_model)
-    
-    if (validation_results$accuracy > recent_performance) {
-      deploy_new_model(new_model, validation_results)
-      message("Model successfully retrained and deployed")
-    } else {
-      message("New model did not improve performance, keeping current model")
-    }
-  }
-}
-```
-
-## Data Sources & Acknowledgments {#sources}
-
-```{r}
-#| label: fake-data-sources
-#| echo: false
-
-# Data sources and partnerships
-data_sources <- data.frame(
-  Organization = c("Scottish Avalanche Information Service (SAIS)", 
-                  "Met Office", "Ordnance Survey", "SportScotland Avalanche Team",
-                  "Glenmore Lodge", "Cairngorm National Park Authority",
-                  "Mountain Weather Information Service", "SEPA Hydrometry"),
-  Data_Type = c("Avalanche observations, stability tests",
-               "Weather observations, forecasts", 
-               "Digital terrain models, elevation data",
-               "Field observations, incident reports",
-               "Training course data, safety reports",
-               "Environmental monitoring, visitor data",
-               "Specialized mountain weather data",
-               "Snow depth, river levels"),
-  Years = c("2008-2023", "2008-2023", "Static", "2010-2023", 
-           "2012-2023", "2015-2023", "2018-2023", "2008-2023"),
-  Records = c("8,934", "2.1M", "1 dataset", "1,247", 
-             "892", "456", "124K", "890K")
-)
-
-kable(data_sources, 
-      caption = "Data Sources and Partnerships") %>%
-  kable_styling(bootstrap_options = c("striped", "hover")) %>%
-  column_spec(2, width = "4cm")
-```
-
-### Ethical Considerations & Limitations
-
-```{r}
-#| label: limitations-summary
-#| echo: false
-
-# Model limitations and ethical considerations
-limitations_table <- data.frame(
-  Category = c("Data Limitations", "Model Constraints", "Ethical Considerations", 
-              "Operational Risks", "Future Challenges"),
-  Key_Issues = c("Historical bias in observations; Observer subjectivity; Missing extreme events",
-                "Scottish-specific training; Limited transfer learning; Weather dependency", 
-                "Life-safety decisions; User over-reliance; Professional judgment",
-                "System failures; Communication gaps; User education needs",
-                "Climate change impacts; Changing weather patterns; Technology evolution"),
-  Mitigation_Strategies = c("Multiple observer validation; Quality control processes; Synthetic data augmentation",
-                          "Regular retraining; Ensemble methods; Confidence intervals",
-                          "Clear disclaimers; Professional oversight; Decision support not replacement", 
-                          "Redundant systems; Clear communication; Comprehensive training",
-                          "Adaptive modeling; Continuous monitoring; Research collaboration")
-)
-
-kable(limitations_table, 
-      caption = "Model Limitations and Risk Mitigation Strategies") %>%
-  kable_styling(bootstrap_options = c("striped", "hover")) %>%
-  column_spec(c(2,3), width = "4cm")
-```
-
-## References & Technical Documentation
-
-### Key Literature & Standards
-
-- **International Standards:** European Avalanche Hazard Scale (EAWS), International Classification for Seasonal Snow on the Ground
-- **Scottish Context:** SAIS Forecasting Handbook, Scottish Mountain Weather Patterns (Met Office, 2019)
-- **Machine Learning:** "Deep Learning for Avalanche Prediction" (Schweizer et al., 2021), "Neural Networks in Glacial Hazard Assessment" (Kumar & Singh, 2020)
-- **Validation Methods:** "Cross-validation strategies for time series data" (Bergmeir & Benítez, 2012)
-
-### Technical Resources & Tools
-
-```{r}
-#| label: technical-stack
-#| echo: false
-
-# Technical implementation stack
-tech_stack <- data.frame(
-  Component = c("Core ML Framework", "Data Processing", "Web API", "Database", 
-               "Visualization", "Deployment", "Monitoring", "Documentation"),
-  Technology = c("TensorFlow 2.8, Keras, R/reticulate", 
-                "R tidyverse, pandas, scikit-learn preprocessing",
-                "Plumber (R), FastAPI (Python), RESTful design",
-                "PostgreSQL with PostGIS, Time-series tables",
-                "ggplot2, plotly, D3.js interactive dashboards", 
-                "Docker containers, GitHub Actions CI/CD",
-                "Prometheus metrics, Grafana dashboards",
-                "Quarto, GitHub Pages, automated reporting"),
-  Version = c("2.8+", "1.3+", "1.2+", "13+", "3.4+", "20+", "2.3+", "1.3+")
-)
-
-kable(tech_stack, 
-      caption = "Technical Implementation Stack") %>%
-  kable_styling(bootstrap_options = c("striped", "hover"))
-```
-
-### Model Versioning & Reproducibility
-
-```{r}
-#| label: model-versions
-#| echo: false
-
-# Model development history
-model_versions <- data.frame(
-  Version = c("v1.0", "v1.5", "v2.0", "v2.1", "v2.2 (planned)"),
-  Date = c("2023-08", "2023-10", "2024-01", "2024-03", "2024-06"),
-  Key_Changes = c("Initial neural network implementation",
-                 "Added dropout regularization, improved features",
-                 "Architecture redesign, ensemble methods", 
-                 "Production optimization, API integration",
-                 "Real-time data feeds, LSTM temporal modeling"),
-  Performance = c("0.789", "0.821", "0.847", "0.847", "TBD"),
-  Status = c("Deprecated", "Deprecated", "Deprecated", "Current", "Development")
-)
-
-kable(model_versions, 
-      caption = "Model Development History & Versioning") %>%
-  kable_styling(bootstrap_options = c("striped", "hover")) %>%
-  row_spec(4, bold = TRUE, background = "#e6ffe6")  # Highlight current version
-```
 
 ---
 
 :::{style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 2rem; border-radius: 15px; margin-top: 3rem; text-align: center;"}
 
-### 🏔️ Project Impact Statement
+### 🏔️ Project Impact Statement (This text is example!!!!)
 
 *This research demonstrates the successful application of modern machine learning techniques to enhance avalanche hazard prediction in Scotland. By achieving 84.7% accuracy across six forecasting regions, the neural network model provides valuable decision support for mountain safety professionals while maintaining appropriate human oversight for life-critical applications.*
 
