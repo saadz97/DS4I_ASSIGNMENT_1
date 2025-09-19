@@ -1,4 +1,8 @@
-### Compiling the results from the tuning
+###__________________________________________________________________________###
+
+###                 Compiling the results from the tuning                    ###
+
+###__________________________________________________________________________###
 
 library(dplyr)
 library(tidyr)
@@ -17,9 +21,9 @@ tuning_results = function(directory){
   return(row_df)
 }
 
-directories = list.dirs('tuning', recursive = FALSE)
-hyperband_search    = 'hyperband'
-randomsearch_search = 'randomsearch'
+directories              = list.dirs('tuning', recursive = FALSE)
+hyperband_search         = 'hyperband'
+randomsearch_search      = 'randomsearch'
 hyperband_directories    = grep(hyperband_search, directories, value = TRUE)
 randomsearch_directories = grep(randomsearch_search, directories, value = TRUE)
 
@@ -33,12 +37,17 @@ results_compiler = function(method_directory){
   }
 }
 
+# the results automatically get saved locally, inside the same tuning folder
 results_compiler(hyperband_directories)
 results_compiler(randomsearch_directories)
 
 
 # use this line to get the saved data. Change the randomsearch for 
-# hyperband and the 1 for 2 or 3 
+# hyperband and the 1 for 2 or 3.
 # load('tuning/randomsearch results 1/summary.RData')
+
+###__________________________________________________________________________###
+
+###                             End                                          ###
 
 ###__________________________________________________________________________###
