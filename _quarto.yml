@@ -1,22 +1,48 @@
-# _quarto.yml
 project:
   type: website
-  output-dir: docs # Critical! GitHub Pages looks for files in /docs or root
+  output-dir: docs
 
 website:
-  title: "Avalanche Hazard Forecasting" # Your website's title
+  title: "Avalanche Forecasting"
+  description: "Neural Network Avalanche Hazard Prediction for Scottish Mountains"
+  favicon: "🏔️"
+  
   navbar:
-    left:
-      - href: index.qmd
-        text: Home
-  page-footer: 
-    right: 
-      - icon: github
-        href: https://github.com/saadz97/DS4I_ASSIGNMENT_1 # Replace with your repo
+    background: "rgba(255, 255, 255, 0.95)"
+    foreground: "#4a5568"
+    right:
+      - text: "Overview"
+        href: "#overview"
+      - text: "Data"
+        href: "#data"
+      - text: "Methodology" 
+        href: "#methodology"
+      - text: "Results"
+        href: "#results"
+      - text: "Conclusions"
+        href: "#conclusions"
+
+  page-footer:
+    background: "#2d3748"
+    foreground: "white"
+    center: |
+      Should we add our names somewhere here? Should i remove the link to where the original data can be found? | Data Science for Industry Assignment
+      
+      [📱 View on GitHub](https://github.com/yourusername/scottish-avalanche-prediction){.btn .btn-outline-light .btn-sm}
+      [Scottish Avalanche Information Service](https://www.sais.gov.uk/){.btn .btn-outline-light .btn-sm}
+      
 
 format:
   html:
-    theme: cosmo # A good, clean theme. Others: flatly, journal, lumen
-    css: styles.css # Optional: for custom CSS overrides
-    toc: true # Table of contents for your pages
-    toc-depth: 2
+    theme: journal 
+    css: styles.css 
+    toc: false
+    code-fold: true
+    code-tools: true
+    smooth-scroll: true
+    anchor-sections: true
+    link-external-newwindow: true
+    
+execute:
+  freeze: auto
+  cache: true

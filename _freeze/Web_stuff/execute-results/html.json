@@ -1,0 +1,15 @@
+{
+  "hash": "9de070aa3d8f77915824ea67a48c4c3a",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Web_stuff\"\nauthor: \"Hope Hennessy\"\ndate: \"2025-09-19\"\noutput: html_document\n---\n\n\n\n\n\nT for testing",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
