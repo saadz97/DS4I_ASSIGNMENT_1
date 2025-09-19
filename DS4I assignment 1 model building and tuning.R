@@ -1,4 +1,8 @@
-### Model building and parameter tuning ###
+###__________________________________________________________________________###
+
+###              Model building and parameter tuning                         ###
+
+###__________________________________________________________________________###
 
 library(keras)
 library(kerastuneR)
@@ -6,9 +10,12 @@ library(tensorflow)
 library(dplyr)
 library(tidyr)
 
-
+# ensure that inside the folder you have the project in you also have a folder
+# called data that contains the data. 
 data = read.csv('./data/scotland_avalanche_forecasts_2009_2025.csv')
+
 # this is a very general solution to the problem of missing entries
+# maybe imputation?
 data = drop_na(data)
 data = filter(data, FAH != '', OAH != '', Precip.Code != '')
 
@@ -24,11 +31,11 @@ data = filter(data, FAH != '', OAH != '', Precip.Code != '')
 # Max.Temp.Grad:Snow.Temp = results of a ”snow pack test” of the integrity of snow at
 # the forecast location (predictor set 3)
 
-unique(data['Area'])
-unique(data['Obs'])
-unique(data['FAH'])
-unique(data['OAH'])
-unique(data['Precip.Code'])
+#unique(data['Area'])
+#unique(data['Obs'])
+#unique(data['FAH'])
+#unique(data['OAH'])
+#unique(data['Precip.Code'])
 
 
 data$FAH         = as.integer(factor(x = data$FAH)) - 1
@@ -120,6 +127,9 @@ model_builder = function(hp){
   return(model)
 }
 
+# this will create a new folder called tuning inside your project folder
+# in that folder it will contain the information about the trials
+# this should probably be converted into a proper function 
 for (i in 1){
   
   x_train = training_data_list[[i]]
@@ -153,5 +163,9 @@ for (i in 1){
   
   #results_summary(tuner = tuner_hyperband, num_trials = 5)
 }
+
+###__________________________________________________________________________###
+
+###                                  End                                     ###
 
 ###__________________________________________________________________________###
