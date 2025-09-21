@@ -25,7 +25,7 @@ set.seed(123)
 ```
 
 :::{.hero}
-# Avalanche Hazard Forecasting using  {.text-center}
+# Avalanche Hazard Forecasting  {.text-center}
 
 :::{.hero-subtitle}
 Predicting forecasted avalanche hazard levels from 15 years of Scottish data using a neural network.
@@ -75,24 +75,20 @@ print(missing_summary)
 summary(scottish_avalanche_data)
 ```
 
-```{r fake-data-display, echo = FALSE}
 
-# Create fake summary table for display purposes
-fake_summary <- data.frame(
-  Variable = c("Date", "Region", "Forecasted_Hazard", "Temperature_Min", "Temperature_Max", 
-               "Wind_Speed", "Precipitation", "Snow_Depth", "Elevation", "Aspect"),
-  Type = c("Date", "Factor", "Integer", "Numeric", "Numeric", "Numeric", "Numeric", "Numeric", "Integer", "Factor"),
-  Missing_Count = c(0, 0, 15, 234, 189, 123, 567, 89, 45, 12),
-  Description = c("Observation date", "Forecasting region (6 levels)", "Hazard level 1-5", 
-                 "Daily minimum temperature (°C)", "Daily maximum temperature (°C)",
-                 "Wind speed (m/s)", "Daily precipitation (mm)", "Snow depth (cm)",
-                 "Elevation (m)", "Slope aspect (8 directions)")
-)
+```{r}
+library(ggplot2)
 
-kable(fake_summary, 
-      caption = "Dataset Variables Overview (Sample of 34 total variables)") %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+ggplot() +
+  labs(title = "Seasonal Trend of abalanche.. over those 15 years?", x = "Time", y = "Value") +
+  theme_minimal() +
+  theme(
+    panel.grid.major = element_line(color = "grey80"), 
+    panel.grid.minor = element_line(color = "grey90"), 
+    plot.title = element_text(size = 16, face = "bold", hjust = 0.5))
 ```
+
+
 
 ## Dataset & Target Variable {#data}
 
