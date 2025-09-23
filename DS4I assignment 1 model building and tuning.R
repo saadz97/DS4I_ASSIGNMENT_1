@@ -105,8 +105,8 @@ y_test  = y[-training_indices, ]
      
 model_builder = function(hp){
   
-  n_layers = hp$Int('number_of_layers', min_value = 2, max_value = 10, step = 1)
-  lr = hp$Choice('learning_rate', values = c(1e-1, 1e-2, 1e-3))  
+  n_layers = hp$Int('number_of_layers', min_value = 1, max_value = 10, step = 1)
+  lr = hp$Choice('learning_rate', values = c(1e-1, 1e-2, 1e-3, 1e-4))  
   
   n_x   = ncol(x_train)
   input = layer_input(shape = c(n_x))
@@ -155,7 +155,7 @@ for (i in 1){
                                           directory = 'tuning',
                                           project_name = paste('hyperband results', i),
                                           max_epochs = 50,
-                                          hyperband_iterations = 10,
+                                          hyperband_iterations = 50,
                                           seed = 2025)
   
   tuner_hyperband %>% fit_tuner(x = x_train,

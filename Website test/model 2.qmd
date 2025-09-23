@@ -1,0 +1,182 @@
+---
+title: "Model"
+---
+
+## Getting set up
+
+```{r, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, message = FALSE)
+```
+
+A neural network was fitted to the data in R, specifically R version 4.5.1 (2025-06-13) and python version 3.11.6. The reason it is important to specify the versions is because keras and its dependencies in R are wrappers of the python libraries so ensuring cross compatibility is imperative. 
+
+```{r packages and libraries}
+library(keras)
+library(kerastuneR)
+library(tensorflow)
+library(dplyr)
+library(tidyr)
+```
+
+The packages that will be used in the model building and tuning are given above. The packages can be installed using **`install.packages('package', dependencies = T)`**. Note that after reading in the **`keras`** library a warning might appear saying that it is deprecated and that you should use **`keras3`**, this can be ignored for now as the provided code does not work when using **`keras3`**.
+
+
+```{r data}
+# ensure that inside the folder you have the project in you also have a folder
+# called data that contains the data. 
+data = read.csv('./data/scotland_avalanche_forecasts_2009_2025.csv')
+
+# this is a very general solution to the problem of missing entries
+# maybe imputation?
+data = drop_na(data)
+data = filter(data, FAH != '', OAH != '', Precip.Code != '')
+
+## data description ##
+
+# Date = the date that the forecast was made
+# Area = one of six forecasting region
+# FAH = the forecast avalanche hazard for the following da
+# OAH = the observed avalanche hazard on the following day (observation made the following day)
+# longitude:Incline: position and topography at forecast location (predictor set)
+# Air.Temp:Summit.Wind.Speed = weather in the vicinity of the forecast location at the
+# time the forecast was made (predictor set 2)
+# Max.Temp.Grad:Snow.Temp = results of a ”snow pack test” of the integrity of snow at
+# the forecast location (predictor set 3)
+
+#unique(data['Area'])
+#unique(data['Obs'])
+#unique(data['FAH'])
+#unique(data['OAH'])
+#unique(data['Precip.Code'])
+
+
+data$FAH         = as.integer(factor(x = data$FAH)) - 1
+data$OAH         = as.integer(factor(x = data$OAH)) - 1
+data$Precip.Code = as.integer(factor(data$Precip.Code)) - 1
+
+predictor_set_1 = select(data, c('longitude':'Incline'))
+predictor_set_1 = mutate(predictor_set_1, across(c(longitude : Incline), scale))
+predictor_set_1 = as.matrix(predictor_set_1)
+
+predictor_set_2 = select(data, c('Air.Temp':'Summit.Wind.Speed', 'FAH'))
+predictor_set_2 = mutate(predictor_set_2,
+                         across(c(Air.Temp : Summit.Wind.Speed, - Precip.Code), scale))
+predictor_set_2 = as.matrix(predictor_set_2)
+
+predictor_set_3 = select(data, c('Max.Temp.Grad':'Snow.Temp', 'FAH'))
+predictor_set_3 = mutate(predictor_set_3, across(c(Max.Temp.Grad : Snow.Temp), scale))
+predictor_set_3 = as.matrix(predictor_set_3)
+```
+
+Since we are trying to predict the forecasted avalanche hazard(FAH), it is important that we do not allow the model to be trained on the observed avalanche hazard(OAH). Therefore the predictor sets are explicitly defined so that there is no accidental data leakage. The FAH, OAH and Precip.Code variables are converted to integers so that the data is compatible with **`keras`**. 
+
+```{r traning and test split}
+set.seed(2025)
+training_indices = runif(n = floor(nrow(data) * 0.7), min = 1, max = nrow(data))
+
+predictor_set_1_train = predictor_set_1[training_indices, ] 
+predictor_set_1_test  = predictor_set_1[-training_indices, ]
+
+predictor_set_2_train = predictor_set_2[training_indices, ] 
+predictor_set_2_test  = predictor_set_2[-training_indices, ]
+
+predictor_set_3_train = predictor_set_3[training_indices, ] 
+predictor_set_3_test  = predictor_set_3[-training_indices, ]
+
+training_data_list = list(predictor_set_1_train, predictor_set_2_train,
+                          predictor_set_3_train)
+testing_data_list = list(predictor_set_1_test, predictor_set_2_test,
+                         predictor_set_3_test)
+
+y = data$FAH
+y = to_categorical(y, num_classes = 5)
+
+y_train = y[training_indices, ]
+y_test  = y[-training_indices, ]
+
+```
+
+A 70/30 training split was used in the data. Usually we would set aside a small portion for validation but as we will see later, **`keras`** handles this for us so we do not need to specify a validation set. Using a seed for this step is important as it ensures the split remains every time the code is ran. This is the first step toward achiving repeatable results. 
+
+## Defining the model builder wrapper function
+
+At this stage we would define the model and let **`keras`** do it's thing. But before we can define the model we need to find the optimal specification of model hyperparameters. Some of the hyperparameters we have control over include: number of layers, number of nodes per layer, acitvation function to use on each layer, the dropout rate and the learning rate. **`keras`** is hightly flexible and allows the user control of almost every aspect of the model parameters. To find the optimal value for these hyperparameters we do hyperparameter tuning. In order to do this in R we need to use the **`kerastuneR`** library. In order to do the hyperparameter tuning with **`kerastuneR`** the model needs to be wrapped in a function that accepts as an input the hyperparameter specification. 
+
+```{r model building function}
+model_builder = function(hp){
+  
+  n_layers = hp$Int('number_of_layers', min_value = 2, max_value = 10, step = 1)
+  lr = hp$Choice('learning_rate', values = c(1e-1, 1e-2, 1e-3))  
+  
+  n_x   = ncol(x_train)
+  input = layer_input(shape = c(n_x))
+
+  x = input
+  for (i in 1:n_layers){
+    x = x %>%
+      layer_dense(units = 20, activation = 'relu') %>%
+      layer_dropout(rate = 0.5)
+  }
+  output = x %>% 
+    layer_dense(units = 5, activation = 'softmax')
+  
+  model = keras_model(inputs = input, outputs = output)
+  
+  model %>% compile(loss = 'categorical_crossentropy', 
+                    optimizer = optimizer_adam(learning_rate = lr),
+                    metrics = c('accuracy'))
+  
+  return(model)
+}
+```
+
+For this project, we have decided to tune for the number of layers and the learning rate. The number of nodes on each layer was chosen to be 20, the activation function to be rectified linear units(Relu) and the dropout rate was sett to 0.5. The specific values were 2-10 layers and learning rates $\in \{0.1,\ 0.01,\ 0.001 \}$. Therefore, there were a total of 27 unique models that could be fitted. 
+
+## Hyperparameter tuning
+
+```{r model tuning}
+for (i in 1){
+  
+  x_train = training_data_list[[i]]
+  
+  tuner_randomsearch = kerastuneR::RandomSearch(hypermodel = model_builder,
+                                                objective = 'val_accuracy',
+                                                max_trials = 50, 
+                                                executions_per_trial = 3,
+                                                directory = 'tuning',
+                                                project_name = paste('randomsearch results', i),
+                                                overwrite = TRUE)
+  
+  tuner_randomsearch %>% fit_tuner(x = x_train,
+                                   y = y_train,
+                                   epochs = 50,
+                                   validation_split = 0.2, shuffle = TRUE)
+  
+  #results_summary(tuner = tuner_randomsearch, num_trials = 5)
+  
+  tuner_hyperband = kerastuneR::Hyperband(hypermodel = model_builder,
+                                          objective = 'val_accuracy',
+                                          directory = 'tuning',
+                                          project_name = paste('hyperband results', i),
+                                          max_epochs = 50,
+                                          hyperband_iterations = 10,
+                                          seed = 2025)
+  
+  tuner_hyperband %>% fit_tuner(x = x_train,
+                                y = y_train,
+                                epochs = 50,
+                                validation_split = 0.2, shuffle = TRUE)
+  
+  #results_summary(tuner = tuner_hyperband, num_trials = 5)
+}
+```
+
+**`kerastuneR`** has multiple tuning algorithms, we have used the **`RandomSearch`** and **`Hyperband`** algorithms. **`RandomSearch`** takes random combinations of the provided hyperparameters and fits the model each time. Since the combination of hyperparameters is random there is a possibility that the same mode specification is ran multiple times by the algorithm, however, the algorithm does attempt to mitigate this. We can also control this by setting the **`max_trials`** variable to a number larger than the total number of unique models that can be specified. We also specify that each model should be fit 3 times by setting **`executions_per_trial = 3`**. This just reduces variation in the results. The **`Hyperband`**  algorithm aims to improve the efficiency of the tuning by utalizing efficient resource allocation. It is a bandit-based approach to hyperparameter optimisation(need to cite a source here). For this algorithm **`max_epochs`** was set to 50, this decided by trial and error. It just needs to be set to a value large enough to ensure convergence in all models. **`hyperband_iterations`** is the number of times to iterate over the full hyperband algorithm. It is suggested to set this value as high as your machinery can handle. We set it to 10 but it can be set higher. In both algorithms, we use a validation split of 20% and setting **`shuffle = T`**. Doing this shuffles the training data after each eopch and helps reduce the chances of overfitting.
+
+## Extra resources
+
+[`keras`](https://cran.r-project.org/web/packages/keras/vignettes/){target='_blank'}
+
+[`kerastuneR`](https://eagerai.github.io/kerastuneR/){target='_blank'}
+
+
