@@ -4,6 +4,7 @@
 
 ###__________________________________________________________________________###
 
+library(reticulate)
 library(keras)
 library(kerastuneR)
 library(tensorflow)
@@ -47,7 +48,8 @@ predictor_set_1 = mutate(predictor_set_1, across(c(longitude : Incline), scale))
 predictor_set_1 = as.matrix(predictor_set_1)
 
 predictor_set_2 = select(data, c('Air.Temp':'Summit.Wind.Speed', 'FAH'))
-predictor_set_2 = mutate(predictor_set_2, across(c(Air.Temp : Summit.Wind.Speed, - Precip.Code), scale))
+predictor_set_2 = mutate(predictor_set_2,
+                         across(c(Air.Temp : Summit.Wind.Speed, - Precip.Code), scale))
 predictor_set_2 = as.matrix(predictor_set_2)
 
 predictor_set_3 = select(data, c('Max.Temp.Grad':'Snow.Temp', 'FAH'))
