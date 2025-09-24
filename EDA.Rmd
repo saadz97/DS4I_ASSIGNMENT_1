@@ -45,6 +45,11 @@ library(gridExtra)
 
 ```{r}
 data <- read.csv("~/University/MSc Data Science/STA5073Z_DS Industry/DS-Industry/scotland_avalanche_forecasts_2009_2025.csv", header = TRUE)
+
+data <- read.csv("C:/Users/Student/Documents/DS4I_ASSIGNMENT_1/scotland_avalanche_forecasts_2009_2025.csv", header = TRUE)
+
+
+
 ```
 
 ```{r, eval=FALSE}
