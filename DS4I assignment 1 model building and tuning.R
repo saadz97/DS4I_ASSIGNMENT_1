@@ -4,7 +4,6 @@
 
 ###__________________________________________________________________________###
 
-library(reticulate)
 library(keras)
 library(kerastuneR)
 library(tensorflow)
@@ -20,6 +19,8 @@ data = read.csv('./data/scotland_avalanche_forecasts_2009_2025.csv')
 data = drop_na(data)
 data = filter(data, FAH != '', OAH != '', Precip.Code != '')
 
+#data = filter(data, Alt > 1300)
+#data = filter(data, )
 ## data description ##
 
 # Date = the date that the forecast was made
@@ -47,14 +48,16 @@ predictor_set_1 = select(data, c('longitude':'Incline'))
 predictor_set_1 = mutate(predictor_set_1, across(c(longitude : Incline), scale))
 predictor_set_1 = as.matrix(predictor_set_1)
 
-predictor_set_2 = select(data, c('Air.Temp':'Summit.Wind.Speed', 'FAH'))
+predictor_set_2 = select(data, c('Air.Temp':'Summit.Wind.Speed'))
 predictor_set_2 = mutate(predictor_set_2,
                          across(c(Air.Temp : Summit.Wind.Speed, - Precip.Code), scale))
 predictor_set_2 = as.matrix(predictor_set_2)
 
-predictor_set_3 = select(data, c('Max.Temp.Grad':'Snow.Temp', 'FAH'))
+predictor_set_3 = select(data, c('Max.Temp.Grad':'Snow.Temp'))
 predictor_set_3 = mutate(predictor_set_3, across(c(Max.Temp.Grad : Snow.Temp), scale))
 predictor_set_3 = as.matrix(predictor_set_3)
+
+predictor_set_4 = cbind(predictor_set_1, predictor_set_2, predictor_set_3)
 
 set.seed(2025)
 training_indices = runif(n = floor(nrow(data) * 0.7), min = 1, max = nrow(data))
@@ -68,8 +71,13 @@ predictor_set_2_test  = predictor_set_2[-training_indices, ]
 predictor_set_3_train = predictor_set_3[training_indices, ] 
 predictor_set_3_test  = predictor_set_3[-training_indices, ]
 
-training_data_list = list(predictor_set_1_train, predictor_set_2_train, predictor_set_3_train)
-testing_data_list = list(predictor_set_1_test, predictor_set_2_test, predictor_set_3_test)
+predictor_set_4_train = predictor_set_4[training_indices, ]
+predictor_set_4_test  = predictor_set_4[-training_indices, ]
+  
+training_data_list = list(predictor_set_1_train, predictor_set_2_train,
+                          predictor_set_3_train, predictor_set_4_train)
+testing_data_list = list(predictor_set_1_test, predictor_set_2_test,
+                         predictor_set_3_test, predictor_set_4)
 
 y = data$FAH
 y = to_categorical(y, num_classes = 5)
@@ -105,7 +113,7 @@ y_test  = y[-training_indices, ]
      
 model_builder = function(hp){
   
-  n_layers = hp$Int('number_of_layers', min_value = 1, max_value = 10, step = 1)
+  n_layers = hp$Int('number_of_layers', min_value = 1, max_value = 5, step = 1)
   lr = hp$Choice('learning_rate', values = c(1e-1, 1e-2, 1e-3, 1e-4))  
   
   n_x   = ncol(x_train)
@@ -132,7 +140,7 @@ model_builder = function(hp){
 # this will create a new folder called tuning inside your project folder
 # in that folder it will contain the information about the trials
 # this should probably be converted into a proper function 
-for (i in 1){
+for (i in 1:4){
   
   x_train = training_data_list[[i]]
   
@@ -156,7 +164,7 @@ for (i in 1){
                                           project_name = paste('hyperband results', i),
                                           max_epochs = 50,
                                           hyperband_iterations = 50,
-                                          seed = 2025)
+                                          seed = 2025, overwrite = TRUE)
   
   tuner_hyperband %>% fit_tuner(x = x_train,
                                 y = y_train,
@@ -165,6 +173,26 @@ for (i in 1){
   
   #results_summary(tuner = tuner_hyperband, num_trials = 5)
 }
+
+
+input = layer_input(shape = c(27), name = 'Data')
+
+output = input %>% 
+  layer_dense(units = 5, activation = 'relu', name = 'Hidden-Layer') %>%
+  layer_dropout(rate = 0.5, seed = 2025, name = 'Dropout-Layer-0.5') %>%
+  layer_dense(units = 5, activation = 'softmax', name = 'Output-Layer')
+
+model = keras_model(inputs = input, outputs = output)
+
+
+model %>% compile(loss = 'categorical_crossentropy', 
+                  optimizer = optimizer_adam(learning_rate = 0.01),
+                  metrics = c('accuracy'))
+
+history = model %>% fit(predictor_set_4_train,
+                        y_train,
+                        epochs = 50, batch_size = 5, 
+                        validation_split = 0.2, shuffle = TRUE) 
 
 ###__________________________________________________________________________###
 
