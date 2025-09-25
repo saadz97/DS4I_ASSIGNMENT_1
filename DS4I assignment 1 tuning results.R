@@ -40,6 +40,8 @@ df = mutate(df, 'Predictor set' = rep(1:4, each = 3), .before = 'Number of layer
 save(df, file = 'tuning/tuning_summary_table.RData')
 load('tuning/tuning_summary_table.RData')
 
+
+
 input = layer_input(shape = c(27), name = 'Data')
 
 output = input %>% 
