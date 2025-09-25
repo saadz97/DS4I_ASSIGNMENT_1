@@ -34,12 +34,24 @@ library(gridExtra)
 * Max.Temp.Grad (Maximum Temperature Gradient): Largest temperature difference within snowpack. Large gradients can cause weak layers in the snow and increase avalanche risk.
 * Max.Hardness.Grad (Maximum Hardness Gradient): Largest difference in snow hardness between layers. A gradient measures the change in hardness between layers, which indicates weak spots that could lead to avalanche failure.
 * No.Settle (New Snow Settlement): Amount of settlement/compaction of new snow
-* Snow.Index: Composite snow stability index
+* Snow.Index: 
 * Insolation: Solar radiation/sun exposure. Sun warming affects snow stability
 * Crystals: Crystal type/structure in snowpack
 * Wetness: Moisture content of snow
 * AV.Cat (Avalanche Category)
 * Snow.Temp (Snow Temperature). Plausible Range: -20°C to 0°C
+
+
+
+# Cleaning Process Summar
+
+1. Removed rows where the target variable FAH is missing
+2. Converted FAH and other categorical variables to numeric
+3. Extracted Year and Month from the Date column
+4. Removed unnecessary columns from the dataset: OSgrid, OAH, Obs, Location, longitude, latitude, Date
+5. Removed impossible & very extreme values
+6. Transformed the circular variables into sine and cosine features so that they can be meaningful in the neural network
+7. Investigated problematic variables...Still need to figure out what to do with these
 
 
 
@@ -90,29 +102,31 @@ missing_summary
 
 ```
 
-
 * The highest mountain in Scotland is Ben Nevis, which has an altitude of 1,345 meters above sea level. Our data has to impossible outliers (77044 & 244859) = remove!
 
-* "It is worthy of note that the highest wind speed recorded at the summit weather station on Cairngorm at the time of writing was an eye-watering 176 mph!" (78.7 m/s) https://www.mountaineering.scot/safety-and-skills/essential-skills/weather-conditions/wind-speeds
+* "It is worthy of note that the highest wind speed recorded at the summit weather station on Cairngorm at the time of writing was an eye-watering 176 mph!"  https://www.mountaineering.scot/safety-and-skills/essential-skills/weather-conditions/wind-speeds
 
 * In March 1986, on the summit of the Cairngorms in the Highlands of Scotland, a wind gust of 173mph (278km/h) was recorded.: https://www.bbc.com/weather/articles/cvglvnyxpx0o
+
+*VERY HELPUL DOC FROM THE SAME SITE THE DATA WAS COLLECTED FROM:*
+https://www.sais.gov.uk/wp-content/uploads/2014/11/interpreting_snow_profiles.pdf
 
 
 ```{r}
 # Cleaning dataset from errors 
 data_cleaned <- data %>%
   mutate(
-    # Altitude (0 to 1345): removing Alt values 77044 and 244859	
+    # Altitude (meters) (0 to 1345): removing Alt values 77044 and 244859	
     Alt = ifelse(Alt < 0 | Alt > 1345, NA_real_, Alt),
     
-    # Aspect (0 to 360)
+    # Aspect (degrees) (0 to 360)
     Aspect = ifelse(Aspect < 0 | Aspect > 360, NA_real_, Aspect),
     
-    # Incline (0 to 90)
+    # Incline (degrees) (0 to 90)
     Incline = ifelse(Incline < 0 | Incline > 90, NA_real_, Incline),
     
-    # Wind Speed - look above to reference of highest wind speed in Scotland
-    Wind.Speed = ifelse(Wind.Speed < 0 | Wind.Speed > 79, NA_real_, Wind.Speed),
+    # Wind Speed (mph) - look above to reference of highest wind speed in Scotland
+    Wind.Speed = ifelse(Wind.Speed < 0 | Wind.Speed > 176, NA_real_, Wind.Speed),
     
     # Cloud Cover (0 to 100) (there is just 3 wierd values: -1, -1, 199)
     Cloud = ifelse(Cloud < 0 | Cloud > 100, NA_real_, Cloud),
@@ -120,8 +134,8 @@ data_cleaned <- data %>%
     # Clean Total Snow Depth (0 to 1500). Removing values: 2000, 2000, 2500, 3000, 2010, 2080
     Total.Snow.Depth = ifelse(Total.Snow.Depth < 0 | Total.Snow.Depth > 1500, NA_real_, Total.Snow.Depth),
     
-    # Summit Wind Speed (m/s) (same threshold as Wind Speed): removed quite a few values
-    Summit.Wind.Speed = ifelse(Summit.Wind.Speed < 0 | Summit.Wind.Speed > 79, NA_real_, Summit.Wind.Speed),
+    # Summit Wind Speed (mph) (same threshold as Wind Speed): removed quite a few values
+    Summit.Wind.Speed = ifelse(Summit.Wind.Speed < 0 | Summit.Wind.Speed > 176, NA_real_, Summit.Wind.Speed),
     
     # Foot Penetration (depth in cm) - THIS NEEDS SOME RESEARCH
     Foot.Pen = ifelse(Foot.Pen < 0 | Foot.Pen > 200, NA_real_, Foot.Pen),
@@ -130,22 +144,12 @@ data_cleaned <- data %>%
     Wind.Dir = ifelse(Wind.Dir < 0 | Wind.Dir > 360, NA_real_, Wind.Dir),
     
     # Summit wind direction. Removed: 370, 385, 390, 2213
-    # 2213 is obviously wrong but maybe 370 means 10, 385 means 25 and 390 means 30????
-    
-    Summit.Wind.Dir = ifelse(Summit.Wind.Dir > 360 & Summit.Wind.Dir <= 720, 
-                              Summit.Wind.Dir - 360, Summit.Wind.Dir), # Should i add this line in???
-    
     Summit.Wind.Dir = ifelse(Summit.Wind.Dir < 0 | Summit.Wind.Dir > 360, NA_real_, Summit.Wind.Dir),
     
-    # New Snow Settlement (cant be negative values). There are three large outliers (> 600). 
-    # Measured in cm
-    # If this is measured in cm values > 100 are intense! Highly unusual
-    # Could someone please check this? Something is wrong here
-    No.Settle = ifelse(No.Settle < 0, NA_real_, No.Settle),
-    
-    # Insolation
-    # Assuming it is Daily Solar Radiation (MJ/m²/day): remove values > 30 (outlier values 106 & 208 removed)
-    Insolation = ifelse(Insolation < 0 | Insolation > 30, NA_real_, Insolation))
+    # Snow Temperature
+    # Snow melts > 0 degrees Celsius
+    # 0 to 0.5 degrees Celsius is a plausible range for melting snow
+    Snow.Temp = ifelse(Snow.Temp > 0.5, NA_real_, Snow.Temp))
 
 ```
 
@@ -164,7 +168,51 @@ data_cleaned <- data_cleaned %>%
 
 # Wierd variables that dont make enough sense:
 
-### Investigating Ski Pen variable
+
+### Investigating Max.Temp.Grad (centigrade over 10 centimetres throughout the snowpack depth)
+
+* 4635 rows of values = 0
+* 642 NA.
+* Must do more research here
+
+"Generally if the temperature gradient is around 1°C/10 cms or more (colder nearer the surface) this may indicate weakness may develop or are present in the snowpack..."
+
+ChatGPT: High gradient threshold:
+* ≥ 1 °C per 10 cm is considered high.
+* This means if the temperature changes by 1°C or more over 10 cm of snow depth, the gradient is strong enough to drive faceted crystal growth (weak layer formation).
+
+
+Evidence of a gradient of 11 (Greenland ice sheet snowpack): https://www.researchgate.net/publication/300001311_Observaciones_del_manto_de_nieve_durante_una_circunnavegacion_del_casquete_de_hielo_de_Groenlandia_primavera_de_2014/figures?lo=1
+
+
+```{r}
+summary(data$Max.Temp.Grad, na.rm = TRUE)
+na.omit(data$Max.Temp.Grad)
+plot(data$Max.Temp.Grad, data$FAH) # a good visualization
+
+data[data$Max.Temp.Grad > 3 & !is.na(data$Max.Temp.Grad), ]
+```
+
+
+
+
+### Investigating No.Settle
+
+I feel like the very large values can't be correct.
+It actually seems like its almost a categorical variable? Which is nottttt helpful based on the number of groups, etc...
+
+```{r}
+summary(data$No.Settle)
+table(data$No.Settle) # makes no sense
+table(data$No.Settle, data$FAH) # makes no sense
+
+# Not seeing anything that shows any sign that this features actually means something....
+plot(data$No.Settle, data$Total.Snow.Depth)
+data %>% select(Foot.Pen, No.Settle, Total.Snow.Depth) %>% na.omit()
+
+```
+
+### Investigating Ski Pen variable - REMOVE
 
 * Ski.Pen: 7485 rows of values 0. 2375 rows of NA values.
 * The thing is, you'd expect large foot.pen values to correspond with sk.pin values greater than 0, but I'm not seeing that? Ski.pen seems very sus.
@@ -183,29 +231,13 @@ plot(clean_data$Ski.Pen, clean_data$Foot.Pen, xlab = "Ski Penetration",
 ```
 
 
-### Investigating Max.Temp.Grad
-
-* 4635 rows of values = 0
-* 642 NA.
-* Must do more research here
-
-```{r}
-summary(data$Max.Temp.Grad)
-
-
-data[data$Max.Temp.Grad > 40 & !is.na(data$Max.Temp.Grad), ]
-
-nrow(data[data$Max.Temp.Grad == 0 & !is.na(data$Max.Temp.Grad), ])
-
-summary(data$Max.Temp.Grad, na.rm = TRUE)
-na.omit(data$Max.Temp.Grad)
-```
-
-### Investigating Crystals & Wetness
+### Investigating Crystals & Wetness - REMOVE
 
 * How to deal with these variables?
 * -1 must mean no result/na?
 * The categories aren't making sense
+
+According to the SAIF this is just not how these things are measured....
 
 ```{r}
 table(data$Crystals)
@@ -224,9 +256,9 @@ table(data$Wetness) # -1, 0, 1, 2,3, 4, 6, 10 ????
 table(data$Wetness, data$FAH)
 ```
 
-### Investigating AV.Cat (likely stands for avalanche category)
+### Investigating AV.Cat - REMOVE
 
-This just seems sus... This should be left out of analysis
+100% must be left out for so many reasons. The SAIC uses Avalanche Code not Avalanche Category  
 
 ```{r}
 table(data$AV.Cat, useNA = "ifany")
@@ -242,32 +274,7 @@ table(data$AV.Cat, data$FAH)
 sum(is.na(data$AV.Cat) | data$AV.Cat == "NA" | data$AV.Cat == -1)
 ```
 
-### Investigating Snow.Temp
-
-Something is very wrong here. Snow melts > 0 degrees Celsius. What to do about this?
-0 to 0.5 degrees celcius is a plausable range for melthing snow.
-
-```{r}
-# What temp values are > 0 degrees celcius - 246 rows!!!
-data[data$Snow.Temp > 0.5 & !is.na(data$Snow.Temp), ]
-
-summary(data$Snow.Temp, na.rm = TRUE)
-na.omit(data$Snow.Temp)
-
-# Checking the distribution of these errors
-summary(data$Snow.Temp[data$Snow.Temp > 0 & !is.na(data$Snow.Temp)])
-
-# Are they clustered around certain values?
-table(data$Snow.Temp[data$Snow.Temp > 0 & !is.na(data$Snow.Temp)])
-
-# These rows compared to Air.Temp...Somethings very wrong
-data %>%
-  filter(Snow.Temp > 0.5) %>%
-  select(Month, Snow.Temp, Air.Temp) 
-```
-
-
-### Investigating Insolation (solar radiation)
+### Investigating Insolation - REMOVE
 
 What is going on here. Struggling to make sense of this variable.
 
@@ -277,23 +284,7 @@ table(data$Insolation, data$FAH)
 ```
 
 
-### Investigating No.Settle
-
-I feel like the very large values can't be correct
-
-```{r}
-summary(data$No.Settle)
-
-data[data$No.Settle < 5 & !is.na(data$No.Settle), ]
-
-plot(data$No.Settle, data$Total.Snow.Depth)
-
-data %>% select(Foot.Pen, No.Settle, Total.Snow.Depth) %>% na.omit()
-
-```
-
-
-### Investigating Snow.Index
+### Investigating Snow.Index - REMOVE
 
 Don't quite know how to interpret Snow.Index. 737 missing. 7677 zero values.
 
@@ -312,18 +303,37 @@ summary(data$Snow.Index)
 
 
 
-# Important notes
-
-### Variables that CANNOT be used - EXCLUDE:
-
-1. Ski.Pen - 2,404 out of 10,671 records (22.5%) missing - too much missing data for reliable neural network training
-2. AV.Cat - 2,494 records (23.4%) missing & manyyy values that are DEFINITLY errors
 
 
-### Variables that don't seem to be necessary:
 
-1. Locations (we already have Area to work with)
-....
+# Getting rid of bad variables
+
+* Ski.Pen - 2,404 out of 10,671 records (22.5%) missing - too much missing data for reliable neural network training
+* AV.Cat - 2,494 records (23.4%) missing & manyyy values that are DEFINITLY errors
+
+* We excluded features "crystals", "wetness", "snow index", "Insolation" as they did not align with the The International Classification for Seasonal Snow on the Ground (reference here). These feature measures also made no sense supporting the reference doc.
+* I'm keeping month in the dataset because it captures seasonality, however year is actually not useful cause it can act as a proxy for changes such as  improved reporting after 2015....
+* I vote No.Settle is removed. Not finding anything about it in that International Classification doc that suggests the measures we have make any sense at all. 
+
+I'm having trouble figuring out what to do with Max.Temp.Grad. There are a LOT of outliers but not sure where to make the cutoff point
+
+```{r}
+data_cleaned <- data_cleaned %>%
+  select(-Ski.Pen, -AV.Cat, -Crystals, -Wetness, -Year, -Snow.Index, -Insolation, -No.Settle)
+names(data_cleaned)
+```
+
+## Missing data summary on cleaned dataset
+
+```{r}
+missing_summary <- data_cleaned %>%
+  summarise_all(~sum(is.na(.))) %>%
+  pivot_longer(everything(), names_to = "Variable", values_to = "Missing_Count") %>%
+  mutate(Missing_Percent = round(Missing_Count / nrow(data) * 100, 1)) %>%
+  arrange(desc(Missing_Count))
+missing_summary
+
+```
 
 
 # Boxplots of numeric variables
@@ -428,7 +438,6 @@ corrplot(cor_matrix,
          mar = c(0,0,2,0))
 
 ```
-
 
 
 
