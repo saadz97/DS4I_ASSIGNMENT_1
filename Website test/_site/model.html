@@ -101,35 +101,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -224,7 +195,8 @@ window.Quarto = {
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kerastuneR)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tensorflow)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reticulate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The packages that will be used in the model building and tuning are given above. The packages can be installed using <strong><code>install.packages('package', dependencies = T)</code></strong>. Note that after reading in the <strong><code>keras</code></strong> library a warning might appear saying that it is deprecated and that you should use <strong><code>keras3</code></strong>, this can be ignored for now as the provided code does not work when using <strong><code>keras3</code></strong>.</p>
 <div class="cell">
@@ -276,29 +248,53 @@ window.Quarto = {
 <p>Since we are trying to predict the forecasted avalanche hazard(FAH), it is important that we do not allow the model to be trained on the observed avalanche hazard(OAH). Therefore the predictor sets are explicitly defined so that there is no accidental data leakage. The FAH, OAH and Precip.Code variables are converted to integers so that the data is compatible with <strong><code>keras</code></strong>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2025</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>training_indices <span class="ot">=</span> <span class="fu">runif</span>(<span class="at">n =</span> <span class="fu">floor</span>(<span class="fu">nrow</span>(data) <span class="sc">*</span> <span class="fl">0.7</span>), <span class="at">min =</span> <span class="dv">1</span>, <span class="at">max =</span> <span class="fu">nrow</span>(data))</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>training_indices <span class="ot">=</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(data), <span class="fu">floor</span>(<span class="fu">nrow</span>(data) <span class="sc">*</span> <span class="fl">0.7</span>), <span class="at">replace =</span> F)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>predictor_set_1_train <span class="ot">=</span> predictor_set_1[training_indices, ] </span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>predictor_set_1_test  <span class="ot">=</span> predictor_set_1[<span class="sc">-</span>training_indices, ]</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>predictor_set_2_train <span class="ot">=</span> predictor_set_2[training_indices, ] </span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>predictor_set_2_test  <span class="ot">=</span> predictor_set_2[<span class="sc">-</span>training_indices, ]</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>predictor_set_3_train <span class="ot">=</span> predictor_set_3[training_indices, ] </span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>predictor_set_3_test  <span class="ot">=</span> predictor_set_3[<span class="sc">-</span>training_indices, ]</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>training_data_list <span class="ot">=</span> <span class="fu">list</span>(predictor_set_1_train, predictor_set_2_train,</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>                          predictor_set_3_train)</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>testing_data_list <span class="ot">=</span> <span class="fu">list</span>(predictor_set_1_test, predictor_set_2_test,</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>                         predictor_set_3_test)</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> data<span class="sc">$</span>FAH</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">to_categorical</span>(y, <span class="at">num_classes =</span> <span class="dv">5</span>)</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>y_train <span class="ot">=</span> y[training_indices, ]</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>y_test  <span class="ot">=</span> y[<span class="sc">-</span>training_indices, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>FAH         <span class="ot">=</span> <span class="fu">as.integer</span>(<span class="fu">factor</span>(<span class="at">x =</span> data<span class="sc">$</span>FAH)) <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>OAH         <span class="ot">=</span> <span class="fu">as.integer</span>(<span class="fu">factor</span>(<span class="at">x =</span> data<span class="sc">$</span>OAH)) <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>Precip.Code <span class="ot">=</span> <span class="fu">as.integer</span>(<span class="fu">factor</span>(data<span class="sc">$</span>Precip.Code)) <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>predictor_set_1       <span class="ot">=</span> <span class="fu">select</span>(data, <span class="fu">c</span>(<span class="st">'longitude'</span><span class="sc">:</span><span class="st">'Incline'</span>))</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>predictor_set_1_train <span class="ot">=</span> <span class="fu">mutate</span>(predictor_set_1[training_indices, ], </span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">across</span>(<span class="fu">c</span>(longitude <span class="sc">:</span> Incline), scale))</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>predictor_set_1_test  <span class="ot">=</span> <span class="fu">mutate</span>(predictor_set_1[<span class="sc">-</span>training_indices, ], </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">across</span>(<span class="fu">c</span>(longitude <span class="sc">:</span> Incline), scale))</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>predictor_set_1_train <span class="ot">=</span> <span class="fu">as.matrix</span>(predictor_set_1_train)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>predictor_set_1_test  <span class="ot">=</span> <span class="fu">as.matrix</span>(predictor_set_1_test)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>predictor_set_2       <span class="ot">=</span> <span class="fu">select</span>(data, <span class="fu">c</span>(<span class="st">'Air.Temp'</span><span class="sc">:</span><span class="st">'Summit.Wind.Speed'</span>))</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>predictor_set_2_train <span class="ot">=</span> <span class="fu">mutate</span>(predictor_set_2[training_indices, ],</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">across</span>(<span class="fu">c</span>(Air.Temp <span class="sc">:</span> Summit.Wind.Speed, <span class="sc">-</span> Precip.Code), scale))</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>predictor_set_2_test  <span class="ot">=</span> <span class="fu">mutate</span>(predictor_set_2[<span class="sc">-</span>training_indices, ],</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">across</span>(<span class="fu">c</span>(Air.Temp <span class="sc">:</span> Summit.Wind.Speed, <span class="sc">-</span> Precip.Code), scale))</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>predictor_set_2_train <span class="ot">=</span> <span class="fu">as.matrix</span>(predictor_set_2_train)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>predictor_set_2_test  <span class="ot">=</span> <span class="fu">as.matrix</span>(predictor_set_2_test)</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>predictor_set_3       <span class="ot">=</span> <span class="fu">select</span>(data, <span class="fu">c</span>(<span class="st">'Max.Temp.Grad'</span><span class="sc">:</span><span class="st">'Snow.Temp'</span>))</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>predictor_set_3_train <span class="ot">=</span> <span class="fu">mutate</span>(predictor_set_3[training_indices, ],</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">across</span>(<span class="fu">c</span>(Max.Temp.Grad <span class="sc">:</span> Snow.Temp), scale))</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>predictor_set_3_test  <span class="ot">=</span> <span class="fu">mutate</span>(predictor_set_3[<span class="sc">-</span>training_indices, ],</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">across</span>(<span class="fu">c</span>(Max.Temp.Grad <span class="sc">:</span> Snow.Temp), scale))</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>predictor_set_3_train <span class="ot">=</span> <span class="fu">as.matrix</span>(predictor_set_3_train)</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>predictor_set_3_test  <span class="ot">=</span> <span class="fu">as.matrix</span>(predictor_set_3_test)</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>predictor_set_4_train <span class="ot">=</span> <span class="fu">cbind</span>(predictor_set_1_train, predictor_set_2_train,</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>                              predictor_set_3_train)</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>predictor_set_4_test  <span class="ot">=</span> <span class="fu">cbind</span>(predictor_set_1_test, predictor_set_2_test,</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>                              predictor_set_3_test)</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>training_data_list <span class="ot">=</span> <span class="fu">list</span>(predictor_set_1_train, predictor_set_2_train,</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>                          predictor_set_3_train, predictor_set_4_train)</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>testing_data_list <span class="ot">=</span> <span class="fu">list</span>(predictor_set_1_test, predictor_set_2_test,</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>                         predictor_set_3_test, predictor_set_4_test)</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> data<span class="sc">$</span>FAH</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">to_categorical</span>(y, <span class="at">num_classes =</span> <span class="dv">5</span>)</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>y_train <span class="ot">=</span> y[training_indices, ]</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>y_test  <span class="ot">=</span> y[<span class="sc">-</span>training_indices, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>A 70/30 training split was used in the data. Usually we would set aside a small portion for validation but as we will see later, <strong><code>keras</code></strong> handles this for us so we do not need to specify a validation set. Using a seed for this step is important as it ensures the split remains every time the code is ran. This is the first step toward achiving repeatable results.</p>
+<p>A 70/30 training split was used in the data. Usually we would set aside a small portion for validation but as we will see later, <strong><code>keras</code></strong> handles this for us so we do not need to specify a validation set. Using a seed for this step is important as it ensures the split remains every time the code is ran. This is the first step toward achieving repeatable results.</p>
 </section>
 <section id="defining-the-model-builder-wrapper-function" class="level2">
 <h2 class="anchored" data-anchor-id="defining-the-model-builder-wrapper-function">Defining the model builder wrapper function</h2>
@@ -306,31 +302,35 @@ window.Quarto = {
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>model_builder <span class="ot">=</span> <span class="cf">function</span>(hp){</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  n_layers <span class="ot">=</span> hp<span class="sc">$</span><span class="fu">Int</span>(<span class="st">'number_of_layers'</span>, <span class="at">min_value =</span> <span class="dv">2</span>, <span class="at">max_value =</span> <span class="dv">10</span>, <span class="at">step =</span> <span class="dv">1</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  lr <span class="ot">=</span> hp<span class="sc">$</span><span class="fu">Choice</span>(<span class="st">'learning_rate'</span>, <span class="at">values =</span> <span class="fu">c</span>(<span class="fl">1e-1</span>, <span class="fl">1e-2</span>, <span class="fl">1e-3</span>))  </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  n_layers <span class="ot">=</span> hp<span class="sc">$</span><span class="fu">Int</span>(<span class="st">'number_of_layers'</span>, <span class="at">min_value =</span> <span class="dv">1</span>, <span class="at">max_value =</span> <span class="dv">5</span>, <span class="at">step =</span> <span class="dv">1</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  lr <span class="ot">=</span> hp<span class="sc">$</span><span class="fu">Choice</span>(<span class="st">'learning_rate'</span>, <span class="at">values =</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="fl">1e-2</span>, <span class="at">to =</span> <span class="fl">1e-4</span>, <span class="at">length.out =</span> <span class="dv">5</span>))  </span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  n_x   <span class="ot">=</span> <span class="fu">ncol</span>(x_train)</span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  input <span class="ot">=</span> <span class="fu">layer_input</span>(<span class="at">shape =</span> <span class="fu">c</span>(n_x))</span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">=</span> input</span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_layers){</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">=</span> x <span class="sc">%&gt;%</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">layer_dense</span>(<span class="at">units =</span> <span class="dv">20</span>, <span class="at">activation =</span> <span class="st">'relu'</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">layer_dropout</span>(<span class="at">rate =</span> <span class="fl">0.5</span>)</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  output <span class="ot">=</span> x <span class="sc">%&gt;%</span> </span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">layer_dense</span>(<span class="at">units =</span> <span class="dv">5</span>, <span class="at">activation =</span> <span class="st">'softmax'</span>)</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  model <span class="ot">=</span> <span class="fu">keras_model</span>(<span class="at">inputs =</span> input, <span class="at">outputs =</span> output)</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  model <span class="sc">%&gt;%</span> <span class="fu">compile</span>(<span class="at">loss =</span> <span class="st">'categorical_crossentropy'</span>, </span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>                    <span class="at">optimizer =</span> <span class="fu">optimizer_adam</span>(<span class="at">learning_rate =</span> lr),</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>                    <span class="at">metrics =</span> <span class="fu">c</span>(<span class="st">'accuracy'</span>))</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    n_nodes <span class="ot">=</span> hp<span class="sc">$</span><span class="fu">Int</span>(<span class="fu">paste0</span>(<span class="st">'nodes_layer_'</span>, i),</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>                      <span class="at">min_value =</span> <span class="dv">30</span>, <span class="at">max_value =</span> <span class="dv">50</span>, <span class="at">step =</span> <span class="dv">10</span>)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">=</span> x <span class="sc">%&gt;%</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">layer_dense</span>(<span class="at">units =</span> n_nodes, <span class="at">activation =</span> <span class="st">'relu'</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>      <span class="fu">layer_dropout</span>(<span class="at">rate =</span> <span class="fl">0.1</span>)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  output <span class="ot">=</span> x <span class="sc">%&gt;%</span> </span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">layer_dense</span>(<span class="at">units =</span> <span class="dv">5</span>, <span class="at">activation =</span> <span class="st">'softmax'</span>)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  model <span class="ot">=</span> <span class="fu">keras_model</span>(<span class="at">inputs =</span> input, <span class="at">outputs =</span> output)</span>
 <span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(model)</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  model <span class="sc">%&gt;%</span> <span class="fu">compile</span>(<span class="at">loss =</span> <span class="st">'categorical_crossentropy'</span>, </span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>                    <span class="at">optimizer =</span> <span class="fu">optimizer_adam</span>(<span class="at">learning_rate =</span> lr),</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>                    <span class="at">metrics =</span> <span class="fu">c</span>(<span class="fu">metric_categorical_accuracy</span>()))</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(model)</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>For this project, we have decided to tune for the number of layers and the learning rate. The number of nodes on each layer was chosen to be 20, the activation function to be rectified linear units(Relu) and the dropout rate was sett to 0.5. The specific values were 2-10 layers and learning rates <span class="math inline">\(\in \{0.1,\ 0.01,\ 0.001 \}\)</span>. Therefore, there were a total of 27 unique models that could be fitted.</p>
+<p>For this project, we have decided to tune for the number of layers, number of nodes on each layer and the learning rate. The activation function to be rectified linear units(Relu) and the dropout rate was sett to 0,1. The specific values were 1-5 layers(step size of 1) with 30-50(step size of 10) and 10 equally spaced learning rates [0.01 &nbsp;- 0.0001]. Therefore, there were a total of 75 unique models that could be fitted. The metric the Neural Network tries to minimize is the <strong><code>metric_categorical_accuracy</code></strong> <code>test</code></p>
 </section>
 <section id="hyperparameter-tuning" class="level2">
 <h2 class="anchored" data-anchor-id="hyperparameter-tuning">Hyperparameter tuning</h2>

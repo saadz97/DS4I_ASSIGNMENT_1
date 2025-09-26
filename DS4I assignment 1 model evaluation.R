@@ -31,7 +31,7 @@ tuning_results = function(directory, max_layers){
 }
 
 # Test
-# tuning_results('tuning/randomsearch results 4/trial_15', 5)
+# tuning_results('tuning/randomsearch results 1/trial_19', 5)
 
 directories              = list.dirs('tuning', recursive = FALSE)
 randomsearch_search      = 'randomsearch'
@@ -48,7 +48,7 @@ results_compiler = function(method_directory){
 }
 
 # Test
-# results_compiler('tuning/randomsearch results 4')
+#results_compiler('tuning/randomsearch results 1')
 
 # the results automatically get saved locally, inside the same tuning folder
 results_compiler(randomsearch_directories)
@@ -58,7 +58,7 @@ results_compiler(randomsearch_directories)
 # load('tuning/randomsearch results 1/summary.RData')
 
 # Test
-# load('tuning/randomsearch results 4/summary.RData')
+#load('tuning/randomsearch results 3/summary.RData')
 
 ###__________________________________________________________________________###
 
