@@ -19,9 +19,9 @@ tuning_results = function(directory, max_layers){
   
   layers_nodes     = matrix(rep(NA, max_layers), nrow = 1)
   colnames(layers_nodes) = paste('nodes on layer ', 1:max_layers)
-  for (i in 1:max_layers) {
+  for (i in 1:number_of_layers) {
     node_name = paste0('nodes_layer_', i)
-    layers_nodes[1, i] = ifelse(!is.null(hp[[node_name]]), hp[[node_name]], NA)
+    layers_nodes[1, i] = hp[[node_name]]
   }
   
   row_df = data.frame( Val_accuracy = score,  LR = learning_rate, 
@@ -29,6 +29,9 @@ tuning_results = function(directory, max_layers){
                        check.names = FALSE)
   return(row_df)
 }
+
+# Test
+# tuning_results('tuning/randomsearch results 4/trial_15', 5)
 
 directories              = list.dirs('tuning', recursive = FALSE)
 randomsearch_search      = 'randomsearch'
@@ -44,6 +47,9 @@ results_compiler = function(method_directory){
   }
 }
 
+# Test
+# results_compiler('tuning/randomsearch results 4')
+
 # the results automatically get saved locally, inside the same tuning folder
 results_compiler(randomsearch_directories)
 
@@ -51,17 +57,9 @@ results_compiler(randomsearch_directories)
 # hyperband and the 1 for 2 or 3.
 # load('tuning/randomsearch results 1/summary.RData')
 
-load('tuning xp/randomsearch results 4/summary.RData')
+# Test
+# load('tuning/randomsearch results 4/summary.RData')
 
-
-
-
-json_path = paste0('tuning xp/randomsearch results 4/trial_015', '/trial.json')
-tuning_results = fromJSON(txt = json_path)
-hp               = tuning_results$hyperparameters$values
-number_of_layers = hp$number_of_layers
-learning_rate    = hp$learning_rate
-score            = tuning_results$score
 ###__________________________________________________________________________###
 
 ###                             End                                          ###
