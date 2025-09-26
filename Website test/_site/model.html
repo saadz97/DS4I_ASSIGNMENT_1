@@ -20,40 +20,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -100,6 +66,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 
 
 <link rel="stylesheet" href="styles.css">
@@ -161,7 +129,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#getting-set-up" id="toc-getting-set-up" class="nav-link active" data-scroll-target="#getting-set-up">Getting set up</a></li>
   <li><a href="#defining-the-model-builder-wrapper-function" id="toc-defining-the-model-builder-wrapper-function" class="nav-link" data-scroll-target="#defining-the-model-builder-wrapper-function">Defining the model builder wrapper function</a></li>
   <li><a href="#hyperparameter-tuning" id="toc-hyperparameter-tuning" class="nav-link" data-scroll-target="#hyperparameter-tuning">Hyperparameter tuning</a></li>
-  <li><a href="#extra-resources" id="toc-extra-resources" class="nav-link" data-scroll-target="#extra-resources">Extra resources</a></li>
+  <li><a href="#tuning-results" id="toc-tuning-results" class="nav-link" data-scroll-target="#tuning-results">Tuning results</a></li>
   </ul>
 </nav>
     </div>
@@ -190,190 +158,333 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="getting-set-up" class="level2">
 <h2 class="anchored" data-anchor-id="getting-set-up">Getting set up</h2>
 <p>A neural network was fitted to the data in R, specifically R version 4.5.1 (2025-06-13) and python version 3.11.6. The reason it is important to specify the versions is because keras and its dependencies in R are wrappers of the python libraries so ensuring cross compatibility is imperative.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(keras)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kerastuneR)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tensorflow)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reticulate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 <p>The packages that will be used in the model building and tuning are given above. The packages can be installed using <strong><code>install.packages('package', dependencies = T)</code></strong>. Note that after reading in the <strong><code>keras</code></strong> library a warning might appear saying that it is deprecated and that you should use <strong><code>keras3</code></strong>, this can be ignored for now as the provided code does not work when using <strong><code>keras3</code></strong>.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ensure that inside the folder you have the project in you also have a folder</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># called data that contains the data. </span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">'./data/scotland_avalanche_forecasts_2009_2025.csv'</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># this is a very general solution to the problem of missing entries</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># maybe imputation?</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>data <span class="ot">=</span> <span class="fu">drop_na</span>(data)</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>data <span class="ot">=</span> <span class="fu">filter</span>(data, FAH <span class="sc">!=</span> <span class="st">''</span>, OAH <span class="sc">!=</span> <span class="st">''</span>, Precip.Code <span class="sc">!=</span> <span class="st">''</span>)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="do">## data description ##</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Date = the date that the forecast was made</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Area = one of six forecasting region</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># FAH = the forecast avalanche hazard for the following da</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># OAH = the observed avalanche hazard on the following day (observation made the following day)</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># longitude:Incline: position and topography at forecast location (predictor set)</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Air.Temp:Summit.Wind.Speed = weather in the vicinity of the forecast location at the</span></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co"># time the forecast was made (predictor set 2)</span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Max.Temp.Grad:Snow.Temp = results of a ”snow pack test” of the integrity of snow at</span></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co"># the forecast location (predictor set 3)</span></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co">#unique(data['Area'])</span></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co">#unique(data['Obs'])</span></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co">#unique(data['FAH'])</span></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co">#unique(data['OAH'])</span></span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co">#unique(data['Precip.Code'])</span></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>FAH         <span class="ot">=</span> <span class="fu">as.integer</span>(<span class="fu">factor</span>(<span class="at">x =</span> data<span class="sc">$</span>FAH)) <span class="sc">-</span> <span class="dv">1</span></span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>OAH         <span class="ot">=</span> <span class="fu">as.integer</span>(<span class="fu">factor</span>(<span class="at">x =</span> data<span class="sc">$</span>OAH)) <span class="sc">-</span> <span class="dv">1</span></span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>Precip.Code <span class="ot">=</span> <span class="fu">as.integer</span>(<span class="fu">factor</span>(data<span class="sc">$</span>Precip.Code)) <span class="sc">-</span> <span class="dv">1</span></span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>predictor_set_1 <span class="ot">=</span> <span class="fu">select</span>(data, <span class="fu">c</span>(<span class="st">'longitude'</span><span class="sc">:</span><span class="st">'Incline'</span>))</span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>predictor_set_1 <span class="ot">=</span> <span class="fu">mutate</span>(predictor_set_1, <span class="fu">across</span>(<span class="fu">c</span>(longitude <span class="sc">:</span> Incline), scale))</span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>predictor_set_1 <span class="ot">=</span> <span class="fu">as.matrix</span>(predictor_set_1)</span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>predictor_set_2 <span class="ot">=</span> <span class="fu">select</span>(data, <span class="fu">c</span>(<span class="st">'Air.Temp'</span><span class="sc">:</span><span class="st">'Summit.Wind.Speed'</span>, <span class="st">'FAH'</span>))</span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>predictor_set_2 <span class="ot">=</span> <span class="fu">mutate</span>(predictor_set_2,</span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>                         <span class="fu">across</span>(<span class="fu">c</span>(Air.Temp <span class="sc">:</span> Summit.Wind.Speed, <span class="sc">-</span> Precip.Code), scale))</span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>predictor_set_2 <span class="ot">=</span> <span class="fu">as.matrix</span>(predictor_set_2)</span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>predictor_set_3 <span class="ot">=</span> <span class="fu">select</span>(data, <span class="fu">c</span>(<span class="st">'Max.Temp.Grad'</span><span class="sc">:</span><span class="st">'Snow.Temp'</span>, <span class="st">'FAH'</span>))</span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>predictor_set_3 <span class="ot">=</span> <span class="fu">mutate</span>(predictor_set_3, <span class="fu">across</span>(<span class="fu">c</span>(Max.Temp.Grad <span class="sc">:</span> Snow.Temp), scale))</span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>predictor_set_3 <span class="ot">=</span> <span class="fu">as.matrix</span>(predictor_set_3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 <p>Since we are trying to predict the forecasted avalanche hazard(FAH), it is important that we do not allow the model to be trained on the observed avalanche hazard(OAH). Therefore the predictor sets are explicitly defined so that there is no accidental data leakage. The FAH, OAH and Precip.Code variables are converted to integers so that the data is compatible with <strong><code>keras</code></strong>.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2025</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>training_indices <span class="ot">=</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(data), <span class="fu">floor</span>(<span class="fu">nrow</span>(data) <span class="sc">*</span> <span class="fl">0.7</span>), <span class="at">replace =</span> F)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>FAH         <span class="ot">=</span> <span class="fu">as.integer</span>(<span class="fu">factor</span>(<span class="at">x =</span> data<span class="sc">$</span>FAH)) <span class="sc">-</span> <span class="dv">1</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>OAH         <span class="ot">=</span> <span class="fu">as.integer</span>(<span class="fu">factor</span>(<span class="at">x =</span> data<span class="sc">$</span>OAH)) <span class="sc">-</span> <span class="dv">1</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>Precip.Code <span class="ot">=</span> <span class="fu">as.integer</span>(<span class="fu">factor</span>(data<span class="sc">$</span>Precip.Code)) <span class="sc">-</span> <span class="dv">1</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>predictor_set_1       <span class="ot">=</span> <span class="fu">select</span>(data, <span class="fu">c</span>(<span class="st">'longitude'</span><span class="sc">:</span><span class="st">'Incline'</span>))</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>predictor_set_1_train <span class="ot">=</span> <span class="fu">mutate</span>(predictor_set_1[training_indices, ], </span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">across</span>(<span class="fu">c</span>(longitude <span class="sc">:</span> Incline), scale))</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>predictor_set_1_test  <span class="ot">=</span> <span class="fu">mutate</span>(predictor_set_1[<span class="sc">-</span>training_indices, ], </span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">across</span>(<span class="fu">c</span>(longitude <span class="sc">:</span> Incline), scale))</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>predictor_set_1_train <span class="ot">=</span> <span class="fu">as.matrix</span>(predictor_set_1_train)</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>predictor_set_1_test  <span class="ot">=</span> <span class="fu">as.matrix</span>(predictor_set_1_test)</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>predictor_set_2       <span class="ot">=</span> <span class="fu">select</span>(data, <span class="fu">c</span>(<span class="st">'Air.Temp'</span><span class="sc">:</span><span class="st">'Summit.Wind.Speed'</span>))</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>predictor_set_2_train <span class="ot">=</span> <span class="fu">mutate</span>(predictor_set_2[training_indices, ],</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">across</span>(<span class="fu">c</span>(Air.Temp <span class="sc">:</span> Summit.Wind.Speed, <span class="sc">-</span> Precip.Code), scale))</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>predictor_set_2_test  <span class="ot">=</span> <span class="fu">mutate</span>(predictor_set_2[<span class="sc">-</span>training_indices, ],</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">across</span>(<span class="fu">c</span>(Air.Temp <span class="sc">:</span> Summit.Wind.Speed, <span class="sc">-</span> Precip.Code), scale))</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>predictor_set_2_train <span class="ot">=</span> <span class="fu">as.matrix</span>(predictor_set_2_train)</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>predictor_set_2_test  <span class="ot">=</span> <span class="fu">as.matrix</span>(predictor_set_2_test)</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>predictor_set_3       <span class="ot">=</span> <span class="fu">select</span>(data, <span class="fu">c</span>(<span class="st">'Max.Temp.Grad'</span><span class="sc">:</span><span class="st">'Snow.Temp'</span>))</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>predictor_set_3_train <span class="ot">=</span> <span class="fu">mutate</span>(predictor_set_3[training_indices, ],</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">across</span>(<span class="fu">c</span>(Max.Temp.Grad <span class="sc">:</span> Snow.Temp), scale))</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>predictor_set_3_test  <span class="ot">=</span> <span class="fu">mutate</span>(predictor_set_3[<span class="sc">-</span>training_indices, ],</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">across</span>(<span class="fu">c</span>(Max.Temp.Grad <span class="sc">:</span> Snow.Temp), scale))</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>predictor_set_3_train <span class="ot">=</span> <span class="fu">as.matrix</span>(predictor_set_3_train)</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>predictor_set_3_test  <span class="ot">=</span> <span class="fu">as.matrix</span>(predictor_set_3_test)</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>predictor_set_4_train <span class="ot">=</span> <span class="fu">cbind</span>(predictor_set_1_train, predictor_set_2_train,</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>                              predictor_set_3_train)</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>predictor_set_4_test  <span class="ot">=</span> <span class="fu">cbind</span>(predictor_set_1_test, predictor_set_2_test,</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>                              predictor_set_3_test)</span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>training_data_list <span class="ot">=</span> <span class="fu">list</span>(predictor_set_1_train, predictor_set_2_train,</span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>                          predictor_set_3_train, predictor_set_4_train)</span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>testing_data_list <span class="ot">=</span> <span class="fu">list</span>(predictor_set_1_test, predictor_set_2_test,</span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>                         predictor_set_3_test, predictor_set_4_test)</span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> data<span class="sc">$</span>FAH</span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">to_categorical</span>(y, <span class="at">num_classes =</span> <span class="dv">5</span>)</span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>y_train <span class="ot">=</span> y[training_indices, ]</span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>y_test  <span class="ot">=</span> y[<span class="sc">-</span>training_indices, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 <p>A 70/30 training split was used in the data. Usually we would set aside a small portion for validation but as we will see later, <strong><code>keras</code></strong> handles this for us so we do not need to specify a validation set. Using a seed for this step is important as it ensures the split remains every time the code is ran. This is the first step toward achieving repeatable results.</p>
 </section>
 <section id="defining-the-model-builder-wrapper-function" class="level2">
 <h2 class="anchored" data-anchor-id="defining-the-model-builder-wrapper-function">Defining the model builder wrapper function</h2>
 <p>At this stage we would define the model and let <strong><code>keras</code></strong> do it’s thing. But before we can define the model we need to find the optimal specification of model hyperparameters. Some of the hyperparameters we have control over include: number of layers, number of nodes per layer, acitvation function to use on each layer, the dropout rate and the learning rate. <strong><code>keras</code></strong> is hightly flexible and allows the user control of almost every aspect of the model parameters. To find the optimal value for these hyperparameters we do hyperparameter tuning. In order to do this in R we need to use the <strong><code>kerastuneR</code></strong> library. In order to do the hyperparameter tuning with <strong><code>kerastuneR</code></strong> the model needs to be wrapped in a function that accepts as an input the hyperparameter specification.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>model_builder <span class="ot">=</span> <span class="cf">function</span>(hp){</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  n_layers <span class="ot">=</span> hp<span class="sc">$</span><span class="fu">Int</span>(<span class="st">'number_of_layers'</span>, <span class="at">min_value =</span> <span class="dv">1</span>, <span class="at">max_value =</span> <span class="dv">5</span>, <span class="at">step =</span> <span class="dv">1</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  lr <span class="ot">=</span> hp<span class="sc">$</span><span class="fu">Choice</span>(<span class="st">'learning_rate'</span>, <span class="at">values =</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="fl">1e-2</span>, <span class="at">to =</span> <span class="fl">1e-4</span>, <span class="at">length.out =</span> <span class="dv">5</span>))  </span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  n_x   <span class="ot">=</span> <span class="fu">ncol</span>(x_train)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  input <span class="ot">=</span> <span class="fu">layer_input</span>(<span class="at">shape =</span> <span class="fu">c</span>(n_x))</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">=</span> input</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_layers){</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    n_nodes <span class="ot">=</span> hp<span class="sc">$</span><span class="fu">Int</span>(<span class="fu">paste0</span>(<span class="st">'nodes_layer_'</span>, i),</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>                      <span class="at">min_value =</span> <span class="dv">30</span>, <span class="at">max_value =</span> <span class="dv">50</span>, <span class="at">step =</span> <span class="dv">10</span>)</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">=</span> x <span class="sc">%&gt;%</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">layer_dense</span>(<span class="at">units =</span> n_nodes, <span class="at">activation =</span> <span class="st">'relu'</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>      <span class="fu">layer_dropout</span>(<span class="at">rate =</span> <span class="fl">0.1</span>)</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  output <span class="ot">=</span> x <span class="sc">%&gt;%</span> </span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">layer_dense</span>(<span class="at">units =</span> <span class="dv">5</span>, <span class="at">activation =</span> <span class="st">'softmax'</span>)</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  model <span class="ot">=</span> <span class="fu">keras_model</span>(<span class="at">inputs =</span> input, <span class="at">outputs =</span> output)</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  model <span class="sc">%&gt;%</span> <span class="fu">compile</span>(<span class="at">loss =</span> <span class="st">'categorical_crossentropy'</span>, </span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>                    <span class="at">optimizer =</span> <span class="fu">optimizer_adam</span>(<span class="at">learning_rate =</span> lr),</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>                    <span class="at">metrics =</span> <span class="fu">c</span>(<span class="fu">metric_categorical_accuracy</span>()))</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(model)</span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>For this project, we have decided to tune for the number of layers, number of nodes on each layer and the learning rate. The activation function to be rectified linear units(Relu) and the dropout rate was sett to 0,1. The specific values were 1-5 layers(step size of 1) with 30-50(step size of 10) and 10 equally spaced learning rates [0.01 &nbsp;- 0.0001]. Therefore, there were a total of 75 unique models that could be fitted. The metric the Neural Network tries to minimize is the <strong><code>metric_categorical_accuracy</code></strong> <code>test</code></p>
+<p>For this project, we have decided to tune for the number of layers, number of nodes on each layer and the learning rate. The activation function to be rectified linear units(Relu) and the dropout rate was sett to 0,1. The specific values were 1-5 layers(step size of 1) with 30-50(step size of 10) and 10 equally spaced learning rates [0.01 &nbsp;- 0.0001]. Therefore, there were a total of 75 unique models that could be fitted. The metric the Neural Network tries to minimize is the <strong><code>metric_categorical_accuracy</code></strong>. This was chosen since the target variable has more than 1 category.</p>
 </section>
 <section id="hyperparameter-tuning" class="level2">
 <h2 class="anchored" data-anchor-id="hyperparameter-tuning">Hyperparameter tuning</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span>){</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  x_train <span class="ot">=</span> training_data_list[[i]]</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  tuner_randomsearch <span class="ot">=</span> kerastuneR<span class="sc">::</span><span class="fu">RandomSearch</span>(<span class="at">hypermodel =</span> model_builder,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                                                <span class="at">objective =</span> <span class="st">'val_accuracy'</span>,</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                                                <span class="at">max_trials =</span> <span class="dv">50</span>, </span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                                                <span class="at">executions_per_trial =</span> <span class="dv">3</span>,</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>                                                <span class="at">directory =</span> <span class="st">'tuning'</span>,</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>                                                <span class="at">project_name =</span> <span class="fu">paste</span>(<span class="st">'randomsearch results'</span>, i),</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>                                                <span class="at">overwrite =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  tuner_randomsearch <span class="sc">%&gt;%</span> <span class="fu">fit_tuner</span>(<span class="at">x =</span> x_train,</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">y =</span> y_train,</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">epochs =</span> <span class="dv">50</span>,</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">validation_split =</span> <span class="fl">0.2</span>, <span class="at">shuffle =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="co">#results_summary(tuner = tuner_randomsearch, num_trials = 5)</span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  tuner_hyperband <span class="ot">=</span> kerastuneR<span class="sc">::</span><span class="fu">Hyperband</span>(<span class="at">hypermodel =</span> model_builder,</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">objective =</span> <span class="st">'val_accuracy'</span>,</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">directory =</span> <span class="st">'tuning'</span>,</span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">project_name =</span> <span class="fu">paste</span>(<span class="st">'hyperband results'</span>, i),</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">max_epochs =</span> <span class="dv">50</span>,</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">hyperband_iterations =</span> <span class="dv">10</span>,</span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">seed =</span> <span class="dv">2025</span>)</span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  tuner_hyperband <span class="sc">%&gt;%</span> <span class="fu">fit_tuner</span>(<span class="at">x =</span> x_train,</span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>                                <span class="at">y =</span> y_train,</span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>                                <span class="at">epochs =</span> <span class="dv">50</span>,</span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>                                <span class="at">validation_split =</span> <span class="fl">0.2</span>, <span class="at">shuffle =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>  <span class="co">#results_summary(tuner = tuner_hyperband, num_trials = 5)</span></span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><strong><code>kerastuneR</code></strong> has multiple tuning algorithms, we have used the <strong><code>RandomSearch</code></strong> and <strong><code>Hyperband</code></strong> algorithms. <strong><code>RandomSearch</code></strong> takes random combinations of the provided hyperparameters and fits the model each time. Since the combination of hyperparameters is random there is a possibility that the same mode specification is ran multiple times by the algorithm, however, the algorithm does attempt to mitigate this. We can also control this by setting the <strong><code>max_trials</code></strong> variable to a number larger than the total number of unique models that can be specified. We also specify that each model should be fit 3 times by setting <strong><code>executions_per_trial = 3</code></strong>. This just reduces variation in the results. The <strong><code>Hyperband</code></strong> algorithm aims to improve the efficiency of the tuning by utalizing efficient resource allocation. It is a bandit-based approach to hyperparameter optimisation(need to cite a source here). For this algorithm <strong><code>max_epochs</code></strong> was set to 50, this decided by trial and error. It just needs to be set to a value large enough to ensure convergence in all models. <strong><code>hyperband_iterations</code></strong> is the number of times to iterate over the full hyperband algorithm. It is suggested to set this value as high as your machinery can handle. We set it to 10 but it can be set higher. In both algorithms, we use a validation split of 20% and setting <strong><code>shuffle = T</code></strong>. Doing this shuffles the training data after each eopch and helps reduce the chances of overfitting.</p>
+<p><strong><code>kerastuneR</code></strong> has multiple tuning algorithms, we have used the <strong><code>RandomSearch</code></strong> algorithm. <strong><code>RandomSearch</code></strong> takes random combinations of the provided hyperparameters and fits the model each time. Since the combination of hyperparameters is random, there is a possibility that the same mode specification is ran multiple times by the algorithm. The algorithm does attempt to mitigate this but it not guaranteed to stop duplicate runs. We do have some control over this though by setting the <strong><code>max_trials</code></strong> variable to the total number of unique models that can be specified from our selected tuning ranges. It has also been specified that each model should be fit 3 times by setting <strong><code>executions_per_trial = 3</code></strong>. This reduces variation in the results since there is an element of randomness in the initialisation of the model. A validation split of 20% was used and <strong><code>shuffle = T</code></strong> was used. Doing this shuffles the which observations get used as the validation set. This helps reduce the chances of overfitting.</p>
+<p>All the results from tuning were saved into folders so that the results can be extracted and used for further analysis. The tuning was was undertaken is by no means exhaustive, no tuning can ever be, but the range of values tuned over is relatively small and therefore the results should be taken with a pinch of salt. With more time and perhaps more compute power a better result is possible.</p>
 </section>
-<section id="extra-resources" class="level2">
-<h2 class="anchored" data-anchor-id="extra-resources">Extra resources</h2>
+<section id="tuning-results" class="level2">
+<h2 class="anchored" data-anchor-id="tuning-results">Tuning results</h2>
+<p><strong><code>kerastuneR</code></strong> saves the tuning results as .json files. Each trial will be its own folder and inside that folder there will be a .json file containing information about the configuration of the Neural Network and the validation accuracy it achieved. The results were compiled into a single table containing the top 3 configurations from each of the predictor sets.</p>
+<table class="table caption-top" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">Predictor set</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Validation accuracy</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Learning rate</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Number of layers</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">nodes on layer 1</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">nodes on layer 2</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">nodes on layer 3</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">nodes on layer 4</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">nodes on layer 5</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td rowspan="3" style="text-align: right; vertical-align: middle !important;">1</td>
+<td style="text-align: right;">0.42260</td>
+<td style="text-align: right;">0.00753</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.42138</td>
+<td style="text-align: right;">0.00753</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border-bottom: 2px solid black;">0.42015</td>
+<td style="text-align: right; border-bottom: 2px solid black;">0.00257</td>
+<td style="text-align: right; border-bottom: 2px solid black;">4</td>
+<td style="text-align: right; border-bottom: 2px solid black;">50</td>
+<td style="text-align: right; border-bottom: 2px solid black;">50</td>
+<td style="text-align: right; border-bottom: 2px solid black;">30</td>
+<td style="text-align: right; border-bottom: 2px solid black;">50</td>
+<td style="text-align: right; border-bottom: 2px solid black;">NA</td>
+</tr>
+<tr class="even">
+<td rowspan="3" style="text-align: right; vertical-align: middle !important;">2</td>
+<td style="text-align: right;">0.58354</td>
+<td style="text-align: right;">0.00505</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">50</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.58231</td>
+<td style="text-align: right;">0.00257</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border-bottom: 2px solid black;">0.58231</td>
+<td style="text-align: right; border-bottom: 2px solid black;">0.00257</td>
+<td style="text-align: right; border-bottom: 2px solid black;">4</td>
+<td style="text-align: right; border-bottom: 2px solid black;">50</td>
+<td style="text-align: right; border-bottom: 2px solid black;">30</td>
+<td style="text-align: right; border-bottom: 2px solid black;">40</td>
+<td style="text-align: right; border-bottom: 2px solid black;">40</td>
+<td style="text-align: right; border-bottom: 2px solid black;">NA</td>
+</tr>
+<tr class="odd">
+<td rowspan="3" style="text-align: right; vertical-align: middle !important;">3</td>
+<td style="text-align: right;">0.53686</td>
+<td style="text-align: right;">0.00505</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.53317</td>
+<td style="text-align: right;">0.00753</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; border-bottom: 2px solid black;">0.53317</td>
+<td style="text-align: right; border-bottom: 2px solid black;">0.00505</td>
+<td style="text-align: right; border-bottom: 2px solid black;">2</td>
+<td style="text-align: right; border-bottom: 2px solid black;">30</td>
+<td style="text-align: right; border-bottom: 2px solid black;">40</td>
+<td style="text-align: right; border-bottom: 2px solid black;">NA</td>
+<td style="text-align: right; border-bottom: 2px solid black;">NA</td>
+<td style="text-align: right; border-bottom: 2px solid black;">NA</td>
+</tr>
+<tr class="even">
+<td rowspan="3" style="text-align: right; vertical-align: middle !important;">4</td>
+<td style="text-align: right;">0.60442</td>
+<td style="text-align: right;">0.00505</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.60197</td>
+<td style="text-align: right;">0.00753</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; border-bottom: 2px solid black;">0.60197</td>
+<td style="text-align: right; border-bottom: 2px solid black;">0.00257</td>
+<td style="text-align: right; border-bottom: 2px solid black;">4</td>
+<td style="text-align: right; border-bottom: 2px solid black;">50</td>
+<td style="text-align: right; border-bottom: 2px solid black;">40</td>
+<td style="text-align: right; border-bottom: 2px solid black;">40</td>
+<td style="text-align: right; border-bottom: 2px solid black;">40</td>
+<td style="text-align: right; border-bottom: 2px solid black;">NA</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>From the table it is evident that predictor sets 2 and 4 perform relatively equally with validation accuracies of 58% and 60% respectively. Predictor set 3 has slightly worse predictive capability with a prediction accuracy around 53%. Predictor set 1 is firmly the worst, achieving 42% validation accuracy.</p>
+<table class="table caption-top" data-quarto-postprocess="true">
+<caption>Confusion matrix</caption>
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; empty-cells: hide; border-bottom: hidden;"></th>
+<th colspan="5" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Reference
+</div></th>
+</tr>
+<tr class="even">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Predicted</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">0</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">1</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">2</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">3</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">0</td>
+<td style="text-align: right;">186</td>
+<td style="text-align: right;">78</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">126</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">499</td>
+<td style="text-align: right;">163</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">4</td>
+<td style="text-align: right;">128</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">117</td>
+<td style="text-align: right;">317</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>Say something about the confusion matrix here. Blah blah blah</p>
+<table class="table caption-top" data-quarto-postprocess="true">
+<caption>Class metrics</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Sensitivity</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Specificity</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Pos Pred Value</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Neg Pred Value</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Precision</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Recall</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">F1</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Prevalence</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Detection Rate</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Detection Prevalence</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Balanced Accuracy</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Class: 0</td>
+<td style="text-align: right;">0.531</td>
+<td style="text-align: right;">0.836</td>
+<td style="text-align: right;">0.449</td>
+<td style="text-align: right;">0.877</td>
+<td style="text-align: right;">0.449</td>
+<td style="text-align: right;">0.531</td>
+<td style="text-align: right;">0.487</td>
+<td style="text-align: right;">0.201</td>
+<td style="text-align: right;">0.107</td>
+<td style="text-align: right;">0.237</td>
+<td style="text-align: right;">0.684</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Class: 1</td>
+<td style="text-align: right;">0.068</td>
+<td style="text-align: right;">0.994</td>
+<td style="text-align: right;">0.474</td>
+<td style="text-align: right;">0.929</td>
+<td style="text-align: right;">0.474</td>
+<td style="text-align: right;">0.068</td>
+<td style="text-align: right;">0.119</td>
+<td style="text-align: right;">0.076</td>
+<td style="text-align: right;">0.005</td>
+<td style="text-align: right;">0.011</td>
+<td style="text-align: right;">0.531</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Class: 2</td>
+<td style="text-align: right;">0.250</td>
+<td style="text-align: right;">0.984</td>
+<td style="text-align: right;">0.097</td>
+<td style="text-align: right;">0.995</td>
+<td style="text-align: right;">0.097</td>
+<td style="text-align: right;">0.250</td>
+<td style="text-align: right;">0.140</td>
+<td style="text-align: right;">0.007</td>
+<td style="text-align: right;">0.002</td>
+<td style="text-align: right;">0.018</td>
+<td style="text-align: right;">0.617</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Class: 3</td>
+<td style="text-align: right;">0.782</td>
+<td style="text-align: right;">0.831</td>
+<td style="text-align: right;">0.727</td>
+<td style="text-align: right;">0.869</td>
+<td style="text-align: right;">0.727</td>
+<td style="text-align: right;">0.782</td>
+<td style="text-align: right;">0.754</td>
+<td style="text-align: right;">0.366</td>
+<td style="text-align: right;">0.286</td>
+<td style="text-align: right;">0.393</td>
+<td style="text-align: right;">0.807</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Class: 4</td>
+<td style="text-align: right;">0.518</td>
+<td style="text-align: right;">0.755</td>
+<td style="text-align: right;">0.534</td>
+<td style="text-align: right;">0.743</td>
+<td style="text-align: right;">0.534</td>
+<td style="text-align: right;">0.518</td>
+<td style="text-align: right;">0.526</td>
+<td style="text-align: right;">0.351</td>
+<td style="text-align: right;">0.182</td>
+<td style="text-align: right;">0.341</td>
+<td style="text-align: right;">0.637</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>Say something about the metrics matrix here. Blah blah blah ## Extra resources</p>
 <p><a href="https://cran.r-project.org/web/packages/keras/vignettes/" target="_blank"><code>keras</code></a></p>
 <p><a href="https://eagerai.github.io/kerastuneR/" target="_blank"><code>kerastuneR</code></a></p>
 

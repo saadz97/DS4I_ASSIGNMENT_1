@@ -10,7 +10,7 @@ library(jsonlite)
 
 tuning_results = function(directory, max_layers){
   
-  json_path = paste0(directory, '/trial.json')
+  json_path = paste0('tuning/randomsearch results 4/trial_15', '/trial.json')
   tuning_results = fromJSON(txt = json_path)
   hp               = tuning_results$hyperparameters$values
   number_of_layers = hp$number_of_layers

@@ -177,7 +177,7 @@ for (i in 1:4){
   
   tuner_randomsearch = kerastuneR::RandomSearch(hypermodel = model_builder,
                                                 objective = 'val_categorical_accuracy',
-                                                max_trials = 75, executions_per_trial = 1,
+                                                max_trials = 75, executions_per_trial = 3,
                                                 directory = 'tuning',
                                                 project_name = paste('randomsearch results', i),
                                                 overwrite = TRUE)
