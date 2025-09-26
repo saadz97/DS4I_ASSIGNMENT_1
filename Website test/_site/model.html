@@ -126,10 +126,11 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#getting-set-up" id="toc-getting-set-up" class="nav-link active" data-scroll-target="#getting-set-up">Getting set up</a></li>
+  <li><a href="#introduction-to-keras" id="toc-introduction-to-keras" class="nav-link active" data-scroll-target="#introduction-to-keras">Introduction to keras</a></li>
   <li><a href="#defining-the-model-builder-wrapper-function" id="toc-defining-the-model-builder-wrapper-function" class="nav-link" data-scroll-target="#defining-the-model-builder-wrapper-function">Defining the model builder wrapper function</a></li>
   <li><a href="#hyperparameter-tuning" id="toc-hyperparameter-tuning" class="nav-link" data-scroll-target="#hyperparameter-tuning">Hyperparameter tuning</a></li>
   <li><a href="#tuning-results" id="toc-tuning-results" class="nav-link" data-scroll-target="#tuning-results">Tuning results</a></li>
+  <li><a href="#extra-resources" id="toc-extra-resources" class="nav-link" data-scroll-target="#extra-resources">Extra resources</a></li>
   </ul>
 </nav>
     </div>
@@ -155,21 +156,20 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="getting-set-up" class="level2">
-<h2 class="anchored" data-anchor-id="getting-set-up">Getting set up</h2>
-<p>A neural network was fitted to the data in R, specifically R version 4.5.1 (2025-06-13) and python version 3.11.6. The reason it is important to specify the versions is because keras and its dependencies in R are wrappers of the python libraries so ensuring cross compatibility is imperative.</p>
-<p>The packages that will be used in the model building and tuning are given above. The packages can be installed using <strong><code>install.packages('package', dependencies = T)</code></strong>. Note that after reading in the <strong><code>keras</code></strong> library a warning might appear saying that it is deprecated and that you should use <strong><code>keras3</code></strong>, this can be ignored for now as the provided code does not work when using <strong><code>keras3</code></strong>.</p>
-<p>Since we are trying to predict the forecasted avalanche hazard(FAH), it is important that we do not allow the model to be trained on the observed avalanche hazard(OAH). Therefore the predictor sets are explicitly defined so that there is no accidental data leakage. The FAH, OAH and Precip.Code variables are converted to integers so that the data is compatible with <strong><code>keras</code></strong>.</p>
+<section id="introduction-to-keras" class="level2">
+<h2 class="anchored" data-anchor-id="introduction-to-keras">Introduction to keras</h2>
+<p><strong><code>keras</code></strong> is an open-source python library that allows users to to build Neural Networks. It is known for modularity and it’s relatively gentle learning curve compared to other libraries such as <strong><code>pytorch</code></strong>. The modularity makes <strong><code>keras</code></strong> a good library for projects requiring experimentation such as this one. It should be noted that when working with <strong><code>keras</code></strong> in R, all the functions used are wrapper functions of the python functions. This makes version control extremely important. For this project, the models were created, trained and tuned using R version 4.5.1 (2025-06-13) and python version 3.11.6.</p>
+<p>For this project, the goal is to train a neural network to predict the forecasted avalanche hazard(FAH). Since we are predicting the forecast, the observed avalanche hazard(OAH) needs to be removed otherwise the model would be trained on information that would not be available on new data, i.e, data leakage. Therefore the predictor sets are explicitly defined so that there is no data leakage. The FAH, OAH and Precip.Code variables are converted to integers so that the data is compatible with <strong><code>keras</code></strong>.</p>
 <p>A 70/30 training split was used in the data. Usually we would set aside a small portion for validation but as we will see later, <strong><code>keras</code></strong> handles this for us so we do not need to specify a validation set. Using a seed for this step is important as it ensures the split remains every time the code is ran. This is the first step toward achieving repeatable results.</p>
 </section>
 <section id="defining-the-model-builder-wrapper-function" class="level2">
 <h2 class="anchored" data-anchor-id="defining-the-model-builder-wrapper-function">Defining the model builder wrapper function</h2>
-<p>At this stage we would define the model and let <strong><code>keras</code></strong> do it’s thing. But before we can define the model we need to find the optimal specification of model hyperparameters. Some of the hyperparameters we have control over include: number of layers, number of nodes per layer, acitvation function to use on each layer, the dropout rate and the learning rate. <strong><code>keras</code></strong> is hightly flexible and allows the user control of almost every aspect of the model parameters. To find the optimal value for these hyperparameters we do hyperparameter tuning. In order to do this in R we need to use the <strong><code>kerastuneR</code></strong> library. In order to do the hyperparameter tuning with <strong><code>kerastuneR</code></strong> the model needs to be wrapped in a function that accepts as an input the hyperparameter specification.</p>
-<p>For this project, we have decided to tune for the number of layers, number of nodes on each layer and the learning rate. The activation function to be rectified linear units(Relu) and the dropout rate was sett to 0,1. The specific values were 1-5 layers(step size of 1) with 30-50(step size of 10) and 10 equally spaced learning rates [0.01 &nbsp;- 0.0001]. Therefore, there were a total of 75 unique models that could be fitted. The metric the Neural Network tries to minimize is the <strong><code>metric_categorical_accuracy</code></strong>. This was chosen since the target variable has more than 1 category.</p>
+<p>Neural networks are extremely flexible and configurable models. But this configurability means that there are several parameters that need to be defined before the model can be trained. In order to find the optimal configuration, hyperparameter tuning needs to be done first. Some of the hyperparameters we have control over include: number of layers, number of nodes per layer, the acitvation function to use on each layer, the dropout rate and the learning rate. <strong><code>keras</code></strong> is flexible and allows the user control of almost every aspect of the model through the parameters. In order to do the hyperameter tuning in R, the <strong><code>kerastuneR</code></strong> library is used. But in order to do the hyperparameter tuning with <strong><code>kerastuneR</code></strong> the model needs to be wrapped in a function that accepts as an input the hyperparameter configuration and outputs a model.</p>
+<p>For this project, we have decided to tune for the number of layers, number of nodes on each layer and the learning rate. The activation function to be rectified linear units(Relu) and the dropout rate was sett to 0,1. The specific values were 1-5 layers(step size of 1) with 30-50(step size of 10) and 10 equally spaced learning rates [0,01 &nbsp;- 0,0001]. Therefore, there were a total of 75 unique models that could be fitted. The metric the Neural Network tries to minimize is the <strong><code>metric_categorical_accuracy</code></strong>. This was chosen since the target variable has more than 1 category.</p>
 </section>
 <section id="hyperparameter-tuning" class="level2">
 <h2 class="anchored" data-anchor-id="hyperparameter-tuning">Hyperparameter tuning</h2>
-<p><strong><code>kerastuneR</code></strong> has multiple tuning algorithms, we have used the <strong><code>RandomSearch</code></strong> algorithm. <strong><code>RandomSearch</code></strong> takes random combinations of the provided hyperparameters and fits the model each time. Since the combination of hyperparameters is random, there is a possibility that the same mode specification is ran multiple times by the algorithm. The algorithm does attempt to mitigate this but it not guaranteed to stop duplicate runs. We do have some control over this though by setting the <strong><code>max_trials</code></strong> variable to the total number of unique models that can be specified from our selected tuning ranges. It has also been specified that each model should be fit 3 times by setting <strong><code>executions_per_trial = 3</code></strong>. This reduces variation in the results since there is an element of randomness in the initialisation of the model. A validation split of 20% was used and <strong><code>shuffle = T</code></strong> was used. Doing this shuffles the which observations get used as the validation set. This helps reduce the chances of overfitting.</p>
+<p><strong><code>kerastuneR</code></strong> has multiple tuning algorithms, we have used the <strong><code>RandomSearch</code></strong> algorithm. <strong><code>RandomSearch</code></strong> takes random combinations of the provided hyperparameters and fits the model each time. Since the combination of hyperparameters is random, there is a possibility that the same mode configuration is ran multiple times by the algorithm. The algorithm does attempt to mitigate this but it not guaranteed to stop duplicate runs. We do have some control over this though by setting the <strong><code>max_trials</code></strong> variable to the total number of unique models that can be specified from our selected tuning ranges. It has also been specified that each model should be fit 3 times by setting <strong><code>executions_per_trial = 3</code></strong>. This reduces variation in the results since there is an element of randomness in the initialisation of the model. A validation split of 20% was used and <strong><code>shuffle = T</code></strong> was used. Doing this shuffles the which observations get used as the validation set. This helps reduce the chances of overfitting.</p>
 <p>All the results from tuning were saved into folders so that the results can be extracted and used for further analysis. The tuning was was undertaken is by no means exhaustive, no tuning can ever be, but the range of values tuned over is relatively small and therefore the results should be taken with a pinch of salt. With more time and perhaps more compute power a better result is possible.</p>
 </section>
 <section id="tuning-results" class="level2">
@@ -318,7 +318,9 @@ ul.task-list li input[type="checkbox"] {
 </table>
 
 
-<p>From the table it is evident that predictor sets 2 and 4 perform relatively equally with validation accuracies of 58% and 60% respectively. Predictor set 3 has slightly worse predictive capability with a prediction accuracy around 53%. Predictor set 1 is firmly the worst, achieving 42% validation accuracy.</p>
+<p>From the table it is evident that predictor sets 2 and 4 perform relatively equally with validation accuracies of 58% and 60% respectively. Predictor set 3 has slightly worse predictive capability with a prediction accuracy around 53%. Predictor set 1 is firmly the worst, achieving 42% validation accuracy. It is not surprising that predictor set 4 produces the best results, it does contain all the variables after all. The best model configuration for the problem is summarised below.</p>
+<p><img src="best_model_plot.png" alt="Configuration of the best model" width="500"></p>
+<p>The best configuration has 3 hidden layers, with sizes 40, 50 and 30 nodes respectively. This model achieved a validation accuracy of 60.4% in training. The hidden layers all have Relu activation functions and the output layer uses a softmax activation. Softmax is used because we have multiple categories in our traget variable.</p>
 <table class="table caption-top" data-quarto-postprocess="true">
 <caption>Confusion matrix</caption>
 <colgroup>
@@ -484,7 +486,10 @@ Reference
 </table>
 
 
-<p>Say something about the metrics matrix here. Blah blah blah ## Extra resources</p>
+<p>Say something about the metrics matrix here. Blah blah blah</p>
+</section>
+<section id="extra-resources" class="level2">
+<h2 class="anchored" data-anchor-id="extra-resources">Extra resources</h2>
 <p><a href="https://cran.r-project.org/web/packages/keras/vignettes/" target="_blank"><code>keras</code></a></p>
 <p><a href="https://eagerai.github.io/kerastuneR/" target="_blank"><code>kerastuneR</code></a></p>
 
