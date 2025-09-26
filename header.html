@@ -1,0 +1,20 @@
+<button id="toggle-sidebar" aria-label="Toggle Menu" style="position: fixed; top: 1rem; left: 1rem; z-index: 9999;">
+  ☰ Menu
+</button>
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const sidebar = document.querySelector(".sidebar");
+  const mainContent = document.querySelector(".main-content");
+  const toggleButton = document.getElementById("toggle-sidebar");
+
+  if(toggleButton && sidebar && mainContent) {
+    toggleButton.addEventListener("click", () => {
+      sidebar.classList.toggle("hidden");
+      mainContent.classList.toggle("sidebar-hidden");
+    });
+  }
+});
+</script>

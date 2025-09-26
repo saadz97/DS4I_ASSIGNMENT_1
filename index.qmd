@@ -9,6 +9,26 @@ execute:
   message: false
 ---
 
+
+
+
+<div id="menu-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+<div class="sidebar">
+  <ul>
+    <li><a href="index.qmd">Home</a></li>
+    <li><a href="data.qmd">Data</a></li>
+    <li><a href="methodology.qmd">Methodology</a></li>
+    <li><a href="conclusions.qmd">Conclusions</a></li>
+  </ul>
+</div>
+
+<div class="main-content">
+  <!-- Your page content goes here -->
+
+
+
+
 ```{r setup, include=FALSE}
 # Load required libraries
 library(tidyverse)
@@ -942,3 +962,20 @@ kable(deployment_metrics,
 ---
 
 *Final model deployment: March 2024 | Last updated: `r Sys.Date()` | Built with Quarto & R*
+
+
+
+
+</div>
+
+<script>
+  function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar.classList.contains('open')) {
+      sidebar.classList.remove('open');
+    } else {
+      sidebar.classList.add('open');
+    }
+  }
+</script>
+

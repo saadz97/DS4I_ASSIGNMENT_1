@@ -1,8 +1,7 @@
 ---
-title: ""  # Empty title since we use custom hero
-format: 
-  html:
-    page-layout: full
+title: "Data"
+format: html
+
 execute:
   echo: true
   warning: false
@@ -10,6 +9,28 @@ execute:
 ---
 
 
+
+```{r, echo = F}
+
+library(kableExtra)
+
+
+```
+
+
+<div id="menu-toggle" onclick="toggleSidebar()">☰ Menu</div>
+
+<div class="sidebar">
+  <ul>
+    <li><a href="index.qmd">Home</a></li>
+    <li><a href="data.qmd">Data</a></li>
+    <li><a href="methodology.qmd">Methodology</a></li>
+    <li><a href="conclusions.qmd">Conclusions</a></li>
+  </ul>
+</div>
+
+<div class="main-content">
+  <!-- Your page content goes here -->
 
 
 
@@ -77,3 +98,17 @@ here
 :::
 
 :::
+
+
+</div>
+
+<script>
+  function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar.classList.contains('open')) {
+      sidebar.classList.remove('open');
+    } else {
+      sidebar.classList.add('open');
+    }
+  }
+</script>
