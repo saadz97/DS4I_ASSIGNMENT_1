@@ -1,0 +1,74 @@
+---
+title: ""  # Empty title since we use custom hero
+format: 
+  html:
+    page-layout: full
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+
+
+## Methodology {#methodology}
+
+:::{.methodology-flow}
+
+:::{.flow-step}
+Data Preprocessing???
+:::
+
+:::{.flow-step}
+Train/Val/Test Split????
+:::
+
+:::{.flow-step}
+Neural Network Design???
+:::
+
+:::{.flow-step}
+Model Training????
+:::
+
+:::{.flow-step}
+Evaluation????
+:::
+
+:::
+
+:::{.feature-grid}
+
+:::{.card}
+### 🔧 Data Preprocessing
+Fore example: "Comprehensive data cleaning, handling missing values, outlier detection, and feature scaling to prepare the dataset for neural network training."
+
+:::
+
+:::{.card}
+### 🧠 Neural Network Architecture
+For example:"Implementation of deep neural networks using TensorFlow/Keras through R's reticulate package, with multiple hidden layers and dropout regularization".
+:::
+
+:::
+
+```{r fake-split-summary, echo=FALSE}
+library(kableExtra)
+# Create fake data split summary table
+split_summary <- data.frame(
+  Dataset = c("Training", "Validation", "Test", "Total"),
+  Samples = c(6403, 2134, 2134, 10671),
+  Percentage = c("60%", "20%", "20%", "100%"),
+  Class_Distribution = c("Balanced", "Balanced", "Balanced", "Original"))
+
+kable(split_summary, 
+      caption = "Data Split Summary") %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+:::{.card}
+### 📊 Model Evaluation Strategy
+We used....
+
+- **Accuracy:** .....
+- ad more here

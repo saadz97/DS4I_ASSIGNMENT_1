@@ -11,16 +11,26 @@ website:
     background: "rgba(255, 255, 255, 0.95)"
     foreground: "#4a5568"
     right:
+      # - text: "Overview"
+      #   href: "#overview"
+      # - text: "Data"
+      #   href: "#data"
+      # - text: "Methodology" 
+      #   href: "#methodology"
+      # - text: "Results"
+      #   href: "#results"
+      # - text: "Conclusions"
+      #   href: "#conclusions"
       - text: "Overview"
-        href: "#overview"
+        href: index.qmd
       - text: "Data"
-        href: "#data"
-      - text: "Methodology" 
-        href: "#methodology"
-      - text: "Results"
-        href: "#results"
+        href: data.qmd
+      - text: "Methodology"
+        href: methodology.qmd
       - text: "Conclusions"
-        href: "#conclusions"
+        href: conclusions.qmd
+      
+      
 
   page-footer:
     background: "#2d3748"

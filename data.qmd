@@ -1,0 +1,79 @@
+---
+title: ""  # Empty title since we use custom hero
+format: 
+  html:
+    page-layout: full
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+
+
+
+
+## Dataset & Target Variable {#data}
+
+### Avalanche Hazard Scale
+
+:::{.hazard-scale}
+
+:::{.hazard-level .level-1}
+**Level 1**  
+This is 1 (?)
+:::
+
+:::{.hazard-level .level-2}
+**Level 2**  
+This is 2 (?)
+:::
+
+:::{.hazard-level .level-3}
+**Level 3**  
+This is 3 (?)
+:::
+
+:::{.hazard-level .level-4}
+**Level 4**  
+This is 4 (?)
+:::
+
+:::{.hazard-level .level-5}
+**Level 5**  
+This is 5 (?)
+:::
+
+:::
+
+:::{.feature-grid}
+
+:::{.card}
+### 🌍 Location/Topography Features
+- Forecasting region (......)
+- Add
+- The
+- features
+- here
+:::
+
+:::{.card}
+### 🌦️ Weather Conditions
+- Temperature measurements...
+- Add
+the 
+features
+here
+
+:::
+
+:::{.card}
+### ❄️ Snow Pack Measurements  
+- Snow....
+add 
+the
+features
+here
+:::
+
+:::
