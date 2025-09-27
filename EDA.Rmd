@@ -46,7 +46,7 @@ data <- data %>% mutate(Year = year(Date), Month = month(Date))
 table(data$Month)
 
 # Remove unnecessary columns
-data <- data %>% select(-OSgrid, -OAH, -Obs, -Location, -longitude, -latitude, -Date)
+data <- data %>% select(-OSgrid, -OAH, -Obs, -Location, -Date)
 
 ```
 
@@ -105,8 +105,8 @@ names(data_cleaned)
 Removing observations with a plausible Total.Snow.Depth & Foot.Pen values, however, Foot.Pen > Total.Snow.Depth, which is impossible:
 
 ```{r}
-data_cleaned <- data_cleaned %<%
-  filter(Foot.Pen > Total.Snow.Depth)
+data_cleaned <- data_cleaned %>%
+  filter(Foot.Pen < Total.Snow.Depth)
 ```
 
 
@@ -121,6 +121,75 @@ missing_summary <- data_cleaned %>%
 missing_summary
 
 ```
+
+
+# I kept longatiude and latitude in. They must be scaled
+
+E.g.
+
+```{r}
+data_cleaned <- data_cleaned %>%
+  mutate(
+    longitude_scaled = scale(longitude),
+    latitude_scaled = scale(latitude)) %>%
+  select(-longitude, -latitude)  
+
+```
+
+
+
+
+
+# Data & Methods
+
+The dataset used in this study consists of daily avalanche forecasts for six forecasting regions across Scotland (Creag Meagaidh, Glencoe, Lochaber, Northern Cairngorms, Southern Cairngorms, and Torridon), collected by the Scottish Avalanche Information Service (SAIS) between 2009 and 2025. It contains 10,671 observations and 34 variables including weather conditions, topography, snowpack properties, and avalanche hazard levels.
+
+The target variable for this project is the Forecast Avalanche Hazard (FAH), a categorical variable with five ordered levels: Low, Moderate, Considerable -, Considerable +, and High. 
+
+
+## Data Cleaning and Preprocessing
+
+
+The raw dataset underwent extensive cleaning prior to analysis. Initially, rows with missing FAH values (109 rows) were removed, and FAH levels were encoded numerically from 0 to 4 to preserve their ordinal structure. Other categorical variables, including precipitation type and forecast region, were also converted to integer codes. The Date column was transformed into Month to capture seasonal effects.
+
+Variables unrelated to forecasting or with high missingness (more than 20%), frequent errors, limited predictive value, or poorly defined measures were excluded, resulting in a set of well-defined predictors most relevant for forecasting. 
+
+Range checks were applied to remove physically impossible or implausible values based physical limits and regional context.
+
+For example, altitude was limited to 0–1,345 m, the height of Ben Nevis (*...*), and wind speeds to 176 mph, reflecting the highest recorded gust in the Highlands (*...*).
+
+Slope inclines were restricted to 0–90°, and wind directions were constrained to 0–360°. Cloud cover was limited to 0–100%, total snow depth to 0–1,500 cm (with unrealistic spikes removed), and foot penetration depth to 100 cm. Snow temperatures above 0.5 °C were flagged as implausible, since snow begins melting at 0 °C, and maximum temperature gradients were limited to below 25 °C per 10 cm (*...*). Observations where foot penetration exceeded total snow depth were also removed.
+
+Circular variables such as wind direction and aspect were transformed into sine and cosine components.
+
+Exploratory data analysis (EDA) was then performed to assess variable distributions, relationships with FAH, multicollinearity, and seasonal and geographic trends using correlation heatmaps, histograms, scatterplots, and boxplots.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
