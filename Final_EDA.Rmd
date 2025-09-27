@@ -1,0 +1,126 @@
+---
+title: "EDA"
+author: "Hope Hennessy"
+date: "2025-09-17"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(corrplot)
+library(lubridate)
+library(gridExtra)
+```
+
+
+```{r}
+data <- read.csv("~/University/MSc Data Science/STA5073Z_DS Industry/DS-Industry/scotland_avalanche_forecasts_2009_2025.csv", header = TRUE)
+```
+
+```{r, eval=FALSE}
+head(data)
+dim(data)
+str(data)
+table(data$FAH) # target variable levels
+summary(data)
+```
+
+
+# Cleaning
+
+```{r}
+# Only keep rows where the target variable FAH is not missing (-109 rows)
+data <- data %>% filter(!is.na(FAH) & FAH != "")
+
+# Convert categorical target variable to numeric 
+data$FAH <- as.integer(factor(x = data$FAH, levels = c("Low", "Moderate", "Considerable -", "Considerable +", "High"))) - 1
+data$Precip.Code <- as.integer(factor(data$Precip.Code)) - 1
+data$Area <- as.integer(factor(data$Area)) - 1   # 6 areas
+
+# Create a year variable for date & Month
+# Don't have any data for July, Aug and Sept (summer months) 
+# Don't know if a month variable will be important? Should i make those months values be 0?
+data <- data %>% mutate(Year = year(Date), Month = month(Date))
+table(data$Month)
+
+# Remove unnecessary columns
+data <- data %>% select(-OSgrid, -OAH, -Obs, -Location, -longitude, -latitude, -Date)
+
+```
+
+# Missing data summary
+
+```{r}
+missing_summary <- data %>%
+  summarise_all(~sum(is.na(.))) %>%
+  pivot_longer(everything(), names_to = "Variable", values_to = "Missing_Count") %>%
+  mutate(Missing_Percent = round(Missing_Count / nrow(data) * 100, 1)) %>%
+  arrange(desc(Missing_Count))
+missing_summary
+
+```
+
+# Cleaning dataset from errors 
+
+```{r}
+data_cleaned <- data %>%
+  mutate(
+    Alt = ifelse(Alt < 0 | Alt > 1345, NA_real_, Alt),
+    Aspect = ifelse(Aspect < 0 | Aspect > 360, NA_real_, Aspect),
+    Incline = ifelse(Incline < 0 | Incline > 90, NA_real_, Incline),
+    Wind.Speed = ifelse(Wind.Speed < 0 | Wind.Speed > 176, NA_real_, Wind.Speed),
+    Cloud = ifelse(Cloud < 0 | Cloud > 100, NA_real_, Cloud),
+    Total.Snow.Depth = ifelse(Total.Snow.Depth < 0 | Total.Snow.Depth > 1500, NA_real_, Total.Snow.Depth),
+    Summit.Wind.Speed = ifelse(Summit.Wind.Speed < 0 | Summit.Wind.Speed > 176, NA_real_, Summit.Wind.Speed),
+    Foot.Pen = ifelse(Foot.Pen < 0 | Foot.Pen > 100, NA_real_, Foot.Pen),
+    Wind.Dir = ifelse(Wind.Dir < 0 | Wind.Dir > 360, NA_real_, Wind.Dir),
+    Summit.Wind.Dir = ifelse(Summit.Wind.Dir < 0 | Summit.Wind.Dir > 360, NA_real_, Summit.Wind.Dir),
+    Snow.Temp = ifelse(Snow.Temp > 0.5, NA_real_, Snow.Temp),
+    Max.Temp.Grad = ifelse(Max.Temp.Grad < 0 | Max.Temp.Grad > 2.5, NA_real_, Max.Temp.Grad))
+
+```
+
+
+```{r}
+# Convert circular variables into two features using sine and cosine transformations
+data_cleaned <- data_cleaned %>% 
+  mutate(Aspect_sin = sin(Aspect * pi / 180), Aspect_cos = cos(Aspect * pi / 180)) %>% 
+  mutate(WindDir_sin = sin(Wind.Dir * pi / 180), WindDir_cos = cos(Wind.Dir * pi / 180)) %>%
+  mutate(SummitWindDir_sin = sin(Summit.Wind.Dir * pi / 180), SummitWindDir_cos = cos(Summit.Wind.Dir * pi / 180)) %>%
+  select(-Wind.Dir, -Aspect, -Summit.Wind.Dir)
+
+```
+
+
+```{r}
+# Remove variables with high percentage of missing values or  those that don't make sense
+data_cleaned <- data_cleaned %>%
+  select(-Ski.Pen, -AV.Cat, -Crystals, -Wetness, -Year, -Snow.Index, -Insolation, -No.Settle)
+names(data_cleaned)
+```
+
+
+Removing observations with a plausible Total.Snow.Depth & Foot.Pen values, however, Foot.Pen > Total.Snow.Depth, which is impossible:
+
+```{r}
+data_cleaned <- data_cleaned %<%
+  filter(Foot.Pen > Total.Snow.Depth)
+```
+
+
+## Missing data summary on cleaned dataset
+
+```{r}
+missing_summary <- data_cleaned %>%
+  summarise_all(~sum(is.na(.))) %>%
+  pivot_longer(everything(), names_to = "Variable", values_to = "Missing_Count") %>%
+  mutate(Missing_Percent = round(Missing_Count / nrow(data) * 100, 1)) %>%
+  arrange(desc(Missing_Count))
+missing_summary
+
+```
+
+
+
