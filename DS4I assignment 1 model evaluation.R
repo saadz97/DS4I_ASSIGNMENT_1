@@ -33,7 +33,7 @@ tuning_results = function(directory, max_layers){
 # Test
 # tuning_results('tuning/randomsearch results 1/trial_19', 5)
 
-directories              = list.dirs('tuning xp', recursive = FALSE)
+directories              = list.dirs('tuning', recursive = FALSE)
 randomsearch_search      = 'randomsearch'
 randomsearch_directories = grep(randomsearch_search, directories, value = TRUE)
 
@@ -48,17 +48,16 @@ results_compiler = function(method_directory){
 }
 
 # Test
-#results_compiler('tuning xp/randomsearch results 1')
+#results_compiler('tuning xp/randomsearch results 4')
 
 # the results automatically get saved locally, inside the same tuning folder
 results_compiler(randomsearch_directories)
 
 # use this line to get the saved data. Change the randomsearch for 
-# hyperband and the 1 for 2 or 3.
 # load('tuning/randomsearch results 1/summary.RData')
 
 # Test
-#load('tuning xp/randomsearch results 1/summary.RData')
+#load('tuning/randomsearch results 4/summary.RData')
 
 ###__________________________________________________________________________###
 

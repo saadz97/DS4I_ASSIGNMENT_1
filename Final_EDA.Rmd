@@ -20,7 +20,7 @@ library(ggplot2)
 
 
 ```{r}
-data <- read.csv("scotland_avalanche_forecasts_2009_2025.csv", header = TRUE)
+data <- read.csv("data/scotland_avalanche_forecasts_2009_2025.csv", header = TRUE)
 ```
 
 ```{r, eval=FALSE}
@@ -359,5 +359,25 @@ preproc_obj <- preProcess(
 train_scaled <- predict(preproc_obj, train_data)
 test_scaled <- predict(preproc_obj, test_data)
 
+predictor_set_1_train = select(train_scaled, longitude:Aspect_cos)
+predictor_set_2_train = select(train_scaled, Wind.Speed:Rain.at.900)
+predictor_set_3_train = select(train_scaled, Max.Temp.Grad:Snow.Temp)
+predictor_set_4_train = select(train_scaled, c(-FAH, -FAH_factor))
+training_data = list(predictor_set_1_train, predictor_set_2_train, 
+                     predictor_set_3_train, predictor_set_4_train)
+save(training_data, file = 'data/training_data.RData')
+
+predictor_set_1_test = select(test_scaled, longitude:Aspect_cos)
+predictor_set_2_test = select(test_scaled, Wind.Speed:Rain.at.900)
+predictor_set_3_test = select(test_scaled, Max.Temp.Grad:Snow.Temp)
+predictor_set_4_test = select(test_scaled, c(-FAH, -FAH_factor))
+testing_data = list(predictor_set_1_test, predictor_set_2_test, 
+                    predictor_set_3_test, predictor_set_4_test)
+save(testing_data, file = 'data/testing_data.RData')
+
+y_train = train_scaled$FAH
+save(y_train, file = 'data/y_train.RData')
+y_test  = test_scaled$FAH
+save(y_test, file = 'data/y_test.RData')
 ```
 

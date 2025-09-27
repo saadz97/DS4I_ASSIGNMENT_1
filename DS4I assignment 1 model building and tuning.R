@@ -11,32 +11,6 @@ library(dplyr)
 library(tidyr)
 library(reticulate)
 
-# ensure that inside the folder you have the project in you also have a folder
-# called data that contains the data. 
-data = read.csv('./data/scotland_avalanche_forecasts_2009_2025.csv')
-
-# this is a very general solution to the problem of missing entries
-# maybe imputation?
-data = drop_na(data)
-data = filter(data, FAH != '', OAH != '', Precip.Code != '')
-
-data = filter(data, Alt <= 1300,  Alt >= 0)
-data = filter(data, Aspect <= 360, Aspect >= 0)
-data = filter(data, Incline <= 90, Incline >= 0)
-data = filter(data, Wind.Dir <= 360, Wind.Dir >= 0)
-data = filter(data, Wind.Speed >= 0)
-data = filter(data, Cloud >= 0)
-# Drift needs to be a factor
-data = filter(data, Total.Snow.Depth >= 0)
-data = filter(data, Foot.Pen >= 0)
-data = filter(data, Ski.Pen >= 0)
-# Rain.at.900 needs to be a factor
-data = filter(data, Summit.Wind.Speed >= 0)
-data = filter(data, Summit.Wind.Dir <= 360, Summit.Wind.Dir >= 0)
-#data = filter(data, Max.Temp.Grad >= 10)
-# Max.Hardness.Grad is a categorical
-data = filter(data, Snow.Temp <= 5)
-
 
 ## data description ##
 
@@ -50,81 +24,26 @@ data = filter(data, Snow.Temp <= 5)
 # Max.Temp.Grad:Snow.Temp = results of a ”snow pack test” of the integrity of snow at
 # the forecast location (predictor set 3)
 
-#unique(data['Area'])
-#unique(data['Obs'])
-#unique(data['FAH'])
-#unique(data['OAH'])
-#unique(data['Precip.Code'])
 
-load('data/train_scaled.RData')
-load('data/test_scaled.RData')
+#colnames(select(data, longitude:Incline))
+#colnames(select(data, Air.Temp:Summit.Wind.Speed))
+#colnames(select(data, Max.Temp.Grad:Snow.Temp))
 
-colnames(select(data, longitude:Incline))
-colnames(select(data, Air.Temp:Summit.Wind.Speed))
-colnames(select(data, Max.Temp.Grad:Snow.Temp))
+load('data/training_data.RData')
+load('data/testing_data.RData')
 
-# we removed lattitude and longitude and incline
-# why is area now conitnuous and scaled instead of a category?
-# need to remove the FAH_factor
+load('data/y_train.RData')
+load('data/y_test.RData')
 
-test_scaled  = test_scaled[, -22]
-train_scaled = train_scaled[, -22]
+y_train = to_categorical(y_train, num_classes = 5)
+y_test  = to_categorical(y_test, num_classes = 5)
 
-set.seed(2025)
-training_indices = sample(1:nrow(data), floor(nrow(data) * 0.7), replace = F)
-
-data$FAH         = as.integer(factor(x = data$FAH)) - 1
-data$OAH         = as.integer(factor(x = data$OAH)) - 1
-data$Precip.Code = as.integer(factor(data$Precip.Code)) - 1
-
-predictor_set_1       = select(data, c('longitude':'Incline'))
-predictor_set_1_train = mutate(predictor_set_1[training_indices, ], 
-                               across(c(longitude : Incline), scale))
-predictor_set_1_test  = mutate(predictor_set_1[-training_indices, ], 
-                               across(c(longitude : Incline), scale))
-predictor_set_1_train = as.matrix(predictor_set_1_train)
-predictor_set_1_test  = as.matrix(predictor_set_1_test)
-
-predictor_set_2       = select(data, c('Air.Temp':'Summit.Wind.Speed'))
-predictor_set_2_train = mutate(predictor_set_2[training_indices, ],
-                               across(c(Air.Temp : Summit.Wind.Speed, - Precip.Code), scale))
-predictor_set_2_test  = mutate(predictor_set_2[-training_indices, ],
-                               across(c(Air.Temp : Summit.Wind.Speed, - Precip.Code), scale))
-predictor_set_2_train = as.matrix(predictor_set_2_train)
-predictor_set_2_test  = as.matrix(predictor_set_2_test)
-
-predictor_set_3       = select(data, c('Max.Temp.Grad':'Snow.Temp'))
-predictor_set_3_train = mutate(predictor_set_3[training_indices, ],
-                               across(c(Max.Temp.Grad : Snow.Temp), scale))
-predictor_set_3_test  = mutate(predictor_set_3[-training_indices, ],
-                               across(c(Max.Temp.Grad : Snow.Temp), scale))
-predictor_set_3_train = as.matrix(predictor_set_3_train)
-predictor_set_3_test  = as.matrix(predictor_set_3_test)
-
-predictor_set_4_train = cbind(predictor_set_1_train, predictor_set_2_train,
-                              predictor_set_3_train)
-predictor_set_4_test  = cbind(predictor_set_1_test, predictor_set_2_test,
-                              predictor_set_3_test)
-
-  
-#training_data_list = list(predictor_set_1_train, predictor_set_2_train,
-#                          predictor_set_3_train, predictor_set_4_train)
-#testing_data_list = list(predictor_set_1_test, predictor_set_2_test,
-#                         predictor_set_3_test, predictor_set_4_test)
-
-y = data$FAH
-y = to_categorical(y, num_classes = 5)
-
-#y_train = y[training_indices, ]
-#y_test  = y[-training_indices, ]
-
-
-y_train = to_categorical(train_scaled$FAH, num_classes = 5)
-y_test  = to_categorical(test_scaled$FAH, num_classes = 5)
-train_scaled = train_scaled[, -1]
-test_scaled  = test_scaled[, -1]
-training_data_list = list(train_scaled)
-testing_data_list. = list(test_scaled)
+comp_mat = matrix(c(colSums(y_train) / nrow(y_train), 
+                    colSums(y_test) / nrow(y_test)),
+                  byrow = T, nrow = 2)
+colnames(comp_mat) = paste('category ', 0:4)
+rownames(comp_mat) = c('train', 'test')
+#comp_mat
 
 #set.seed(2025)
 
@@ -194,12 +113,12 @@ for (i in 1:4){
     class_weights[[k]] = weights[k + 1]
   }
     
-  x_train = training_data_list[[i]]
+  x_train = training_data[[i]]
   
   tuner_randomsearch = kerastuneR::RandomSearch(hypermodel = model_builder,
                                                 objective = 'val_categorical_accuracy',
-                                                max_trials = 75, executions_per_trial = 1,
-                                                directory = 'tuning xp',
+                                                max_trials = 75, executions_per_trial = 3,
+                                                directory = 'tuning',
                                                 project_name = paste('randomsearch results', i),
                                                 overwrite = TRUE)
   
