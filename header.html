@@ -1,19 +1,39 @@
+<!-- Sidebar Toggle Button -->
 <button id="toggle-sidebar" aria-label="Toggle Menu" style="position: fixed; top: 1rem; left: 1rem; z-index: 9999;">
   ☰ Menu
 </button>
 
+<!-- Sidebar Content -->
+<div class="sidebar hidden">
+  <ul>
+    <li><a href="index.qmd">Home</a></li>
+    <li><a href="data.qmd">Data</a></li>
+    <li><a href="methodology.qmd">Methodology</a></li>
+    <li><a href="conclusions.qmd">Conclusions</a></li>
+  </ul>
+</div>
+
+<!-- Main Content Area -->
+<div class="main-content">
+  <!-- Your page content will go here -->
+  <h1>Welcome to Avalanche Forecasting</h1>
+  <p>This is the content of the page...</p>
+</div>
+
 
 
 <script>
+// JavaScript to toggle sidebar visibility
 document.addEventListener("DOMContentLoaded", function() {
   const sidebar = document.querySelector(".sidebar");
   const mainContent = document.querySelector(".main-content");
   const toggleButton = document.getElementById("toggle-sidebar");
 
+  // Check if the necessary elements exist
   if(toggleButton && sidebar && mainContent) {
     toggleButton.addEventListener("click", () => {
-      sidebar.classList.toggle("hidden");
-      mainContent.classList.toggle("sidebar-hidden");
+      sidebar.classList.toggle("hidden"); // Toggle sidebar visibility
+      mainContent.classList.toggle("sidebar-hidden"); // Adjust content when sidebar is open
     });
   }
 });

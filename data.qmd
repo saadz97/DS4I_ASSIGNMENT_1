@@ -1,5 +1,5 @@
 ---
-title: "Data"
+title: ""
 format: html
 
 execute:
@@ -98,7 +98,6 @@ here
 :::
 
 :::
-
 
 </div>
 

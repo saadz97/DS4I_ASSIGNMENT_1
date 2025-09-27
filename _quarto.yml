@@ -110,24 +110,35 @@ website:
   description: "Neural Network Avalanche Hazard Prediction for Scottish Mountains"
 
   # No built-in sidebar, using custom navigation
-  navbar:
-    title: "Avalanche Forecasting"
-    left:
-      - text: "Home"
-        href: index.qmd
-      - text: "Data"
-        href: data.qmd
-      - text: "Methodology"
-        href: methodology.qmd
-      - text: "Conclusions"
-        href: conclusions.qmd
+  # navbar:
+  #   title: "Avalanche Forecasting"
+  #   right:
+  #     - text: "Home"
+  #       href: index.qmd
+  #     - text: "Data"
+  #       href: data.qmd
+  #     - text: "Methodology"
+  #       href: methodology.qmd
+  #     - text: "Conclusions"
+  #       href: conclusions.qmd
+  
+  # # Sidebar settings: Using a floating sidebar instead of a navbar
+  # sidebar:
+  #   style: "floating"       # Floating sidebar
+  #   collapse-level: 1       # Collapse the sidebar at the first level
+  #   contents:
+  #     - index.qmd           # Home link
+  #     - data.qmd            # Data link
+  #     - methodology.qmd     # Methodology link
+  #     - conclusions.qmd     # Conclusions link
 
   page-footer:
     background: "#2d3748"
     foreground: "white"
     center: |
-      Should we add our names somewhere here? Should I remove the link to where the original data can be found? | Data Science for Industry Assignment
-
+      Avalanche Forecasting | Data Science for Industry Assignment
+      
+      Created by: [John Doe](#), [Jane Smith](#)
       [📱 View on GitHub](https://github.com/yourusername/scottish-avalanche-prediction){.btn .btn-outline-light .btn-sm}
       [Scottish Avalanche Information Service](https://www.sais.gov.uk/){.btn .btn-outline-light .btn-sm}
 
@@ -145,8 +156,5 @@ format:
 execute:
   freeze: auto
   cache: true
-
-
-
-
+  
 

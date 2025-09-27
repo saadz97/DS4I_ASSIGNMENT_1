@@ -1,5 +1,5 @@
 ---
-title: "Methodology"
+title: ""
 format: html
 
 execute:
@@ -16,6 +16,8 @@ library(kableExtra)
 
 ```
 
+
+
 <div id="menu-toggle" onclick="toggleSidebar()">☰ Menu</div>
 
 <div class="sidebar">
@@ -29,7 +31,6 @@ library(kableExtra)
 
 <div class="main-content">
   <!-- Your page content goes here -->
-
 
 ## Methodology {#methodology}
 
@@ -83,7 +84,7 @@ split_summary <- data.frame(
 
 kable(split_summary, 
       caption = "Data Split Summary") %>%
-  kable_styling(bootstrap_options = c("striped", "hover"))
+  kable_styling()
 ```
 
 :::{.card}
@@ -92,7 +93,6 @@ We used....
 
 - **Accuracy:** .....
 - ad more here
-
 
 </div>
 

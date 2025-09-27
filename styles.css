@@ -170,28 +170,31 @@ body {
 
 
 
-/*DT
+/*DT For the Side bar
 
 /* ======================= */
 /* Sidebar drawer toggle styles */
 /* ======================= */
 
-/* Hide sidebar by default */
+/* Hide sidebar completely by default */
 .sidebar {
-  transform: translateX(-100%);
-  transition: transform 0.3s ease-in-out;
+  display: none; /* Initially hide the sidebar completely */
   position: fixed;
   top: 0;
   left: 0;
   height: 100%;
+  width: 250px; /* Sidebar width */
   z-index: 1000;
-  background: white; /* Ensure sidebar background is visible */
-  box-shadow: 2px 0 8px rgba(0,0,0,0.15);
+  background: white;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease-in-out; /* Smooth transition */
+  overflow-y: auto;  /* Enable scrolling if content overflows */
 }
 
 /* Show sidebar when toggled */
 .sidebar.open {
-  transform: translateX(0%);
+  display: block; /* Show sidebar when the 'open' class is added */
+  transform: translateX(0); /* Slide sidebar into view */
 }
 
 /* Hamburger menu button */
@@ -207,19 +210,39 @@ body {
   z-index: 1100;
   font-size: 1.2rem;
   user-select: none;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Prevent content shifting */
-body {
-  padding-left: 0 !important;
+/* Position sidebar content (menu items) below the hamburger menu */
+.sidebar ul {
+  padding-top: 60px; /* Ensure the links start below the menu button */
+  margin: 0;  /* Remove default margin */
+  list-style-type: none; /* Remove bullet points */
 }
 
+.sidebar ul li {
+  padding: 15px 20px; /* Padding for each item */
+  font-size: 1.2rem;
+  border-bottom: 1px solid #eee; /* Add subtle separation between items */
+}
 
+.sidebar ul li a {
+  color: #333; /* Dark text color */
+  text-decoration: none; /* Remove underline */
+  display: block; /* Make the link fill the list item */
+}
+
+.sidebar ul li a:hover {
+  background-color: #f1f1f1; /* Highlight on hover */
+}
+
+/* ------------------------- */
 /* Main content shift when sidebar is open */
+/* ------------------------- */
 .main-content {
   transition: margin-left 0.3s ease;  /* Smooth transition for the main content */
   margin-left: 0;  /* Default margin when sidebar is closed */
+  padding-top: 60px; /* Add padding at the top of the page content */
 }
 
 /* Shift main content when sidebar is open */
@@ -227,6 +250,65 @@ body {
   margin-left: 250px;  /* Adjust according to the width of your sidebar */
 }
 
+/* Adjust table of contents when sidebar is visible */
+.toc {
+  margin-top: 80px;  /* Move the table of contents down to avoid the hamburger menu */
+}
 
 
 
+
+
+/* Search Bar Styles */
+#search-bar {
+  display: none;
+  position: fixed;
+  top: 15px;
+  right: 15px; /* Position to the right side */
+  background: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  z-index: 1100;
+  transition: transform 0.3s ease-in-out;
+  width: 200px; /* Adjust width of the search bar */
+}
+
+#search-bar input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+#search-bar.open {
+  display: block;
+  transform: translateX(0);
+}
+
+/* Search Toggle Button (Positioned at top-right as well) */
+#search-toggle {
+  position: fixed;
+  top: 15px;
+  right: 15px; /* Position to the right side */
+  background: var(--primary-gradient);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  z-index: 1200;
+  font-size: 1.2rem;
+  user-select: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Highlight search matches */
+.searchable {
+  transition: background-color 0.3s ease;
+}
+
+/* Optional: Style for highlighted search matches */
+.searchable.match {
+  background-color: #fffae6; /* Light yellow for highlighted text */
+}
