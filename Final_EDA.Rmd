@@ -50,7 +50,7 @@ data <- data %>% mutate(Year = year(Date), Month = month(Date))
 table(data$Month)
 
 # Remove unnecessary columns
-data <- data %>% select(-OSgrid, -OAH, -Obs, -Location, -longitude, -latitude, -Date)
+data <- data %>% select(-OSgrid, -OAH, -Obs, -Location, -Date)
 
 ```
 
@@ -134,7 +134,7 @@ dim(data_cleaned)
 
 # No variables have more than 50% missing data so impute all missing values.
 
-pred_1 <- c("Area", "Alt", "Incline", "Aspect_sin", "Aspect_cos")
+pred_1 <- c("Area", "longitude", "latitude", "Alt", "Incline", "Aspect_sin", "Aspect_cos")
 
 pred_2 <- c("Air.Temp", "Wind.Speed", "Cloud", "Precip.Code", "Drift",
            "Summit.Air.Temp", "Summit.Wind.Speed", "WindDir_sin", "WindDir_cos", 
@@ -334,6 +334,7 @@ for(i in 1:min(4, length(predictor_3))) {
 do.call(grid.arrange, c(plot3, ncol = 2))
 
 ```
+
 ```{r scaling}
 
 set.seed(12345)
@@ -359,3 +360,4 @@ train_scaled <- predict(preproc_obj, train_data)
 test_scaled <- predict(preproc_obj, test_data)
 
 ```
+
