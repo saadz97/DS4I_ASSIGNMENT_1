@@ -1,0 +1,15 @@
+{
+  "hash": "a256df8f8b0b604fc45b09c21ad07c51",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"\"\nformat: html\n\nexecute:\n  echo: true\n  warning: false\n  message: false\n---\n\n\n::: {.cell}\n\n:::\n\n\n\n<div id=\"menu-toggle\" onclick=\"toggleSidebar()\">☰ Menu</div>\n<div class=\"sidebar\">\n  <ul>\n    <li><a href=\"index.qmd\">Home</a></li>\n    <li><a href=\"Abstract.qmd\">Abstract</a></li>\n    <li><a href=\"Introduction.qmd\">Introduction</a></li>\n    <li><a href=\"Data_and_Methods.qmd\">Data and Methods</a></li>\n    <li><a href=\"Results.qmd\">Results</a></li>\n    <li><a href=\"Discussion.qmd\">Discussion</a></li>\n    <li><a href=\"Conclusion.qmd\">Conclusion</a></li>\n    <li><a href=\"LLMs_discussion.qmd\">LLM</a></li>\n  </ul>\n</div>\n<div class=\"main-content\">\n  <!-- Your page content goes here -->\n\n\n## Introduction\n\nIntroduction over here...\n\n</div>\n<script>\n  function toggleSidebar() {\n    const sidebar = document.querySelector('.sidebar');\n    if (sidebar.classList.contains('open')) {\n      sidebar.classList.remove('open');\n    } else {\n      sidebar.classList.add('open');\n    }\n  }\n</script>\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

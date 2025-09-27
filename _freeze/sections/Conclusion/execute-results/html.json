@@ -1,0 +1,15 @@
+{
+  "hash": "0537119c49c5992752a8cd27fe59b89d",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"\"  # Empty title since we use custom hero\nformat: \n  html:\n    page-layout: full\nexecute:\n  echo: true\n  warning: false\n  message: false\n---\n\n\n::: {.cell}\n\n:::\n\n\n\n## 5. Conclusion {#sec-Conclusion}\n\nConclusion here\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

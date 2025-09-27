@@ -1,0 +1,15 @@
+{
+  "hash": "b04c5aabda72497887a4e4deecc04b9f",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"\"\nformat: html\n\nexecute:\n  echo: true\n  warning: false\n  message: false\n---\n\n\n::: {.cell}\n\n:::\n\n\n\n## 6. Use of Large Language Models (LLMs) {#sec-LLMs_discussion}\n\nTalking about use of LLMs over here\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

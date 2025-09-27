@@ -1,0 +1,15 @@
+{
+  "hash": "ce455ff8d22a6b4d6bb8ae78c2da134e",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"\"\nformat: html\nexecute:\n  echo: true\n  warning: false\n  message: false\n---\n\n\n::: {.cell}\n\n:::\n\n\n\n## Abstract {#sec-Abstract}\n\nAbstract over here...\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

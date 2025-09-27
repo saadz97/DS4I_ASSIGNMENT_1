@@ -1,0 +1,27 @@
+---
+title: ""
+format: html
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r, echo = F}
+library(kableExtra)
+```
+
+  
+
+## 2. Data and Methods {#sec-Data_and_Methods}
+
+Put in the data and methods section of the report in here
+
+## 2.1 Data Cleaning and Preprocessing
+
+.....
+
+### 2.2 Neural Network Stuff...
+
+....
+

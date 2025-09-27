@@ -1,0 +1,15 @@
+{
+  "hash": "f568c25b0376597a9cbd16292a43db69",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"\"\nformat: html\nexecute:\n  echo: true\n  warning: false\n  message: false\n---\n\n\n::: {.cell}\n\n:::\n\n\n  \n\n## 2. Data and Methods {#sec-Data_and_Methods}\n\nPut in the data and methods section of the report in here\n\n## 2.1 Data Cleaning and Preprocessing\n\n.....\n\n### 2.2 Neural Network Stuff...\n\n....\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

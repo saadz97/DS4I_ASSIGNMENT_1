@@ -1,0 +1,18 @@
+---
+title: ""
+format: html
+
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r, echo = F}
+library(kableExtra)
+```
+
+
+## 6. Use of Large Language Models (LLMs) {#sec-LLMs_discussion}
+
+Talking about use of LLMs over here
