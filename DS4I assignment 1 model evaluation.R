@@ -10,7 +10,7 @@ library(jsonlite)
 
 tuning_results = function(directory, max_layers){
   
-  json_path = paste0('tuning/randomsearch results 4/trial_15', '/trial.json')
+  json_path = paste0(directory, '/trial.json')
   tuning_results = fromJSON(txt = json_path)
   hp               = tuning_results$hyperparameters$values
   number_of_layers = hp$number_of_layers
@@ -33,7 +33,7 @@ tuning_results = function(directory, max_layers){
 # Test
 # tuning_results('tuning/randomsearch results 1/trial_19', 5)
 
-directories              = list.dirs('tuning', recursive = FALSE)
+directories              = list.dirs('tuning xp', recursive = FALSE)
 randomsearch_search      = 'randomsearch'
 randomsearch_directories = grep(randomsearch_search, directories, value = TRUE)
 
@@ -48,7 +48,7 @@ results_compiler = function(method_directory){
 }
 
 # Test
-#results_compiler('tuning/randomsearch results 1')
+#results_compiler('tuning xp/randomsearch results 1')
 
 # the results automatically get saved locally, inside the same tuning folder
 results_compiler(randomsearch_directories)
@@ -58,7 +58,7 @@ results_compiler(randomsearch_directories)
 # load('tuning/randomsearch results 1/summary.RData')
 
 # Test
-#load('tuning/randomsearch results 3/summary.RData')
+#load('tuning xp/randomsearch results 1/summary.RData')
 
 ###__________________________________________________________________________###
 
