@@ -41,6 +41,69 @@ df = mutate(df, 'Predictor set' = rep(1:4, each = 3), .before = 'Validation accu
 save(df, file = 'tuning/tuning_summary_table.RData')
 load('tuning/tuning_summary_table.RData')
 
+
+### The Tuning plot
+names(df) <- gsub(" ", "_", names(df))
+
+
+set.seed(1)  # for reproducibility of shuffle
+
+top_10_shuffled <- df %>%
+  group_by(Predictor_set) %>%
+  sample_frac(1) %>%  # shuffle rows within each Predictor_set
+  ungroup() %>%
+  rowwise() %>%
+  mutate(
+    combo_label = paste0(
+      "LR=", Learning_rate,
+      ", Layers=", Number_of_layers,
+      ", Nodes=[", 
+      paste(na.omit(c_across(starts_with("nodes_on_layer_"))), collapse = ", "),
+      "]"
+    )
+  ) %>%
+  ungroup()
+
+# Now reorder combo_label factor so predictor sets are grouped but shuffled inside
+top_10_shuffled <- top_10_shuffled %>%
+  arrange(Predictor_set) %>%  # predictor sets grouped in order
+  mutate(combo_label = factor(combo_label, levels = unique(combo_label)))
+
+# Find optimal points per predictor set (same as before)
+optimal_points <- top_10_shuffled %>%
+  group_by(Predictor_set) %>%
+  filter(Validation_accuracy == max(Validation_accuracy)) %>%
+  ungroup()
+
+my_colors <- c(
+  "1" = "#e41a1c",  # bright red
+  "2" = "#377eb8",  # strong blue
+  "3" = "#4daf4a",  # vivid green
+  "4" = "#ff7f00"   # bright orange
+)
+
+
+# Plot
+ggplot(top_10_shuffled, aes(x = combo_label, y = Validation_accuracy, color = factor(Predictor_set))) +
+  geom_point(size = 3) +
+  geom_point(data = optimal_points, aes(x = combo_label, y = Validation_accuracy),
+             color = "red", size = 5, shape = 8) +
+  geom_point(size = 3)+
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 70, hjust = 1),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  ) +
+  xlab("Hyperparameter Combination") +
+  ylab("Validation Accuracy") +
+  scale_color_manual(values = my_colors, name = "Predictor Set")
+###############
+
+
+
+
+
 summary_table = kable(df, format = 'html', booktabs = TRUE) %>% 
   kable_styling(full_width = FALSE, position = 'center') %>%
   collapse_rows(columns = 1, valign = 'middle')
