@@ -43,6 +43,8 @@ comp_mat = matrix(c(colSums(y_train) / nrow(y_train),
                   byrow = T, nrow = 2)
 colnames(comp_mat) = paste('category ', 0:4)
 rownames(comp_mat) = c('train', 'test')
+save(comp_mat, file = 'test/category_imbalance.RData')
+
 #comp_mat
 
 #set.seed(2025)

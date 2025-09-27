@@ -149,7 +149,7 @@ save(metrics_mat, file = 'test/metrics_mat.RData')
 load('test/con_mat.RData')
 kable(con_mat, format = 'html', caption = 'Confusion matrix') %>%
   kable_styling(full_width = FALSE, position = 'center') %>%
-  add_header_above(c(" " = 1, "Reference" = 5))
+  add_header_above(c(' ' = 1, 'Predicted' = 5))
 
 
 load('test/metrics_mat.RData')
