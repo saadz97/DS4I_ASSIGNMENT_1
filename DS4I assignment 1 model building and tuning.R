@@ -185,7 +185,7 @@ model_builder = function(hp){
 # this will create a new folder called tuning inside your project folder
 # in that folder it will contain the information about the trials
 # this should probably be converted into a proper function  
-for (i in 1){
+for (i in 1:4){
   
   freqs = colSums(y_train) / nrow(y_train)
   weights = sqrt(1 / freqs)
@@ -210,23 +210,6 @@ for (i in 1){
                                    class_weight = class_weights,
                                    validation_split = 0.2,
                                    shuffle = TRUE)
-  
-  #results_summary(tuner = tuner_randomsearch, num_trials = 5)
-  
-  #tuner_hyperband = kerastuneR::Hyperband(hypermodel = model_builder,
-  #                                        objective = 'val_accuracy',
-  #                                        directory = 'tuning',
-  #                                        project_name = paste('hyperband results', i),
-  #                                        max_epochs = 50,
-  #                                        hyperband_iterations = 50,
-  #                                        seed = 2025, overwrite = TRUE)
-  
-  #tuner_hyperband %>% fit_tuner(x = x_train,
-  #                              y = y_train,
-  #                              epochs = 50,
-  #                              validation_split = 0.2, shuffle = TRUE)
-  
-  #results_summary(tuner = tuner_hyperband, num_trials = 5)
 }
 
 ###__________________________________________________________________________###
