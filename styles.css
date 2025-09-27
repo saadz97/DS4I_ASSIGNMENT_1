@@ -1,4 +1,3 @@
-
 /* ============================================= */
 /* Custom CSS for Scottish Avalanche Prediction Site */
 /* ============================================= */
@@ -29,10 +28,11 @@ body {
   backdrop-filter: blur(10px);           /* Blurred background behind container */
   border-radius: 20px;                   /* Rounded corners */
   margin: 2rem auto;                     /* Center container horizontally */
-  padding: 2rem;                         /* Inner spacing */
+  padding: 1rem;                         /* Inner spacing */
   box-shadow: var(--card-shadow);        /* Subtle shadow */
   max-width: 1200px;                     /* Limit container width */
 }
+
 
 /* ------------------------- */
 /* Hero / Banner section */
@@ -43,10 +43,10 @@ body {
   
   color: white;                /* text color on top of image */
   text-align: center;          /* center-align heading and subtitle */
-  padding: 4rem 2rem;          /* spacing inside hero */
-  margin: -2rem -2rem 3rem -2rem; /* extend hero to page edges */
+  padding: 3.5rem 2rem;          /* spacing inside hero */
+  margin: -2rem -1rem 3rem -2rem; /* extend hero to page edges */
   border-radius: 20px 20px 0 0;   /* rounded top corners */
-  position: relative;             /* for proper layering if needed */
+  position: relative;
 }
 
 /* Hero main heading */
@@ -54,7 +54,6 @@ body {
   font-size: 3.5rem;                     /* Large heading */
   margin-bottom: 1rem;                   /* Space below */
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Adds contrast for readability */
-  animation: fadeInUp 1s ease;           /* Slide-in animation */
 }
 
 /* Hero subtitle */
@@ -65,23 +64,6 @@ body {
   margin-left: auto;
   margin-right: auto;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Subtle shadow */
-  animation: fadeInUp 1s ease 0.3s both; /* Slide-in with slight delay */
-}
-
-/* ------------------------- */
-/* Call-to-action buttons */
-/* ------------------------- */
-.cta-button {
-  display: inline-block;                 /* Inline button */
-  background: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
-  color: white !important;               /* Text color forced to white */
-  padding: 1rem 2rem;                    /* Spacing inside button */
-  text-decoration: none;                 /* Remove underline */
-  border-radius: 50px;                   /* Rounded pill shape */
-  font-weight: bold;                      /* Bold text */
-  backdrop-filter: blur(10px);           /* Slight blur effect behind button */
-  border: 2px solid rgba(255, 255, 255, 0.3); /* Light border */
-  animation: fadeInUp 1s ease 0.6s both; /* Slide-in animation */
 }
 
 /* ------------------------- */
@@ -108,72 +90,9 @@ body {
   margin: 2rem 0;
 }
 
-/* ------------------------- */
-/* Card components */
-/* ------------------------- */
-.card {
-  background: #f8fafc;           /* Light background */
-  padding: 2rem;
-  border-radius: 15px;           /* Rounded corners */
-  border: 1px solid #e2e8f0;    /* Light border */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* Shadow */
-}
-
-.card h3 {
-  color: #2d3748;                /* Dark heading color */
-  margin-bottom: 1rem;
-  font-size: 1.4rem;
-}
-
-.card h4 {
-  color: #4a5568;                /* Lighter subheading color */
-  margin-bottom: 0.8rem;
-  font-size: 1.2rem;
-}
-
-/* ------------------------- */
-/* Metric cards (highlighted stats) */
-/* ------------------------- */
-.metric {
-  background: var(--primary-gradient); /* Gradient background */
-  color: white;                        /* White text for contrast */
-  padding: 2rem;
-  border-radius: 15px;
-  text-align: center;
-  box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3);
-}
-
-.metric-value {
-  font-size: 3rem;                     /* Large number */
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.metric-label {
-  font-size: 1.1rem;                   /* Description under the number */
-  opacity: 0.95;                        /* Slightly transparent */
-}
-
-/* ------------------------- */
-/* Hazard scale / level (flex layout) */
-/* ------------------------- */
-.hazard-scale {
-  display: flex;       /* Place hazard levels side by side */
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-
-
-
-
-
-
-/*DT For the Side bar
 
 /* ======================= */
-/* Sidebar drawer toggle styles */
+/* Sidebar drawer toggle styles - FIXED VERSION */
 /* ======================= */
 
 /* Hide sidebar completely by default */
@@ -181,7 +100,7 @@ body {
   display: none; /* Initially hide the sidebar completely */
   position: fixed;
   top: 0;
-  left: 0;
+  left: -250px; /* Start off-screen to the left */
   height: 100%;
   width: 250px; /* Sidebar width */
   z-index: 1000;
@@ -191,10 +110,29 @@ body {
   overflow-y: auto;  /* Enable scrolling if content overflows */
 }
 
-/* Show sidebar when toggled */
+/* Show sidebar when toggled - slides in from left */
 .sidebar.open {
   display: block; /* Show sidebar when the 'open' class is added */
-  transform: translateX(0); /* Slide sidebar into view */
+  transform: translateX(250px); /* Slide sidebar into view from off-screen */
+}
+
+/* Optional: Add backdrop/overlay when sidebar is open */
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-backdrop.open {
+  display: block;
+  opacity: 1;
 }
 
 /* Hamburger menu button */
@@ -237,27 +175,22 @@ body {
 }
 
 /* ------------------------- */
-/* Main content shift when sidebar is open */
+/* Main content - REMOVED THE SHIFTING BEHAVIOR */
 /* ------------------------- */
 .main-content {
-  transition: margin-left 0.3s ease;  /* Smooth transition for the main content */
-  margin-left: 0;  /* Default margin when sidebar is closed */
+  /* Removed transition and margin-left changes */
   padding-top: 60px; /* Add padding at the top of the page content */
 }
 
-/* Shift main content when sidebar is open */
-.sidebar.open ~ .main-content {
-  margin-left: 250px;  /* Adjust according to the width of your sidebar */
-}
+/* REMOVED: This was causing the content to shift */
+/* .sidebar.open ~ .main-content {
+  margin-left: 250px;
+} */
 
 /* Adjust table of contents when sidebar is visible */
 .toc {
   margin-top: 80px;  /* Move the table of contents down to avoid the hamburger menu */
 }
-
-
-
-
 
 /* Search Bar Styles */
 #search-bar {
@@ -312,3 +245,90 @@ body {
 .searchable.match {
   background-color: #fffae6; /* Light yellow for highlighted text */
 }
+
+
+
+/* ======================= */
+/* Hide Code Tools Interface */
+/* ======================= */
+
+/* Hide the code tools dropdown and source code icon */
+.code-tools-button,
+.code-tools-dropdown,
+#quarto-code-tools-button,
+#quarto-code-tools-menu,
+.navbar .code-tools,
+.code-tools {
+  display: none !important;
+}
+
+/* Hide any other code-related UI elements */
+.sourceCode .code-tools,
+.cell-code .code-tools {
+  display: none !important;
+}
+
+
+
+/* ======================= */
+/* JavaScript for Auto-Close Menu */
+/* ======================= */
+
+/*
+Add this JavaScript to your .qmd file or in a separate script tag:
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.getElementById('menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    const backdrop = document.querySelector('.sidebar-backdrop');
+    const sidebarLinks = document.querySelectorAll('.sidebar ul li a');
+    
+    // Function to close sidebar
+    function closeSidebar() {
+        sidebar.classList.remove('open');
+        if (backdrop) {
+            backdrop.classList.remove('open');
+        }
+    }
+    
+    // Function to open sidebar
+    function openSidebar() {
+        sidebar.classList.add('open');
+        if (backdrop) {
+            backdrop.classList.add('open');
+        }
+    }
+    
+    // Toggle sidebar when hamburger menu is clicked
+    menuToggle.addEventListener('click', function() {
+        if (sidebar.classList.contains('open')) {
+            closeSidebar();
+        } else {
+            openSidebar();
+        }
+    });
+    
+    // Close sidebar when any menu link is clicked
+    sidebarLinks.forEach(function(link) {
+        link.addEventListener('click', function() {
+            closeSidebar();
+        });
+    });
+    
+    // Close sidebar when backdrop is clicked (if you're using backdrop)
+    if (backdrop) {
+        backdrop.addEventListener('click', function() {
+            closeSidebar();
+        });
+    }
+    
+    // Close sidebar when Escape key is pressed
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && sidebar.classList.contains('open')) {
+            closeSidebar();
+        }
+    });
+});
+</script>
+*/

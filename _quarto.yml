@@ -1,106 +1,3 @@
-# project:
-#   type: website
-#   output-dir: docs
-# 
-# website:
-#   title: "Avalanche Forecasting"
-#   description: "Neural Network Avalanche Hazard Prediction for Scottish Mountains"
-#   #favicon: "🏔️"
-#   
-#   navbar:
-#     background: "rgba(255, 255, 255, 0.95)"
-#     foreground: "#4a5568"
-#     right:
-#       # - text: "Overview"
-#       #   href: "#overview"
-#       # - text: "Data"
-#       #   href: "#data"
-#       # - text: "Methodology" 
-#       #   href: "#methodology"
-#       # - text: "Results"
-#       #   href: "#results"
-#       # - text: "Conclusions"
-#       #   href: "#conclusions"
-#       - text: "Overview"
-#         href: index.qmd
-#       - text: "Data"
-#         href: data.qmd
-#       - text: "Methodology"
-#         href: methodology.qmd
-#       - text: "Conclusions"
-#         href: conclusions.qmd
-#       
-#       
-# 
-#   page-footer:
-#     background: "#2d3748"
-#     foreground: "white"
-#     center: |
-#       Should we add our names somewhere here? Should i remove the link to where the original data can be found? | Data Science for Industry Assignment
-#       
-#       [📱 View on GitHub](https://github.com/yourusername/scottish-avalanche-prediction){.btn .btn-outline-light .btn-sm}
-#       [Scottish Avalanche Information Service](https://www.sais.gov.uk/){.btn .btn-outline-light .btn-sm}
-#       
-# 
-# format:
-#   html:
-#     theme: journal 
-#     css: styles.css 
-#     toc: false
-#     code-fold: true
-#     code-tools: true
-#     smooth-scroll: true
-#     anchor-sections: true
-#     link-external-newwindow: true
-#     
-# execute:
-#   freeze: auto
-#   cache: true
-
-# 
-# project:
-#   type: website
-#   output-dir: docs
-# 
-# website:
-#   title: "Avalanche Forecasting"
-#   description: "Neural Network Avalanche Hazard Prediction for Scottish Mountains"
-# 
-#   sidebar:
-#     style: "floating"       # ✅ supported in all Quarto versions
-#     collapse-level: 1
-#     contents:
-#       - index.qmd
-#       - data.qmd
-#       - methodology.qmd
-#       - conclusions.qmd
-# 
-#   page-footer:
-#     background: "#2d3748"
-#     foreground: "white"
-#     center: |
-#       Should we add our names somewhere here? Should I remove the link to where the original data can be found? | Data Science for Industry Assignment
-# 
-#       [📱 View on GitHub](https://github.com/yourusername/scottish-avalanche-prediction){.btn .btn-outline-light .btn-sm}
-#       [Scottish Avalanche Information Service](https://www.sais.gov.uk/){.btn .btn-outline-light .btn-sm}
-# 
-# format:
-#   html:
-#     theme: journal
-#     css: styles.css   # 👈 Add our custom CSS here
-#     toc: false
-#     code-fold: true
-#     code-tools: true
-#     smooth-scroll: true
-#     anchor-sections: true
-#     link-external-newwindow: true
-# 
-# execute:
-#   freeze: auto
-#   cache: true
-
-
-
 project:
   type: website
   output-dir: docs
@@ -109,45 +6,12 @@ website:
   title: "Avalanche Forecasting"
   description: "Neural Network Avalanche Hazard Prediction for Scottish Mountains"
 
-  # No built-in sidebar, using custom navigation
-  # navbar:
-  #   title: "Avalanche Forecasting"
-  #   right:
-  #     - text: "Home"
-  #       href: index.qmd
-  #     - text: "Data"
-  #       href: data.qmd
-  #     - text: "Methodology"
-  #       href: methodology.qmd
-  #     - text: "Conclusions"
-  #       href: conclusions.qmd
-  
-  # # Sidebar settings: Using a floating sidebar instead of a navbar
-  # sidebar:
-  #   style: "floating"       # Floating sidebar
-  #   collapse-level: 1       # Collapse the sidebar at the first level
-  #   contents:
-  #     - index.qmd           # Home link
-  #     - data.qmd            # Data link
-  #     - methodology.qmd     # Methodology link
-  #     - conclusions.qmd     # Conclusions link
-
-  page-footer:
-    background: "#2d3748"
-    foreground: "white"
-    center: |
-      Avalanche Forecasting | Data Science for Industry Assignment
-      
-      Created by: [John Doe](#), [Jane Smith](#)
-      [📱 View on GitHub](https://github.com/yourusername/scottish-avalanche-prediction){.btn .btn-outline-light .btn-sm}
-      [Scottish Avalanche Information Service](https://www.sais.gov.uk/){.btn .btn-outline-light .btn-sm}
-
 format:
   html:
     theme: journal
-    css: styles.css   # Your custom CSS file
+    css: styles.css   
     toc: false
-    code-fold: true
+    code-fold: false
     code-tools: true
     smooth-scroll: true
     anchor-sections: true
@@ -156,5 +20,3 @@ format:
 execute:
   freeze: auto
   cache: true
-  
-
