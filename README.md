@@ -17,7 +17,7 @@ The goal of this project is to construct and evaluate a neural network model tha
 - **Key Predictors:** Topography, Weather, Snow Pack Test results
 - **Model:** Artificial Neural Network (ANN) built with TensorFlow/Keras
 
-**Live Website:** https://github.com/saadz97/DS4I_ASSIGNMENT_1  
+**Live Website:** https://saadz97.github.io/DS4I_ASSIGNMENT_1/
 **Final Report:** [Direct link to the report on your GitHub Pages site]
 
 ## Project Structure
