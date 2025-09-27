@@ -1,0 +1,361 @@
+---
+title: "Final EDA"
+author: "Data Cleaning & EDA Team"
+date: "2025-09-26"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(corrplot)
+library(lubridate)
+library(gridExtra)
+library(VIM)
+library(mice)
+library(caret)
+library(ggplot2)
+```
+
+
+```{r}
+data <- read.csv("scotland_avalanche_forecasts_2009_2025.csv", header = TRUE)
+```
+
+```{r, eval=FALSE}
+head(data)
+dim(data)
+str(data)
+table(data$FAH) # target variable levels
+summary(data)
+```
+
+
+# Cleaning
+
+```{r}
+# Only keep rows where the target variable FAH is not missing (-109 rows)
+data <- data %>% filter(!is.na(FAH) & FAH != "")
+
+# Convert categorical target variable to numeric 
+data$FAH <- as.integer(factor(x = data$FAH, levels = c("Low", "Moderate", "Considerable -", "Considerable +", "High"))) - 1
+data$Precip.Code <- as.integer(factor(data$Precip.Code)) - 1
+data$Area <- as.integer(factor(data$Area)) - 1   # 6 areas
+
+# Create a year variable for date & Month
+# Don't have any data for July, Aug and Sept (summer months) 
+# Don't know if a month variable will be important? Should i make those months values be 0?
+data <- data %>% mutate(Year = year(Date), Month = month(Date))
+table(data$Month)
+
+# Remove unnecessary columns
+data <- data %>% select(-OSgrid, -OAH, -Obs, -Location, -longitude, -latitude, -Date)
+
+```
+
+# Missing data summary
+
+```{r}
+missing_summary <- data %>%
+  summarise_all(~sum(is.na(.))) %>%
+  pivot_longer(everything(), names_to = "Variable", values_to = "Missing_Count") %>%
+  mutate(Missing_Percent = round(Missing_Count / nrow(data) * 100, 1)) %>%
+  arrange(desc(Missing_Count))
+missing_summary
+
+```
+
+# Cleaning dataset from errors 
+
+```{r}
+data_cleaned <- data %>%
+  mutate(
+    Alt = ifelse(Alt < 0 | Alt > 1345, NA_real_, Alt),
+    Aspect = ifelse(Aspect < 0 | Aspect > 360, NA_real_, Aspect),
+    Incline = ifelse(Incline < 0 | Incline > 90, NA_real_, Incline),
+    Wind.Speed = ifelse(Wind.Speed < 0 | Wind.Speed > 176, NA_real_, Wind.Speed),
+    Cloud = ifelse(Cloud < 0 | Cloud > 100, NA_real_, Cloud),
+    Total.Snow.Depth = ifelse(Total.Snow.Depth < 0 | Total.Snow.Depth > 1500, NA_real_, Total.Snow.Depth),
+    Summit.Wind.Speed = ifelse(Summit.Wind.Speed < 0 | Summit.Wind.Speed > 176, NA_real_, Summit.Wind.Speed),
+    Foot.Pen = ifelse(Foot.Pen < 0 | Foot.Pen > 100, NA_real_, Foot.Pen),
+    Wind.Dir = ifelse(Wind.Dir < 0 | Wind.Dir > 360, NA_real_, Wind.Dir),
+    Summit.Wind.Dir = ifelse(Summit.Wind.Dir < 0 | Summit.Wind.Dir > 360, NA_real_, Summit.Wind.Dir),
+    Snow.Temp = ifelse(Snow.Temp > 0.5, NA_real_, Snow.Temp),
+    Max.Temp.Grad = ifelse(Max.Temp.Grad < 0 | Max.Temp.Grad > 2.5, NA_real_, Max.Temp.Grad))
+
+```
+
+
+```{r}
+# Convert circular variables into two features using sine and cosine transformations
+data_cleaned <- data_cleaned %>% 
+  mutate(Aspect_sin = sin(Aspect * pi / 180), Aspect_cos = cos(Aspect * pi / 180)) %>% 
+  mutate(WindDir_sin = sin(Wind.Dir * pi / 180), WindDir_cos = cos(Wind.Dir * pi / 180)) %>%
+  mutate(SummitWindDir_sin = sin(Summit.Wind.Dir * pi / 180), SummitWindDir_cos = cos(Summit.Wind.Dir * pi / 180)) %>%
+  select(-Wind.Dir, -Aspect, -Summit.Wind.Dir)
+
+```
+
+
+```{r}
+# Remove variables with high percentage of missing values or  those that don't make sense
+
+data_cleaned <- data_cleaned %>%
+  select(-Ski.Pen, -AV.Cat, -Crystals, -Wetness, -Year, -Snow.Index, -Insolation, -No.Settle)
+names(data_cleaned)
+
+dim(data_cleaned)
+```
+
+
+Removing observations with a plausible Total.Snow.Depth & Foot.Pen values, however, Foot.Pen > Total.Snow.Depth, which is impossible:
+
+```{r}
+data_cleaned <- data_cleaned %>%
+  filter(is.na(Foot.Pen) | is.na(Total.Snow.Depth) | Foot.Pen <= Total.Snow.Depth)
+```
+
+
+## Missing data summary on cleaned dataset
+
+```{r}
+missing_summary <- data_cleaned %>%
+  summarise_all(~sum(is.na(.))) %>%
+  pivot_longer(everything(), names_to = "Variable", values_to = "Missing_Count") %>%
+  mutate(Missing_Percent = round(Missing_Count / nrow(data_cleaned) * 100, 1)) %>%
+  arrange(desc(Missing_Count))
+missing_summary
+
+dim(data_cleaned)
+```
+
+```{r imputation}
+
+# No variables have more than 50% missing data so impute all missing values.
+
+pred_1 <- c("Area", "Alt", "Incline", "Aspect_sin", "Aspect_cos")
+
+pred_2 <- c("Air.Temp", "Wind.Speed", "Cloud", "Precip.Code", "Drift",
+           "Summit.Air.Temp", "Summit.Wind.Speed", "WindDir_sin", "WindDir_cos", 
+           "SummitWindDir_sin", "SummitWindDir_cos")
+
+pred_3 <- c("Total.Snow.Depth", "Foot.Pen", "Rain.at.900", "Max.Temp.Grad", 
+           "Max.Hardness.Grad", "Snow.Temp")
+
+# Additional variables
+other_vars <- c("Month")
+
+all_pred <- c(pred_1, pred_2, pred_3, other_vars)
+
+md.pattern(data_cleaned[,c("FAH", all_pred[1:min(10, length(all_pred))])], rotate.names = TRUE) 
+
+mice_data <- data_cleaned %>%
+  select(FAH, all_of(all_pred))
+
+set.seed(12345)
+
+mice_output <- mice(mice_data, m = 5, method = 'pmm', printFlag = FALSE)
+
+data_imputed <- complete(mice_output, 1)
+
+# Diagnostic Plots
+# Strip plot - shows distribution of imputed values
+
+stripplot(mice_output, pch=20, cex=1.2)
+
+densityplot(mice_output, ~ Alt) # bad
+densityplot(mice_output, ~ Aspect_sin) # maybe
+densityplot(mice_output, ~ Aspect_cos) 
+densityplot(mice_output, ~ Incline) # bad
+
+densityplot(mice_output, ~ Air.Temp) # bad
+densityplot(mice_output, ~ WindDir_sin) # maybe
+densityplot(mice_output, ~ WindDir_cos) # maybe
+densityplot(mice_output, ~ Wind.Speed)
+densityplot(mice_output, ~ Cloud) # maybe
+
+densityplot(mice_output, ~ Summit.Air.Temp)
+densityplot(mice_output, ~ SummitWindDir_sin)
+densityplot(mice_output, ~ SummitWindDir_cos)
+densityplot(mice_output, ~ Summit.Wind.Speed)
+
+densityplot(mice_output, ~ Max.Temp.Grad) # maybe
+densityplot(mice_output, ~ Max.Hardness.Grad) 
+densityplot(mice_output, ~ Snow.Temp) # maybe
+
+# Convergence plot
+
+plot(mice_output, main = "MICE Convergence - All Variables")
+
+bad_vars <- c("Alt", "Air.Temp", "Incline")
+
+mice_data <- mice_data %>%
+  select(FAH, all_of(setdiff(all_pred, bad_vars)))
+
+dim(mice_data)
+
+set.seed(12345)
+
+mice_output2 <- mice(mice_data, m = 5, method = 'pmm', printFlag = FALSE)
+data_imputed2 <- complete(mice_output2, 1)
+
+```
+
+```{r outliers}
+
+# Handle outliers by capping them
+
+for(var in names(data_imputed2)) {
+  if(is.numeric(data_imputed2[[var]])) {
+    
+    x <- data_imputed2[[var]]
+    
+    lower_bound <- quantile(x, 0.01, na.rm = TRUE)
+    upper_bound <- quantile(x, 0.99, na.rm = TRUE)
+    
+    n_outliers <- sum(x < lower_bound | x > upper_bound, na.rm = TRUE)
+    data_imputed2[[var]][x < lower_bound] <- lower_bound
+    data_imputed2[[var]][x > upper_bound] <- upper_bound
+    
+    # Optional: print info about outliers handled
+    if(n_outliers > 0) {
+      print(paste(var, "- Outliers capped:", n_outliers))
+    }
+  }
+}
+
+```
+
+```{r correlation}
+
+# Use imputed data (no missing values)
+
+corr_data <- data_imputed2  
+
+corr_matrix <- cor(corr_data, use = "complete.obs")
+
+# Correlation with FAH
+fah_corr <- corr_matrix[,"FAH"] %>%
+  as.data.frame() %>%
+  rownames_to_column("Variable") %>%
+  rename(Correlation = ".") %>%
+  filter(Variable != "FAH") %>%
+  arrange(desc(abs(Correlation)))
+
+# Top 10 correlations with FAH
+print(head(fah_corr, 10))
+
+# Correlation heatmap
+corrplot(corr_matrix, method = "color", type = "upper", 
+         order = "hclust", tl.cex = 0.7, tl.col = "black")
+
+# FAH Correlation
+
+data_imputed2$FAH_factor <- factor(data_imputed2$FAH,
+                           levels = 0:4,
+                           labels = c("Low", "Moderate", "Considerable -", 
+                                     "Considerable +", "High"))
+
+# Predictor 1
+
+predictor_1 <- pred_1[pred_1 %in% names(data_imputed2)]
+
+data1 <- data_imputed2 %>%
+  select(FAH_factor, FAH, all_of(predictor_1))
+
+corr1 <- cor(data1[,predictor_1], data1$FAH) %>%
+  as.data.frame() %>%
+  rownames_to_column("Variable") %>%
+  rename(FAH_Correlation = "V1") %>%
+  arrange(desc(abs(FAH_Correlation)))
+
+# Create boxplots
+plot1 <- list()
+for(i in 1:min(4, length(predictor_1))) {
+  var <- predictor_1[i]
+  plot1[[i]] <- ggplot(data1, aes(x = factor(FAH_factor), y = .data[[var]])) +
+    geom_boxplot(fill = "darkblue", alpha = 0.7) +
+    labs(title = paste(var, "vs FAH"),
+         x = "FAH", y = var) +
+    theme_minimal()
+}
+
+do.call(grid.arrange, c(plot1, ncol = 2))
+
+# Predictor 2
+
+predictor_2 <- pred_2[pred_2 %in% names(data_imputed2)]
+
+data2 <- data_imputed2 %>%
+  select(FAH_factor, FAH, all_of(predictor_2))
+
+corr2 <- cor(data2[,predictor_2], data2$FAH) %>%
+  as.data.frame() %>%
+  rownames_to_column("Variable") %>%
+  rename(FAH_Correlation = "V1") %>%
+  arrange(desc(abs(FAH_Correlation)))
+
+plot2 <- list()
+for(i in 1:min(4, length(predictor_2))) {
+  var <- predictor_2[i]
+  plot2[[i]] <- ggplot(data2, aes(x = factor(FAH_factor), y = .data[[var]])) +
+    geom_boxplot(fill = "darkgreen", alpha = 0.7) +
+    labs(title = paste(var, "vs FAH"),
+         x = "FAH", y = var) +
+    theme_minimal()
+}
+
+do.call(grid.arrange, c(plot2, ncol = 2))
+
+# Predictor 3
+
+predictor_3 <- pred_3[pred_3 %in% names(data_imputed2)]
+
+data3 <- data_imputed2 %>%
+  select(FAH_factor, FAH, all_of(predictor_3))
+
+corr3 <- cor(data3[,predictor_3], data3$FAH) %>%
+  as.data.frame() %>%
+  rownames_to_column("Variable") %>%
+  rename(FAH_Correlation = "V1") %>%
+  arrange(desc(abs(FAH_Correlation)))
+
+plot3 <- list()
+for(i in 1:min(4, length(predictor_3))) {
+  var <- predictor_3[i]
+  plot3[[i]] <- ggplot(data3, aes(x = factor(FAH_factor), y = .data[[var]])) +
+    geom_boxplot(fill = "darkred", alpha = 0.7) +
+    labs(title = paste(var, "vs FAH"),
+         x = "FAH", y = var) +
+    theme_minimal()
+}
+
+do.call(grid.arrange, c(plot3, ncol = 2))
+
+```
+```{r scaling}
+
+set.seed(12345)
+
+train_index <- createDataPartition(data_imputed2$FAH, 
+                                   p = 0.7, 
+                                   list = FALSE)
+
+train_data <- data_imputed2[train_index, ]
+test_data <- data_imputed2[-train_index, ]
+
+# Standardisation
+
+numeric_vars <- names(data_imputed2)[sapply(data_imputed2, is.numeric)]
+numeric_vars <- setdiff(numeric_vars, "FAH")
+
+preproc_obj <- preProcess(
+  train_data %>% select(all_of(numeric_vars)),
+  method = c("center", "scale")  
+)
+
+train_scaled <- predict(preproc_obj, train_data)
+test_scaled <- predict(preproc_obj, test_data)
+
+```
