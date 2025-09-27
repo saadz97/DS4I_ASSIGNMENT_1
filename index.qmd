@@ -1,10 +1,14 @@
 ---
 title: ""
+df-print: paged
 format: 
   html:
     css: styles.css
     toc: false
     number-sections: false
+    code-fold: true
+    smooth-scroll: true
+    lightbox: true
 ---
 
 ```{r setup, include =FALSE}
@@ -12,21 +16,6 @@ library(tidyverse)
 library(knitr)
 ```
 
-<div id="menu-toggle">☰ Menu</div>
-<div class="sidebar">
-  <ul>
-    <li><a href="#sec-Abstract">Abstract</a></li>
-    <li><a href="#sec-Introduction">Introduction</a></li>
-    <li><a href="#sec-Data_and_Methods">Data and Methods</a></li>
-    <li><a href="#sec-Results">Results</a></li>
-    <li><a href="#sec-Discussion">Discussion</a></li>
-    <li><a href="#sec-Conclusion">Conclusion</a></li>
-    <li><a href="#sec-LLMs_discussion">LLMs Discussion</a></li>
-    <li><a href="#references">References</a></li>
-  </ul>
-</div>
-
-<div class="main-content">
 
 :::{.hero}
 # Avalanche Hazard Forecasting  
@@ -35,55 +24,22 @@ Predicting forecasted avalanche hazard levels from 15 years of Scottish data usi
 :::
 :::
 
+:::{.panel-tabset .tabset-pills .tabset-fade}
+
 {{< include sections/Abstract.qmd >}}
+
 {{< include sections/Introduction.qmd >}}
+
 {{< include sections/Data_and_Methods.qmd >}}
+
 {{< include sections/Results.qmd >}}
+
 {{< include sections/Discussion.qmd >}}
+
 {{< include sections/Conclusion.qmd >}}
+
 {{< include sections/LLMs_discussion.qmd >}}
 
-# References {.unnumbered #references}
+### References {.unnumbered #references}
 
-</div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const menuToggle = document.getElementById('menu-toggle');
-    const sidebar = document.querySelector('.sidebar');
-    const sidebarLinks = document.querySelectorAll('.sidebar ul li a');
-    
-    // Function to close sidebar
-    function closeSidebar() {
-        sidebar.classList.remove('open');
-    }
-    
-    // Function to open sidebar
-    function openSidebar() {
-        sidebar.classList.add('open');
-    }
-    
-    // Toggle sidebar when hamburger menu is clicked
-    menuToggle.addEventListener('click', function() {
-        if (sidebar.classList.contains('open')) {
-            closeSidebar();
-        } else {
-            openSidebar();
-        }
-    });
-    
-    // Close sidebar when any menu link is clicked
-    sidebarLinks.forEach(function(link) {
-        link.addEventListener('click', function() {
-            closeSidebar();
-        });
-    });
-    
-    // Close sidebar when Escape key is pressed
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape' && sidebar.classList.contains('open')) {
-            closeSidebar();
-        }
-    });
-});
-</script>
+:::
