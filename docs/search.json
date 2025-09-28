@@ -39,14 +39,14 @@
     "href": "sections/Data_and_Methods.html#sec-Data_and_Methods",
     "title": "",
     "section": "2. Data and Methods",
-    "text": "2. Data and Methods\nPut in the data and methods section of the report in here"
+    "text": "2. Data and Methods\nThe dataset used in this study consists of daily avalanche forecasts for six forecasting regions across Scotland (Creag Meagaidh, Glencoe, Lochaber, Northern Cairngorms, Southern Cairngorms, and Torridon), collected by the Scottish Avalanche Information Service (SAIS) between 2009 and 2025. It contains 10,671 observations and 34 variables including weather conditions, topography, snowpack properties, and avalanche hazard levels.\nThe target variable for this project is the Forecast Avalanche Hazard (FAH), a categorical variable with five ordered levels: Low, Moderate, Considerable -, Considerable +, and High."
   },
   {
     "objectID": "sections/Data_and_Methods.html#data-cleaning-and-preprocessing",
     "href": "sections/Data_and_Methods.html#data-cleaning-and-preprocessing",
     "title": "",
     "section": "2.1 Data Cleaning and Preprocessing",
-    "text": "2.1 Data Cleaning and Preprocessing\n…..\n\n2.2 Neural Network Stuff…\n…."
+    "text": "2.1 Data Cleaning and Preprocessing\nThe raw dataset underwent extensive cleaning prior to analysis. Initially, rows with missing FAH values (109 rows) were removed, and FAH levels were replaced with a numerical representation from 0 to 4 for compatibility with the neural network software. Other categorical variables, such as precipitation type and forecast region, were similarly transformed into numerical formats. The Date column was transformed into Month to capture seasonal effects.\nVariables unrelated to forecasting or with high missingness (more than 20%), frequent errors, limited predictive value, or poorly defined measures were excluded, resulting in a set of well-defined predictors most relevant for forecasting.\nRange checks were applied to remove physically impossible or implausible values based physical limits and regional context.\nFor example, altitude was limited to 0–1,345 m, the height of Ben Nevis (…), and wind speeds to 176 mph, reflecting the highest recorded gust in the Highlands (…).\nSlope inclines were restricted to 0–90°, and wind directions were constrained to 0–360°. Cloud cover was limited to 0–100%, total snow depth to 0–1,500 cm (with unrealistic spikes removed), and foot penetration depth to 100 cm. Snow temperatures above 0.5 °C were flagged as implausible, since snow begins melting at 0 °C, and maximum temperature gradients were limited to below 25 °C per 10 cm (…). Observations where foot penetration exceeded total snow depth were also removed.\nCircular variables such as wind direction and aspect were transformed into sine and cosine components.\nExploratory data analysis (EDA) was then performed to assess variable distributions, relationships with FAH, multicollinearity, and seasonal and geographic trends using correlation heatmaps, histograms, scatterplots, and boxplots.\n\n2.2 Neural Network Stuff…\n…."
   },
   {
     "objectID": "sections/Abstract.html",
@@ -80,50 +80,50 @@
     "objectID": "index.html#sec-Introduction",
     "href": "index.html#sec-Introduction",
     "title": "",
-    "section": "Introduction",
-    "text": "Introduction\nIntroduction over here…"
+    "section": "1. Introduction",
+    "text": "1. Introduction\nIntroduction over here…"
   },
   {
     "objectID": "index.html#sec-Data_and_Methods",
     "href": "index.html#sec-Data_and_Methods",
     "title": "",
-    "section": "Data and Methods",
-    "text": "Data and Methods\nPut in the data and methods section of the report in here"
+    "section": "2. Data and Methods",
+    "text": "2. Data and Methods\nThe dataset used in this study consists of daily avalanche forecasts for six forecasting regions across Scotland (Creag Meagaidh, Glencoe, Lochaber, Northern Cairngorms, Southern Cairngorms, and Torridon), collected by the Scottish Avalanche Information Service (SAIS) between 2009 and 2025. It contains 10,671 observations and 34 variables including weather conditions, topography, snowpack properties, and avalanche hazard levels.\nThe target variable for this project is the Forecast Avalanche Hazard (FAH), a categorical variable with five ordered levels: Low, Moderate, Considerable -, Considerable +, and High."
   },
   {
     "objectID": "index.html#data-cleaning-and-preprocessing",
     "href": "index.html#data-cleaning-and-preprocessing",
     "title": "",
-    "section": "Data Cleaning and Preprocessing",
-    "text": "Data Cleaning and Preprocessing\n…..\n\nNeural Network Stuff…\n…."
+    "section": "2.1 Data Cleaning and Preprocessing",
+    "text": "2.1 Data Cleaning and Preprocessing\nThe raw dataset underwent extensive cleaning prior to analysis. Initially, rows with missing FAH values (109 rows) were removed, and FAH levels were replaced with a numerical representation from 0 to 4 for compatibility with the neural network software. Other categorical variables, such as precipitation type and forecast region, were similarly transformed into numerical formats. The Date column was transformed into Month to capture seasonal effects.\nVariables unrelated to forecasting or with high missingness (more than 20%), frequent errors, limited predictive value, or poorly defined measures were excluded, resulting in a set of well-defined predictors most relevant for forecasting.\nRange checks were applied to remove physically impossible or implausible values based physical limits and regional context.\nFor example, altitude was limited to 0–1,345 m, the height of Ben Nevis (…), and wind speeds to 176 mph, reflecting the highest recorded gust in the Highlands (…).\nSlope inclines were restricted to 0–90°, and wind directions were constrained to 0–360°. Cloud cover was limited to 0–100%, total snow depth to 0–1,500 cm (with unrealistic spikes removed), and foot penetration depth to 100 cm. Snow temperatures above 0.5 °C were flagged as implausible, since snow begins melting at 0 °C, and maximum temperature gradients were limited to below 25 °C per 10 cm (…). Observations where foot penetration exceeded total snow depth were also removed.\nCircular variables such as wind direction and aspect were transformed into sine and cosine components.\nExploratory data analysis (EDA) was then performed to assess variable distributions, relationships with FAH, multicollinearity, and seasonal and geographic trends using correlation heatmaps, histograms, scatterplots, and boxplots.\n\n2.2 Neural Network Stuff…\n…."
   },
   {
     "objectID": "index.html#sec-Results",
     "href": "index.html#sec-Results",
     "title": "",
-    "section": "Results",
-    "text": "Results\nResults over here…"
+    "section": "3. Results",
+    "text": "3. Results\nResults over here…"
   },
   {
     "objectID": "index.html#sec-Discussion",
     "href": "index.html#sec-Discussion",
     "title": "",
-    "section": "Disscussion",
-    "text": "Disscussion\nDiscussion over here…"
+    "section": "4. Disscussion",
+    "text": "4. Disscussion\nDiscussion over here…"
   },
   {
     "objectID": "index.html#sec-Conclusion",
     "href": "index.html#sec-Conclusion",
     "title": "",
-    "section": "Conclusion",
-    "text": "Conclusion\nConclusion here"
+    "section": "5. Conclusion",
+    "text": "5. Conclusion\nConclusion here"
   },
   {
     "objectID": "index.html#sec-LLMs_discussion",
     "href": "index.html#sec-LLMs_discussion",
     "title": "",
-    "section": "Use of Large Language Models (LLMs)",
-    "text": "Use of Large Language Models (LLMs)\nTalking about use of LLMs over here"
+    "section": "6. Use of Large Language Models (LLMs)",
+    "text": "6. Use of Large Language Models (LLMs)\nTalking about use of LLMs over here"
   },
   {
     "objectID": "sections/Conclusion.html",

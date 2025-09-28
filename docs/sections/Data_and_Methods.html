@@ -124,11 +124,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="sec-Data_and_Methods" class="level2">
 <h2 class="anchored" data-anchor-id="sec-Data_and_Methods">2. Data and Methods</h2>
-<p>Put in the data and methods section of the report in here</p>
+<p>The dataset used in this study consists of daily avalanche forecasts for six forecasting regions across Scotland (Creag Meagaidh, Glencoe, Lochaber, Northern Cairngorms, Southern Cairngorms, and Torridon), collected by the Scottish Avalanche Information Service (SAIS) between 2009 and 2025. It contains 10,671 observations and 34 variables including weather conditions, topography, snowpack properties, and avalanche hazard levels.</p>
+<p>The target variable for this project is the Forecast Avalanche Hazard (FAH), a categorical variable with five ordered levels: Low, Moderate, Considerable -, Considerable +, and High.</p>
 </section>
 <section id="data-cleaning-and-preprocessing" class="level2">
 <h2 class="anchored" data-anchor-id="data-cleaning-and-preprocessing">2.1 Data Cleaning and Preprocessing</h2>
-<p>…..</p>
+<p>The raw dataset underwent extensive cleaning prior to analysis. Initially, rows with missing FAH values (109 rows) were removed, and FAH levels were replaced with a numerical representation from 0 to 4 for compatibility with the neural network software. Other categorical variables, such as precipitation type and forecast region, were similarly transformed into numerical formats. The Date column was transformed into Month to capture seasonal effects.</p>
+<p>Variables unrelated to forecasting or with high missingness (more than 20%), frequent errors, limited predictive value, or poorly defined measures were excluded, resulting in a set of well-defined predictors most relevant for forecasting.</p>
+<p>Range checks were applied to remove physically impossible or implausible values based physical limits and regional context.</p>
+<p>For example, altitude was limited to 0–1,345 m, the height of Ben Nevis (<em>…</em>), and wind speeds to 176 mph, reflecting the highest recorded gust in the Highlands (<em>…</em>).</p>
+<p>Slope inclines were restricted to 0–90°, and wind directions were constrained to 0–360°. Cloud cover was limited to 0–100%, total snow depth to 0–1,500 cm (with unrealistic spikes removed), and foot penetration depth to 100 cm. Snow temperatures above 0.5 °C were flagged as implausible, since snow begins melting at 0 °C, and maximum temperature gradients were limited to below 25 °C per 10 cm (<em>…</em>). Observations where foot penetration exceeded total snow depth were also removed.</p>
+<p>Circular variables such as wind direction and aspect were transformed into sine and cosine components.</p>
+<p>Exploratory data analysis (EDA) was then performed to assess variable distributions, relationships with FAH, multicollinearity, and seasonal and geographic trends using correlation heatmaps, histograms, scatterplots, and boxplots.</p>
 <section id="neural-network-stuff" class="level3">
 <h3 class="anchored" data-anchor-id="neural-network-stuff">2.2 Neural Network Stuff…</h3>
 <p>….</p>
@@ -613,15 +620,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">## 2. Data and Methods {#sec-Data_and_Methods}</span></span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>Put in the data and methods section of the report in here</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="fu">## 2.1 Data Cleaning and Preprocessing</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>.....</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>The dataset used in this study consists of daily avalanche forecasts for six forecasting regions across Scotland (Creag Meagaidh, Glencoe, Lochaber, Northern Cairngorms, Southern Cairngorms, and Torridon), collected by the Scottish Avalanche Information Service (SAIS) between 2009 and 2025. It contains 10,671 observations and 34 variables including weather conditions, topography, snowpack properties, and avalanche hazard levels.</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>The target variable for this project is the Forecast Avalanche Hazard (FAH), a categorical variable with five ordered levels: Low, Moderate, Considerable -, Considerable +, and High. </span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="fu">### 2.2 Neural Network Stuff...</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>....</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="fu">## 2.1 Data Cleaning and Preprocessing</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>The raw dataset underwent extensive cleaning prior to analysis. Initially, rows with missing FAH values (109 rows) were removed, and FAH levels were replaced with a numerical representation from 0 to 4 for compatibility with the neural network software. Other categorical variables, such as precipitation type and forecast region, were similarly transformed into numerical formats. The Date column was transformed into Month to capture seasonal effects.</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>Variables unrelated to forecasting or with high missingness (more than 20%), frequent errors, limited predictive value, or poorly defined measures were excluded, resulting in a set of well-defined predictors most relevant for forecasting. </span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>Range checks were applied to remove physically impossible or implausible values based physical limits and regional context.</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>For example, altitude was limited to 0–1,345 m, the height of Ben Nevis (*...*), and wind speeds to 176 mph, reflecting the highest recorded gust in the Highlands (*...*).</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>Slope inclines were restricted to 0–90°, and wind directions were constrained to 0–360°. Cloud cover was limited to 0–100%, total snow depth to 0–1,500 cm (with unrealistic spikes removed), and foot penetration depth to 100 cm. Snow temperatures above 0.5 °C were flagged as implausible, since snow begins melting at 0 °C, and maximum temperature gradients were limited to below 25 °C per 10 cm (*...*). Observations where foot penetration exceeded total snow depth were also removed.</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>Circular variables such as wind direction and aspect were transformed into sine and cosine components.</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>Exploratory data analysis (EDA) was then performed to assess variable distributions, relationships with FAH, multicollinearity, and seasonal and geographic trends using correlation heatmaps, histograms, scatterplots, and boxplots.</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="fu">### 2.2 Neural Network Stuff...</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>....</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

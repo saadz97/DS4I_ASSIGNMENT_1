@@ -165,35 +165,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Abstract over here…</p>
 </section>
 <section id="sec-Introduction" class="level2">
-<h2 class="anchored" data-anchor-id="sec-Introduction">Introduction</h2>
+<h2 class="anchored" data-anchor-id="sec-Introduction">1. Introduction</h2>
 <p>Introduction over here…</p>
 </section>
 <section id="sec-Data_and_Methods" class="level2">
-<h2 class="anchored" data-anchor-id="sec-Data_and_Methods">Data and Methods</h2>
-<p>Put in the data and methods section of the report in here</p>
+<h2 class="anchored" data-anchor-id="sec-Data_and_Methods">2. Data and Methods</h2>
+<p>The dataset used in this study consists of daily avalanche forecasts for six forecasting regions across Scotland (Creag Meagaidh, Glencoe, Lochaber, Northern Cairngorms, Southern Cairngorms, and Torridon), collected by the Scottish Avalanche Information Service (SAIS) between 2009 and 2025. It contains 10,671 observations and 34 variables including weather conditions, topography, snowpack properties, and avalanche hazard levels.</p>
+<p>The target variable for this project is the Forecast Avalanche Hazard (FAH), a categorical variable with five ordered levels: Low, Moderate, Considerable -, Considerable +, and High.</p>
 </section>
 <section id="data-cleaning-and-preprocessing" class="level2">
-<h2 class="anchored" data-anchor-id="data-cleaning-and-preprocessing">Data Cleaning and Preprocessing</h2>
-<p>…..</p>
+<h2 class="anchored" data-anchor-id="data-cleaning-and-preprocessing">2.1 Data Cleaning and Preprocessing</h2>
+<p>The raw dataset underwent extensive cleaning prior to analysis. Initially, rows with missing FAH values (109 rows) were removed, and FAH levels were replaced with a numerical representation from 0 to 4 for compatibility with the neural network software. Other categorical variables, such as precipitation type and forecast region, were similarly transformed into numerical formats. The Date column was transformed into Month to capture seasonal effects.</p>
+<p>Variables unrelated to forecasting or with high missingness (more than 20%), frequent errors, limited predictive value, or poorly defined measures were excluded, resulting in a set of well-defined predictors most relevant for forecasting.</p>
+<p>Range checks were applied to remove physically impossible or implausible values based physical limits and regional context.</p>
+<p>For example, altitude was limited to 0–1,345 m, the height of Ben Nevis (<em>…</em>), and wind speeds to 176 mph, reflecting the highest recorded gust in the Highlands (<em>…</em>).</p>
+<p>Slope inclines were restricted to 0–90°, and wind directions were constrained to 0–360°. Cloud cover was limited to 0–100%, total snow depth to 0–1,500 cm (with unrealistic spikes removed), and foot penetration depth to 100 cm. Snow temperatures above 0.5 °C were flagged as implausible, since snow begins melting at 0 °C, and maximum temperature gradients were limited to below 25 °C per 10 cm (<em>…</em>). Observations where foot penetration exceeded total snow depth were also removed.</p>
+<p>Circular variables such as wind direction and aspect were transformed into sine and cosine components.</p>
+<p>Exploratory data analysis (EDA) was then performed to assess variable distributions, relationships with FAH, multicollinearity, and seasonal and geographic trends using correlation heatmaps, histograms, scatterplots, and boxplots.</p>
 <section id="neural-network-stuff" class="level3">
-<h3 class="anchored" data-anchor-id="neural-network-stuff">Neural Network Stuff…</h3>
+<h3 class="anchored" data-anchor-id="neural-network-stuff">2.2 Neural Network Stuff…</h3>
 <p>….</p>
 </section>
 </section>
 <section id="sec-Results" class="level2">
-<h2 class="anchored" data-anchor-id="sec-Results">Results</h2>
+<h2 class="anchored" data-anchor-id="sec-Results">3. Results</h2>
 <p>Results over here…</p>
 </section>
 <section id="sec-Discussion" class="level2">
-<h2 class="anchored" data-anchor-id="sec-Discussion">Disscussion</h2>
+<h2 class="anchored" data-anchor-id="sec-Discussion">4. Disscussion</h2>
 <p>Discussion over here…</p>
 </section>
 <section id="sec-Conclusion" class="level2">
-<h2 class="anchored" data-anchor-id="sec-Conclusion">Conclusion</h2>
+<h2 class="anchored" data-anchor-id="sec-Conclusion">5. Conclusion</h2>
 <p>Conclusion here</p>
 </section>
 <section id="sec-LLMs_discussion" class="level2">
-<h2 class="anchored" data-anchor-id="sec-LLMs_discussion">Use of Large Language Models (LLMs)</h2>
+<h2 class="anchored" data-anchor-id="sec-LLMs_discussion">6. Use of Large Language Models (LLMs)</h2>
 <p>Talking about use of LLMs over here</p>
 </section>
 <section id="references" class="level1 unnumbered">
