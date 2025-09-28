@@ -23,8 +23,8 @@ library(kableExtra)
 ```
 
 ```{r data}
-load('data/training_data.RData')
-load('data/testing_data.RData')
+load('../data/training_data.RData')
+load('../data/testing_data.RData')
 
 load('data/y_train.RData')
 load('data/y_test.RData')
@@ -52,6 +52,8 @@ kable(comp_mat, digits = 3, caption = 'Comparison of percentage of each category
 The table above reports the percentage of each category of FAH that is in the training and test data. It is important that the percentages are approximately equal in both sets and indeed this is the case. This is good but there is a problem. For the best results there should be approximately the same number of observations from each category in both the training and test sets, which is not the case for this data. Category 0 and 1 both are roughly the same at roughly 30% of total observations each. Category 2 is slightly lower with 23% but category 3 and 4 are hugely unrepresented in the data with only 9% and 4% respectively. This is an issue because big imbalances such as this will cause the model to optimise for correctly identifying observations from categories 0, 1 and 2.  
 
 There a few possible methods we can use to mitigate this issue but the method chosen for this project was to define custom class weights so that incorrect predictions have different penalties for each category. The idea is that underrepresented categories have higher weights so that in the training the model gets penalised more heavily and hopefully the final model is better at making predictions for the underpresented categories. The weights chosen were inversely proportional to the percentage of appearance in the training data. A possible area of further experimentation is using bootstrap sampling to equalise the percentages of each category. 
+
+For this project there were 4 predictor sets that were evaluated. Predictor set 1 contained variables relating to the location of the observation. Predictor set 2 contained variables relating to the weather conditions of the observation. Predictor set 3 contained variables relating to a snow pack test. Predictor set 4 contained all the varibles in the dataset and thus contained all three predictor sets inside it. The final model will be built using all the available data, so predictor set 4. The remaining three predictor sets serve as yardstick to which we can compare which sets of variables are important. 
 
 ## Defining the model builder wrapper function
 
@@ -234,7 +236,7 @@ for (i in seq(3, nrow(df), by = 3)) {
 summary_table
 ```
 
-From the table it is evident that predictor sets 2 and 4 perform relatively equally with validation accuracies of 66% and 65% respectively. Predictor set 3 has slightly worse predictive capability with a prediction accuracy around 63%. Predictor set 1 is firmly the worst, achieving 50% validation accuracy. It is not surprising that predictor set 4 produces the best results, it does contain all the variables after all. The best model configuration for the problem is summarised below.
+From the table it is evident that predictor sets 2 and 4 perform relatively equally with validation accuracies of 66% and 65% respectively. Predictor set 3 has slightly worse predictive capability with a prediction accuracy around 63%. Predictor set 1 is firmly the worst, achieving 50% validation accuracy. It is clear that the variables relating to the location are not as important as the variables relating to the weather conditions and the snow pack test. The rest of the predictor sets perform roughly the same and the results are close enough for the difference to be down to randomness. It is expected that predictor set 4(containing all variables) would perform at least as good as the best of the first three predictor sets since the best predictor set would be contained in predictor set 4. The best model configuration when using predictor set 4 is summarised below.
 
 ```{r code for plot of the best model}
 
