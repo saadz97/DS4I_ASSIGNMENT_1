@@ -1,0 +1,28 @@
+project:
+  type: website
+
+website:
+  title: "Neural Network"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: model.qmd
+        text: Model
+      - href: data_processing.qmd
+        text: Data processing
+      - href: eda.qmd
+        text: EDA
+      - href: about.qmd
+        text: About
+
+format:
+  html:
+    theme:
+      - cosmo
+      - brand
+    css: styles.css
+    toc: true
+
+editor: visual
+
