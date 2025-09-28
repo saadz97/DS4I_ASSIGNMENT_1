@@ -63,7 +63,7 @@ data$Area <- as.integer(factor(data$Area)) - 1   # 6 areas
 # Don't have any data for July, Aug and Sept (summer months) 
 # Don't know if a month variable will be important? Should i make those months values be 0?
 data <- data %>% mutate(Year = year(Date), Month = month(Date))
-table(data$Month)
+# table(data$Month)
 
 # Remove unnecessary columns
 data <- data %>% select(-OSgrid, -OAH, -Obs, -Location, -Date)
@@ -75,7 +75,7 @@ missing_summary <- data %>%
   pivot_longer(everything(), names_to = "Variable", values_to = "Missing_Count") %>%
   mutate(Missing_Percent = round(Missing_Count / nrow(data) * 100, 1)) %>%
   arrange(desc(Missing_Count))
-missing_summary
+# missing_summary
 ```
 
 ```{r, echo=FALSE}
@@ -126,7 +126,7 @@ missing_summary <- data_cleaned %>%
   pivot_longer(everything(), names_to = "Variable", values_to = "Missing_Count") %>%
   mutate(Missing_Percent = round(Missing_Count / nrow(data_cleaned) * 100, 1)) %>%
   arrange(desc(Missing_Count))
-missing_summary
+# missing_summary
 
 # dim(data_cleaned)
 ```
@@ -163,7 +163,7 @@ Other Variables: Month
 
 Multiple Imputation by Chained Equations (MICE) handles missing data that creates multiple versions of a dataset rather than selecting the first best guessed value. The MICE function ran under the assumption of Missing at Random (MAR), which means that it was assumed that the probability of a value being missing depends on the observed values in the dataset, but are independent of the unobserved values [5].
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, message=FALSE}
 # No variables have more than 50% missing data so impute all missing values.
 
 md.pattern(data_cleaned[,c("FAH", all_pred[1:min(10, length(all_pred))])], rotate.names = TRUE)
