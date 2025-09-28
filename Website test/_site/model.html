@@ -374,7 +374,11 @@ ul.task-list li input[type="checkbox"] {
 </table>
 
 
+<<<<<<< HEAD
 <p>Architecturally, models with 4–5 layers and 30–50 nodes per layer consistently outperformed others, with no clear gains beyond 5 layers. The optimal configuration from Predictor Set 4—selected for final evaluation—employed 4 hidden layers with [30, 40, 40, 40] nodes and achieved 64.9% validation accuracy.</p>
+=======
+<p>From the table it is evident that predictor sets 2 and 4 perform relatively equally with validation accuracies of 66% and 65% respectively. Predictor set 3 has slightly worse predictive capability with a prediction accuracy around 63%. Predictor set 1 is firmly the worst, achieving 50% validation accuracy. It is clear that the variables relating to the location are not as important as the variables relating to the weather conditions and the snow pack test. The rest of the predictor sets perform roughly the same and the results are close enough for the difference to be down to randomness. It is expected that predictor set 4(containing all variables) would perform at least as good as the best of the first three predictor sets since the best predictor set would be contained in predictor set 4. The best model configuration when using predictor set 4 is summarised below.</p>
+>>>>>>> 46072b15c7a182c2bc33c3a5c1837f8d127d2a4b
 <p><img src="best_model_plot.png" alt="Configuration of the best model" width="500"></p>
 <p>The selected architecture (Figure @ref(fig:best_model_plot)) utilizes ReLU activation in hidden layers and softmax output activation, appropriate for the multi-class ordinal nature of avalanche hazard prediction. This configuration represents an optimal balance between model complexity and predictive performance for the comprehensive feature set.</p>
 <table class="table caption-top" data-quarto-postprocess="true">
@@ -394,8 +398,13 @@ ul.task-list li input[type="checkbox"] {
 Predicted
 </div></th>
 </tr>
+<<<<<<< HEAD
 <tr class="odd">
 <th style="text-align: left;" data-quarto-table-cell-role="th">Predicted</th>
+=======
+<tr class="even">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Actual</th>
+>>>>>>> 46072b15c7a182c2bc33c3a5c1837f8d127d2a4b
 <th style="text-align: right;" data-quarto-table-cell-role="th">0</th>
 <th style="text-align: right;" data-quarto-table-cell-role="th">1</th>
 <th style="text-align: right;" data-quarto-table-cell-role="th">2</th>
