@@ -32,7 +32,7 @@ Predicting forecasted avalanche hazard levels from 15 years of Scottish data usi
 
 {{< include sections/Data_and_Methods.qmd >}}
 
-{{< include sections/Results.qmd >}}
+{{< include sections/model_dt.qmd >}}
 
 {{< include sections/Conclusion.qmd >}}
 

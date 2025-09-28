@@ -1,0 +1,11 @@
+keras
+kerastuneR
+tensorflow
+dplyr
+tidyr
+reticulate
+ggplot2
+lattice
+caret
+knitr
+kableExtra
