@@ -1,78 +1,68 @@
 /* ============================================= */
-/* Custom CSS for Scottish Avalanche Prediction Site */
+/* CSS for Scottish Avalanche Prediction Website */
 /* ============================================= */
 
 /* ------------------------- */
-/* Root variables for easy customization */
+/* Root variables */
 /* ------------------------- */
 :root {
-  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Gradient background - do we want this..? */
-  --card-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);   /* Box shadow for cards and main container */
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+  --card-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); 
 }
 
-/* ------------------------- */
+/* ------------- */
 /* Body styling */
-/* ------------------------- */
+/* ------------- */
 body {
-  background: var(--primary-gradient); /* Full-page gradient background */
-  background-attachment: fixed;        /* Gradient stays fixed on scroll */
-  min-height: 100vh;                   /* Ensure page fills viewport height */
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Default font */
+  background: var(--primary-gradient); 
+  background-attachment: fixed; 
+  min-height: 100vh;  
+  font-family: 'Segoe UI'; 
 }
 
-/* ------------------------- */
+/* ------------------------ */
 /* Main content container */
-/* ------------------------- */
+/* ------------------------ */
 .quarto-container {
-  background: rgba(255, 255, 255, 0.95); /* Semi-transparent white for readability */
-  backdrop-filter: blur(10px);           /* Blurred background behind container */
-  border-radius: 20px;                   /* Rounded corners */
-  margin: 2rem auto;                     /* Center container horizontally */
-  padding: 1rem;                         /* Inner spacing */
-  box-shadow: var(--card-shadow);        /* Subtle shadow */
-  max-width: 1200px;                     /* Limit container width */
+  background: rgba(255, 255, 255, 0.95); 
+  backdrop-filter: blur(10px); 
+  border-radius: 20px;   
+  margin: 2rem auto;     
+  padding: 1rem;                   
+  box-shadow: var(--card-shadow);   
+  max-width: 1200px;       
 }
 
-
-/* ------------------------- */
-/* Hero / Banner section */
-/* ------------------------- */
+/* -------------- */
+/* Hero section */
+/* -------------- */
 .hero {
-  background: url('snow_mountains.jpg');  /* Using this image for now but gonna change it */
+  background: url('snow_mountains.jpg'); 
   background-size: cover; 
-  
-  color: white;                /* text color on top of image */
-  text-align: center;          /* center-align heading and subtitle */
-  padding: 3.5rem 2rem;          /* spacing inside hero */
-  margin: -2rem -1rem 3rem -2rem; /* extend hero to page edges */
-  border-radius: 20px 20px 0 0;   /* rounded top corners */
+  color: white;
+  text-align: center;  
+  padding: 2.5rem 2rem 3.5rem 2rem; 
+  margin: -2rem -1rem 3rem -2rem;
+  border-radius: 20px 20px 0 0; 
   position: relative;
 }
 
-/* Hero main heading */
-.hero h1 {
-  font-size: 3.5rem;                     /* Large heading */
-  margin-bottom: 1rem;                   /* Space below */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Adds contrast for readability */
-}
-
-/* Hero subtitle */
 .hero-subtitle {
-  font-size: 1.3rem;                     /* Slightly smaller than main heading */
-  margin-bottom: 2rem;                   /* Space below subtitle */
-  max-width: 800px;                       /* Limit width for readability */
+  font-size: 1.3rem;
+  margin-bottom: 2rem;
+  max-width: 800px;
   margin-left: auto;
   margin-right: auto;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); 
 }
 
-/* ------------------------- */
-/* Grid layouts for sections */
-/* ------------------------- */
+/* ------------- */
+/* Grid layout */
+/* ------------- */
 .metric-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive columns */
-  gap: 1.5rem;                  /* Space between grid items */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
   margin: 2rem 0;
 }
 
@@ -85,57 +75,35 @@ body {
 
 .results-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* Two equal columns */
+  grid-template-columns: 1fr 1fr;
   gap: 2rem;
   margin: 2rem 0;
 }
 
 
-/* ======================= */
-/* Sidebar drawer toggle styles - FIXED VERSION */
-/* ======================= */
+/* ----------------------- */
+/* Sidebar/Menu Settings */
+/* ----------------------- */
 
-/* Hide sidebar completely by default */
 .sidebar {
-  display: none; /* Initially hide the sidebar completely */
+  display: none; 
   position: fixed;
   top: 0;
-  left: -250px; /* Start off-screen to the left */
+  left: -250px;
   height: 100%;
-  width: 250px; /* Sidebar width */
+  width: 250px; 
   z-index: 1000;
   background: white;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
-  transition: transform 0.3s ease-in-out; /* Smooth transition */
-  overflow-y: auto;  /* Enable scrolling if content overflows */
+  transition: transform 0.3s ease-in-out;
+  overflow-y: auto; 
 }
 
-/* Show sidebar when toggled - slides in from left */
 .sidebar.open {
-  display: block; /* Show sidebar when the 'open' class is added */
-  transform: translateX(250px); /* Slide sidebar into view from off-screen */
+  display: block; 
+  transform: translateX(250px); 
 }
 
-/* Optional: Add backdrop/overlay when sidebar is open */
-.sidebar-backdrop {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.sidebar-backdrop.open {
-  display: block;
-  opacity: 1;
-}
-
-/* Hamburger menu button */
 #menu-toggle {
   position: fixed;
   top: 15px;
@@ -151,106 +119,38 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Position sidebar content (menu items) below the hamburger menu */
 .sidebar ul {
-  padding-top: 60px; /* Ensure the links start below the menu button */
-  margin: 0;  /* Remove default margin */
-  list-style-type: none; /* Remove bullet points */
+  padding-top: 60px; 
+  margin: 0; 
+  list-style-type: none; 
 }
 
 .sidebar ul li {
-  padding: 15px 20px; /* Padding for each item */
+  padding: 15px 20px;
   font-size: 1.2rem;
-  border-bottom: 1px solid #eee; /* Add subtle separation between items */
+  border-bottom: 1px solid #eee;
 }
 
 .sidebar ul li a {
-  color: #333; /* Dark text color */
-  text-decoration: none; /* Remove underline */
-  display: block; /* Make the link fill the list item */
+  color: #333;
+  text-decoration: none;
+  display: block; /
 }
 
 .sidebar ul li a:hover {
-  background-color: #f1f1f1; /* Highlight on hover */
+  background-color: #f1f1f1; 
 }
 
-/* ------------------------- */
-/* Main content - REMOVED THE SHIFTING BEHAVIOR */
-/* ------------------------- */
+/* -------------- */
+/* Main content */
+/* -------------- */
 .main-content {
-  /* Removed transition and margin-left changes */
-  padding-top: 60px; /* Add padding at the top of the page content */
+  padding-top: 60px; 
 }
 
-/* REMOVED: This was causing the content to shift */
-/* .sidebar.open ~ .main-content {
-  margin-left: 250px;
-} */
-
-/* Adjust table of contents when sidebar is visible */
-.toc {
-  margin-top: 80px;  /* Move the table of contents down to avoid the hamburger menu */
-}
-
-/* Search Bar Styles */
-#search-bar {
-  display: none;
-  position: fixed;
-  top: 15px;
-  right: 15px; /* Position to the right side */
-  background: white;
-  padding: 8px 12px;
-  border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  z-index: 1100;
-  transition: transform 0.3s ease-in-out;
-  width: 200px; /* Adjust width of the search bar */
-}
-
-#search-bar input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1rem;
-}
-
-#search-bar.open {
-  display: block;
-  transform: translateX(0);
-}
-
-/* Search Toggle Button (Positioned at top-right as well) */
-#search-toggle {
-  position: fixed;
-  top: 15px;
-  right: 15px; /* Position to the right side */
-  background: var(--primary-gradient);
-  color: white;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  z-index: 1200;
-  font-size: 1.2rem;
-  user-select: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-/* Highlight search matches */
-.searchable {
-  transition: background-color 0.3s ease;
-}
-
-/* Optional: Style for highlighted search matches */
-.searchable.match {
-  background-color: #fffae6; /* Light yellow for highlighted text */
-}
-
-
-
-/* ======================= */
-/* Hide Code Tools Interface */
-/* ======================= */
+/* ---------------- */
+/* Hide Code Tools */
+/* ---------------- */
 
 /* Hide the code tools dropdown and source code icon */
 .code-tools-button,
@@ -267,68 +167,3 @@ body {
 .cell-code .code-tools {
   display: none !important;
 }
-
-
-
-/* ======================= */
-/* JavaScript for Auto-Close Menu */
-/* ======================= */
-
-/*
-Add this JavaScript to your .qmd file or in a separate script tag:
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const menuToggle = document.getElementById('menu-toggle');
-    const sidebar = document.querySelector('.sidebar');
-    const backdrop = document.querySelector('.sidebar-backdrop');
-    const sidebarLinks = document.querySelectorAll('.sidebar ul li a');
-    
-    // Function to close sidebar
-    function closeSidebar() {
-        sidebar.classList.remove('open');
-        if (backdrop) {
-            backdrop.classList.remove('open');
-        }
-    }
-    
-    // Function to open sidebar
-    function openSidebar() {
-        sidebar.classList.add('open');
-        if (backdrop) {
-            backdrop.classList.add('open');
-        }
-    }
-    
-    // Toggle sidebar when hamburger menu is clicked
-    menuToggle.addEventListener('click', function() {
-        if (sidebar.classList.contains('open')) {
-            closeSidebar();
-        } else {
-            openSidebar();
-        }
-    });
-    
-    // Close sidebar when any menu link is clicked
-    sidebarLinks.forEach(function(link) {
-        link.addEventListener('click', function() {
-            closeSidebar();
-        });
-    });
-    
-    // Close sidebar when backdrop is clicked (if you're using backdrop)
-    if (backdrop) {
-        backdrop.addEventListener('click', function() {
-            closeSidebar();
-        });
-    }
-    
-    // Close sidebar when Escape key is pressed
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape' && sidebar.classList.contains('open')) {
-            closeSidebar();
-        }
-    });
-});
-</script>
-*/
