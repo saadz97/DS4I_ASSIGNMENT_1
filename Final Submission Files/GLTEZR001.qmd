@@ -1,5 +1,5 @@
 ---
-title: "GLTEZR001"
+title: "Predicting Forecasted Avalanche Hazard with Neural Networks"
 format: html
 ---
 
@@ -9,7 +9,7 @@ format: html
 
 This study investigates the application of neural networks for avalanche hazard level prediction using a large historical dataset from the Scottish Avalanche Information Service. The models are trained on predictors such as meteorological, snowpack and topographical features. Initially, the historical data was preprocessed into training, validation and tests sets. The model was trained and performance was compared against baseline expectations with feature importance also being investigated.
 
-The results of the model are promissing with the neural networks being able to successfully capture the non-linear and complex interactions between the features. Challenges such as misclassificationrates for high hazard levels and limited interpretability of the model were additionally observed, showing potential for improvement in the future with methods such as resampling. Overall, this investigation shows the potential and limitations of implementing neural networks for avalanche hazard level prediction.
+The results of the model are promising with the neural networks being able to successfully capture the non-linear and complex interactions between the features. Challenges such as misclassification rates for high hazard levels and limited interpretability of the model were additionally observed, showing potential for improvement in the future with methods such as resampling. Overall, this investigation shows the potential and limitations of implementing neural networks for avalanche hazard level prediction.
 
 ```{r, echo=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE)
