@@ -10,6 +10,8 @@ prefer-html: true
 knitr::opts_chunk$set(echo = FALSE, eval = FALSE, message = FALSE)
 ```
 
+This section outlines the comprehensive methodology employed for predicting avalanche hazard levels using neural networks. We describe the data preprocessing pipeline, experimental design with four distinct predictor sets, neural network architecture selection process, and hyperparameter tuning strategy. The methodology ensures reproducible results while systematically evaluating the contribution of different variable types to forecasting accuracy.
+
 ## Software and Setup
 Neural network modelling was implemented using the \texttt{keras} library, accessed through its R wrapper. Keras is an open-source deep learning framework known for its modularity and relatively gentle learning curve compared to other libraries such as PyTorch. Its modular design makes it well suited for projects that require experimentation with multiple configurations.
 
@@ -27,6 +29,7 @@ library(reticulate)
 library(caret)
 library(knitr)
 library(kableExtra)
+library(ggplot2)
 ```
 
 ```{r data}
@@ -147,7 +150,9 @@ All the results from tuning were saved into folders so that the results can be e
 
 # Results
 
-## Tuning Outcomes
+This section presents the comprehensive outcomes of our neural network approach to avalanche hazard prediction. We begin by examining the performance hierarchy across different predictor sets, followed by detailed analysis of optimal hyperparameter configurations. The section culminates in an evaluation of the final model's predictive capability, with particular attention to class-wise performance across the five avalanche hazard levels.
+
+## Hyperparameter Tuning Outcomes
 
 ```{r}
 library(dplyr)
@@ -239,9 +244,10 @@ df = mutate(df, 'Predictor set' = rep(1:4, each = 3), .before = 'Validation accu
 save(df, file = 'tuning/tuning_summary_table.RData')
 ```
 
-```{r tuning table, results='asis', eval=TRUE, fig.cap="Validation accuracy by hyperparameter configuration across four predictor sets"}
+```{r myplot, results='asis', eval=TRUE, fig.cap="Validation accuracy by hyperparameter configuration across four predictor sets"}
 
-#| label: tuning-table
+#| label: fig-myplot
+#| 
 load('../tuning/tuning_summary_table.RData')
 
 ### The Tuning plot
@@ -306,7 +312,10 @@ ggplot(top_10_shuffled, aes(x = combo_label, y = Validation_accuracy, color = fa
 
 ```
 
-Systematic hyperparameter tuning across four predictor sets revealed distinct performance patterns. As summarized in @tbl-tuning, Predictor Set 2 (weather conditions) achieved the highest validation accuracy (66%), slightly outperforming Predictor Set 4 (all variables) at 65%. This suggests that weather variables capture the most critical signals for avalanche hazard forecasting, with topographic and snow-pack variables providing only marginal incremental value.
+Systematic hyperparameter tuning across four predictor sets revealed distinct performance patterns, visualized in the above figure. The plot shows validation accuracy distributions for various architectural configurations, with Predictor Set 2 (weather conditions) achieving the highest peak performance (~66%), closely followed by Predictor Set 4 (all variables) at ~65%.
+
+
+@tbl-tuning details the top three configurations for each predictor set, confirming the performance hierarchy. The marginal improvement of Set 2 over Set 4 indicates that weather variables capture the most critical forecasting signals, with topographic and snow-pack data providing limited incremental value.
 
 
 
@@ -327,6 +336,8 @@ summary_table
 ```
 
 Architecturally, models with 4–5 layers and 30–50 nodes per layer consistently outperformed others, with no clear gains beyond 5 layers. The optimal configuration from Predictor Set 4—selected for final evaluation—employed 4 hidden layers with \[30, 40, 40, 40\] nodes and achieved 64.9% validation accuracy.
+
+The optimal configuration from Predictor Set 4—selected for final evaluation—employed 4 hidden layers with [30, 40, 40, 40] nodes and achieved 64.9% validation accuracy, representing the best balance of performance and generalizability.
 
 ## Optimal Architecture
 
@@ -450,18 +461,21 @@ save(con_mat, file = 'test/con_mat.RData')
 save(metrics_mat, file = 'test/metrics_mat.RData')
 ```
 
-```{r confusion matrix, results='asis', eval=TRUE}
+```{r confusion, results='asis', eval=TRUE}
+#| label: tbl-confusion
 load('../test/con_mat.RData')
 kable(con_mat, format = 'html', caption = "Confusion matrix for avalanche hazard predictions.") %>%
   kable_styling(full_width = FALSE, position = 'center') %>%
   add_header_above(c(' ' = 1, 'Predicted' = 5))
 ```
 
-The confusion matrix of the the fitted model is reported above. It is clear that category 0 is the best estimated while categories 3 and 4 are estimated the worst. This result was expected since category 3 and 4 are very underepresented in both the training and test data. Concrete metrics of the model performance is given in the table below.
+The confusion matrix of the the fitted model is reported in @tbl-confusion. It is clear that category 0 is the best estimated while categories 3 and 4 are estimated the worst. This result was expected since category 3 and 4 are very underepresented in both the training and test data. Concrete metrics of the model performance is given in the table below.
 
 ### Class-Level Metrics
 
 ```{r metrics matrix, results='asis', eval=TRUE}
+#| label: tbl-class
+
 load('../test/metrics_mat.RData')
 kable(metrics_mat, digits = 3, caption = "Comprehensive classification metrics by avalanche hazard class.") %>%
   kable_styling(full_width = FALSE, position = 'center')

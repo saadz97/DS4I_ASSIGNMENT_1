@@ -138,7 +138,7 @@ ul.task-list li input[type="checkbox"] {
   </ul></li>
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a>
   <ul class="collapse">
-  <li><a href="#tuning-outcomes" id="toc-tuning-outcomes" class="nav-link" data-scroll-target="#tuning-outcomes">Tuning Outcomes</a></li>
+  <li><a href="#hyperparameter-tuning-outcomes" id="toc-hyperparameter-tuning-outcomes" class="nav-link" data-scroll-target="#hyperparameter-tuning-outcomes">Hyperparameter Tuning Outcomes</a></li>
   <li><a href="#optimal-architecture" id="toc-optimal-architecture" class="nav-link" data-scroll-target="#optimal-architecture">Optimal Architecture</a></li>
   <li><a href="#model-evaluation" id="toc-model-evaluation" class="nav-link" data-scroll-target="#model-evaluation">Model Evaluation</a>
   <ul class="collapse">
@@ -159,6 +159,7 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="methodology" class="level1">
 <h1>Methodology</h1>
+<p>This section outlines the comprehensive methodology employed for predicting avalanche hazard levels using neural networks. We describe the data preprocessing pipeline, experimental design with four distinct predictor sets, neural network architecture selection process, and hyperparameter tuning strategy. The methodology ensures reproducible results while systematically evaluating the contribution of different variable types to forecasting accuracy.</p>
 <section id="software-and-setup" class="level2">
 <h2 class="anchored" data-anchor-id="software-and-setup">Software and Setup</h2>
 <p>Neural network modelling was implemented using the library, accessed through its R wrapper. Keras is an open-source deep learning framework known for its modularity and relatively gentle learning curve compared to other libraries such as PyTorch. Its modular design makes it well suited for projects that require experimentation with multiple configurations.</p>
@@ -242,15 +243,17 @@ Table&nbsp;1: Comparison of percentage of each category in the training and test
 </section>
 <section id="results" class="level1">
 <h1>Results</h1>
-<section id="tuning-outcomes" class="level2">
-<h2 class="anchored" data-anchor-id="tuning-outcomes">Tuning Outcomes</h2>
+<p>This section presents the comprehensive outcomes of our neural network approach to avalanche hazard prediction. We begin by examining the performance hierarchy across different predictor sets, followed by detailed analysis of optimal hyperparameter configurations. The section culminates in an evaluation of the final model’s predictive capability, with particular attention to class-wise performance across the five avalanche hazard levels.</p>
+<section id="hyperparameter-tuning-outcomes" class="level2">
+<h2 class="anchored" data-anchor-id="hyperparameter-tuning-outcomes">Hyperparameter Tuning Outcomes</h2>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="model_dt_files/figure-html/tuning table-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="model_dt_files/figure-html/myplot-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption>Validation accuracy by hyperparameter configuration across four predictor sets</figcaption>
 </figure>
 </div>
-<p>Systematic hyperparameter tuning across four predictor sets revealed distinct performance patterns. As summarized in <a href="#tbl-tuning" class="quarto-xref">Table&nbsp;2</a>, Predictor Set 2 (weather conditions) achieved the highest validation accuracy (66%), slightly outperforming Predictor Set 4 (all variables) at 65%. This suggests that weather variables capture the most critical signals for avalanche hazard forecasting, with topographic and snow-pack variables providing only marginal incremental value.</p>
+<p>Systematic hyperparameter tuning across four predictor sets revealed distinct performance patterns, visualized in the above figure. The plot shows validation accuracy distributions for various architectural configurations, with Predictor Set 2 (weather conditions) achieving the highest peak performance (~66%), closely followed by Predictor Set 4 (all variables) at ~65%.</p>
+<p><a href="#tbl-tuning" class="quarto-xref">Table&nbsp;2</a> details the top three configurations for each predictor set, confirming the performance hierarchy. The marginal improvement of Set 2 over Set 4 indicates that weather variables capture the most critical forecasting signals, with topographic and snow-pack data providing limited incremental value.</p>
 <div id="tbl-tuning" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-tuning-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -404,6 +407,7 @@ Table&nbsp;2: Top hyperparameter configurations per predictor set, ranked by val
 </figure>
 </div>
 <p>Architecturally, models with 4–5 layers and 30–50 nodes per layer consistently outperformed others, with no clear gains beyond 5 layers. The optimal configuration from Predictor Set 4—selected for final evaluation—employed 4 hidden layers with [30, 40, 40, 40] nodes and achieved 64.9% validation accuracy.</p>
+<p>The optimal configuration from Predictor Set 4—selected for final evaluation—employed 4 hidden layers with [30, 40, 40, 40] nodes and achieved 64.9% validation accuracy, representing the best balance of performance and generalizability.</p>
 </section>
 <section id="optimal-architecture" class="level2">
 <h2 class="anchored" data-anchor-id="optimal-architecture">Optimal Architecture</h2>
@@ -414,8 +418,13 @@ Table&nbsp;2: Top hyperparameter configurations per predictor set, ranked by val
 <h2 class="anchored" data-anchor-id="model-evaluation">Model Evaluation</h2>
 <section id="confusion-matrix" class="level3">
 <h3 class="anchored" data-anchor-id="confusion-matrix">Confusion Matrix</h3>
-<table class="table caption-top" data-quarto-postprocess="true">
-<caption>Confusion matrix for avalanche hazard predictions.</caption>
+<div id="tbl-confusion" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-confusion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: Confusion matrix for avalanche hazard predictions.
+</figcaption>
+<div aria-describedby="tbl-confusion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="table cell caption-top table-sm table-striped small" data-quarto-postprocess="true">
 <colgroup>
 <col style="width: 16%">
 <col style="width: 16%">
@@ -432,7 +441,7 @@ Predicted
 </div></th>
 </tr>
 <tr class="odd">
-<th style="text-align: left;" data-quarto-table-cell-role="th">Predicted</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Actual</th>
 <th style="text-align: right;" data-quarto-table-cell-role="th">0</th>
 <th style="text-align: right;" data-quarto-table-cell-role="th">1</th>
 <th style="text-align: right;" data-quarto-table-cell-role="th">2</th>
@@ -485,12 +494,20 @@ Predicted
 </table>
 
 
-<p>The confusion matrix of the the fitted model is reported above. It is clear that category 0 is the best estimated while categories 3 and 4 are estimated the worst. This result was expected since category 3 and 4 are very underepresented in both the training and test data. Concrete metrics of the model performance is given in the table below.</p>
+</div>
+</figure>
+</div>
+<p>The confusion matrix of the the fitted model is reported in <a href="#tbl-confusion" class="quarto-xref">Table&nbsp;3</a>. It is clear that category 0 is the best estimated while categories 3 and 4 are estimated the worst. This result was expected since category 3 and 4 are very underepresented in both the training and test data. Concrete metrics of the model performance is given in the table below.</p>
 </section>
 <section id="class-level-metrics" class="level3">
 <h3 class="anchored" data-anchor-id="class-level-metrics">Class-Level Metrics</h3>
-<table class="table caption-top" data-quarto-postprocess="true">
-<caption>Comprehensive classification metrics by avalanche hazard class.</caption>
+<div id="tbl-class" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-class-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;4: Comprehensive classification metrics by avalanche hazard class.
+</figcaption>
+<div aria-describedby="tbl-class-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="table cell caption-top table-sm table-striped small" data-quarto-postprocess="true">
 <thead>
 <tr class="header">
 <th style="text-align: left;" data-quarto-table-cell-role="th"></th>
@@ -582,6 +599,9 @@ Predicted
 </table>
 
 
+</div>
+</figure>
+</div>
 <p>Sensitivity gives the percent of the time the model predicted an observation as belonging to a category and it actually belonging to that category. The sensitivity for class 0 is the best with a value of 0,854. There is a steep drop off for the other classes but class 2 is the second highest with a value of 0,557 and the rest are all below 0.5 meaning that more often than not, the model is unable to identify the correct category. An analogy for sensitivity is a test with high sensitivity(close to the maximum of 1) will identify most of the patients with with the flu as having the flu but this may mean that lots of patients without the flu also get identified as having the flu. An extreme case may be if the model predicted all observations as belonging to category 0. Then the sensitivity would be 1,meaning that all observations that belong to category 0 are predicted to be category 0. So there need to be a balance because we do not want this</p>
 <p>Specificity gives the percent of time the an observation does not belong to a specific category and the model predicts it as not belonging to that category. High specificity(close to the maximum of 1) is analogous to a test rarely every flagging someone as having the flu when they don’t. A perfect model will have high sensitivity with a high specificity, meaning that it is able to identify when observations belong to a category and does not incorrectly predict other observations as belonging to that category. The table above indicates that all the categories have relatively high specificity. Class 4 has a specificity of 0.996 which on the surface looks great but because the sensitivity is so low, this high specificity just means that the model rarely every predicts any observations as belonging to category 4. The same follows for category 3. This is also seen in the extremely low detection rate and prevalence for these categories. These results, specifically for categories 3 and 4 are an indication that perhaps just reweighting the classes was not enough to overcome the imbalance in the data.</p>
 <p>A better metric for instances such as this where the data is imbalanced is the F1 score. The F1 score is the harmonic mean of the precision and recall. The precision is the percentage of observations that belonged to a category and were correctly predicted as belonging to that category. The recall is just the sensitivity. The F1 score, same as the other metrics, ranges from 0 to 1 with 0 being the worst and 1 being the best. The F1 score is useful because the harmonic mean because it is less affected by extreme values than the arithmetic mean. Categories 4 and 3 are by far the worst with values of 0,104 and 0,119. Category 0 has the best F1 score with a value of 0,716. Then category 1 has a value of 0,383 and category 3 has a score of 0,487.</p>
