@@ -205,7 +205,7 @@ The figure above displays a stripplot from the MICE imputation, which shows the 
 
 However, variables such as Alt, Air.Temp, and Incline show that imputed values do not follow the same distribution as the observed values as the red dots do not overlap well and indicates that the data failed to impute well under the MAR assumption.
 
-The density plots for the variables in question were plotted as well as the density plot of Max.Hardness.Grad which imputed well as a comparison,
+The density plots for the variables in question were plotted as well as the density plot of Max.Hardness.Grad which imputed well as a comparison.
 
 ```{r, echo=FALSE}
 
