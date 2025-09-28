@@ -40,6 +40,7 @@ Predicting forecasted avalanche hazard levels from 15 years of Scottish data usi
 
 {{< include sections/LLMs_discussion.qmd >}}
 
-### References {.unnumbered #references}
+{{< include sections/References.qmd >}}
+
 
 :::
