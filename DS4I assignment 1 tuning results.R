@@ -100,10 +100,6 @@ ggplot(top_10_shuffled, aes(x = combo_label, y = Validation_accuracy, color = fa
   scale_color_manual(values = my_colors, name = "Predictor Set")
 ###############
 
-
-
-
-
 summary_table = kable(df, format = 'html', booktabs = TRUE) %>% 
   kable_styling(full_width = FALSE, position = 'center') %>%
   collapse_rows(columns = 1, valign = 'middle')
@@ -204,10 +200,10 @@ con_mat = as.data.frame(metrics_list$table)
 con_mat = rename(con_mat, Predicted = Prediction, Reference = Reference, Count = Freq)
 con_mat =  tidyr::pivot_wider(con_mat, names_from = Reference, values_from = Count,
                               values_fill = 0)
+colnames(con_mat)[1] = 'Actual'
 metrics_mat = metrics_list$byClass
 save(con_mat, file = 'test/con_mat.RData')
 save(metrics_mat, file = 'test/metrics_mat.RData')
-
 
 load('test/con_mat.RData')
 kable(con_mat, format = 'html', caption = 'Confusion matrix') %>%
