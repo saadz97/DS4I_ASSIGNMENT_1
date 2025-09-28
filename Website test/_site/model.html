@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.57">
+<meta name="generator" content="quarto-1.6.42">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -35,10 +35,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-6bd9cfa162949bde0a231f530c97869d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -67,9 +67,7 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 <script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
-
 <link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
-
 
 
 <link rel="stylesheet" href="styles.css">
@@ -374,11 +372,7 @@ ul.task-list li input[type="checkbox"] {
 </table>
 
 
-<<<<<<< HEAD
 <p>Architecturally, models with 4–5 layers and 30–50 nodes per layer consistently outperformed others, with no clear gains beyond 5 layers. The optimal configuration from Predictor Set 4—selected for final evaluation—employed 4 hidden layers with [30, 40, 40, 40] nodes and achieved 64.9% validation accuracy.</p>
-=======
-<p>From the table it is evident that predictor sets 2 and 4 perform relatively equally with validation accuracies of 66% and 65% respectively. Predictor set 3 has slightly worse predictive capability with a prediction accuracy around 63%. Predictor set 1 is firmly the worst, achieving 50% validation accuracy. It is clear that the variables relating to the location are not as important as the variables relating to the weather conditions and the snow pack test. The rest of the predictor sets perform roughly the same and the results are close enough for the difference to be down to randomness. It is expected that predictor set 4(containing all variables) would perform at least as good as the best of the first three predictor sets since the best predictor set would be contained in predictor set 4. The best model configuration when using predictor set 4 is summarised below.</p>
->>>>>>> 46072b15c7a182c2bc33c3a5c1837f8d127d2a4b
 <p><img src="best_model_plot.png" alt="Configuration of the best model" width="500"></p>
 <p>The selected architecture (Figure @ref(fig:best_model_plot)) utilizes ReLU activation in hidden layers and softmax output activation, appropriate for the multi-class ordinal nature of avalanche hazard prediction. This configuration represents an optimal balance between model complexity and predictive performance for the comprehensive feature set.</p>
 <table class="table caption-top" data-quarto-postprocess="true">
@@ -398,13 +392,8 @@ ul.task-list li input[type="checkbox"] {
 Predicted
 </div></th>
 </tr>
-<<<<<<< HEAD
-<tr class="odd">
-<th style="text-align: left;" data-quarto-table-cell-role="th">Predicted</th>
-=======
 <tr class="even">
 <th style="text-align: left;" data-quarto-table-cell-role="th">Actual</th>
->>>>>>> 46072b15c7a182c2bc33c3a5c1837f8d127d2a4b
 <th style="text-align: right;" data-quarto-table-cell-role="th">0</th>
 <th style="text-align: right;" data-quarto-table-cell-role="th">1</th>
 <th style="text-align: right;" data-quarto-table-cell-role="th">2</th>
@@ -646,8 +635,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -758,7 +745,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {

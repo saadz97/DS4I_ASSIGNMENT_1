@@ -36,8 +36,8 @@ library(ggplot2)
 load('../data/training_data.RData')
 load('../data/testing_data.RData')
 
-load('data/y_train.RData')
-load('data/y_test.RData')
+load('../data/y_train.RData')
+load('../data/y_test.RData')
 
 y_train = to_categorical(y_train, num_classes = 5)
 y_test  = to_categorical(y_test, num_classes = 5)
