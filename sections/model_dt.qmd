@@ -6,7 +6,7 @@ prefer-html: true
 
 ## 3 Model building, tuning and evalutation {#sec-model_dt}
 
- 3 Methodology
+# 3 Methodology
 
 ```{r, echo=FALSE}
 knitr::opts_chunk$set(echo = FALSE, eval = FALSE, message = FALSE)
