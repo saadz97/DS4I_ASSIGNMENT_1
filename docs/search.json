@@ -1,68 +1,5 @@
 [
   {
-    "objectID": "sections/Results.html",
-    "href": "sections/Results.html",
-    "title": "",
-    "section": "",
-    "text": "Code"
-  },
-  {
-    "objectID": "sections/Results.html#sec-Results",
-    "href": "sections/Results.html#sec-Results",
-    "title": "",
-    "section": "3. Results",
-    "text": "3. Results\nResults over here…"
-  },
-  {
-    "objectID": "sections/Introduction.html",
-    "href": "sections/Introduction.html",
-    "title": "",
-    "section": "",
-    "text": "Code"
-  },
-  {
-    "objectID": "sections/Introduction.html#sec-Introduction",
-    "href": "sections/Introduction.html#sec-Introduction",
-    "title": "",
-    "section": "1. Introduction",
-    "text": "1. Introduction\nIntroduction over here…"
-  },
-  {
-    "objectID": "sections/Data_and_Methods.html",
-    "href": "sections/Data_and_Methods.html",
-    "title": "",
-    "section": "",
-    "text": "Code"
-  },
-  {
-    "objectID": "sections/Data_and_Methods.html#sec-Data_and_Methods",
-    "href": "sections/Data_and_Methods.html#sec-Data_and_Methods",
-    "title": "",
-    "section": "2. Data and Methods",
-    "text": "2. Data and Methods\nThe dataset used in this study consists of daily avalanche forecasts for six forecasting regions across Scotland (Creag Meagaidh, Glencoe, Lochaber, Northern Cairngorms, Southern Cairngorms, and Torridon), collected by the Scottish Avalanche Information Service (SAIS) between 2009 and 2025. It contains 10,671 observations and 34 variables including weather conditions, topography, snowpack properties, and avalanche hazard levels.\nThe target variable for this project is the Forecast Avalanche Hazard (FAH), a categorical variable with five ordered levels: Low, Moderate, Considerable -, Considerable +, and High."
-  },
-  {
-    "objectID": "sections/Data_and_Methods.html#data-cleaning-and-preprocessing",
-    "href": "sections/Data_and_Methods.html#data-cleaning-and-preprocessing",
-    "title": "",
-    "section": "2.1 Data Cleaning and Preprocessing",
-    "text": "2.1 Data Cleaning and Preprocessing\nThe raw dataset underwent extensive cleaning prior to analysis. Initially, rows with missing FAH values (109 rows) were removed, and FAH levels were replaced with a numerical representation from 0 to 4 for compatibility with the neural network software. Other categorical variables, such as precipitation type and forecast region, were similarly transformed into numerical formats. The Date column was transformed into Month to capture seasonal effects.\nVariables unrelated to forecasting or with high missingness (more than 20%), frequent errors, limited predictive value, or poorly defined measures were excluded, resulting in a set of well-defined predictors most relevant for forecasting.\nRange checks were applied to remove physically impossible or implausible values based physical limits and regional context.\nFor example, altitude was limited to 0–1,345 m, the height of Ben Nevis (…), and wind speeds to 176 mph, reflecting the highest recorded gust in the Highlands (…).\nSlope inclines were restricted to 0–90°, and wind directions were constrained to 0–360°. Cloud cover was limited to 0–100%, total snow depth to 0–1,500 cm (with unrealistic spikes removed), and foot penetration depth to 100 cm. Snow temperatures above 0.5 °C were flagged as implausible, since snow begins melting at 0 °C, and maximum temperature gradients were limited to below 25 °C per 10 cm (…). Observations where foot penetration exceeded total snow depth were also removed.\nCircular variables such as wind direction and aspect were transformed into sine and cosine components.\nExploratory data analysis (EDA) was then performed to assess variable distributions, relationships with FAH, multicollinearity, and seasonal and geographic trends using correlation heatmaps, histograms, scatterplots, and boxplots.\n\n2.2 Neural Network Stuff…\n…."
-  },
-  {
-    "objectID": "sections/Abstract.html",
-    "href": "sections/Abstract.html",
-    "title": "",
-    "section": "",
-    "text": "Code"
-  },
-  {
-    "objectID": "sections/Abstract.html#sec-Abstract",
-    "href": "sections/Abstract.html#sec-Abstract",
-    "title": "",
-    "section": "Abstract",
-    "text": "Abstract\nAbstract over here…"
-  },
-  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "",
@@ -140,6 +77,20 @@
     "text": "5. Conclusion\nConclusion here"
   },
   {
+    "objectID": "sections/Results.html",
+    "href": "sections/Results.html",
+    "title": "",
+    "section": "",
+    "text": "Code"
+  },
+  {
+    "objectID": "sections/Results.html#sec-Results",
+    "href": "sections/Results.html#sec-Results",
+    "title": "",
+    "section": "3. Results",
+    "text": "3. Results\nResults over here…"
+  },
+  {
     "objectID": "sections/Discussion.html",
     "href": "sections/Discussion.html",
     "title": "",
@@ -166,5 +117,54 @@
     "title": "",
     "section": "6. Use of Large Language Models (LLMs)",
     "text": "6. Use of Large Language Models (LLMs)\nTalking about use of LLMs over here"
+  },
+  {
+    "objectID": "sections/Data_and_Methods.html",
+    "href": "sections/Data_and_Methods.html",
+    "title": "",
+    "section": "",
+    "text": "Code"
+  },
+  {
+    "objectID": "sections/Data_and_Methods.html#sec-Data_and_Methods",
+    "href": "sections/Data_and_Methods.html#sec-Data_and_Methods",
+    "title": "",
+    "section": "2. Data and Methods",
+    "text": "2. Data and Methods\nThe dataset used in this study consists of daily avalanche forecasts for six forecasting regions across Scotland (Creag Meagaidh, Glencoe, Lochaber, Northern Cairngorms, Southern Cairngorms, and Torridon), collected by the Scottish Avalanche Information Service (SAIS) between 2009 and 2025. It contains 10,671 observations and 34 variables including weather conditions, topography, snowpack properties, and avalanche hazard levels.\nThe target variable for this project is the Forecast Avalanche Hazard (FAH), a categorical variable with five ordered levels: Low, Moderate, Considerable -, Considerable +, and High."
+  },
+  {
+    "objectID": "sections/Data_and_Methods.html#data-cleaning-and-preprocessing",
+    "href": "sections/Data_and_Methods.html#data-cleaning-and-preprocessing",
+    "title": "",
+    "section": "2.1 Data Cleaning and Preprocessing",
+    "text": "2.1 Data Cleaning and Preprocessing\nThe raw dataset underwent extensive cleaning prior to analysis. Initially, rows with missing FAH values (109 rows) were removed, and FAH levels were replaced with a numerical representation from 0 to 4 for compatibility with the neural network software. Other categorical variables, such as precipitation type and forecast region, were similarly transformed into numerical formats. The Date column was transformed into Month to capture seasonal effects.\nVariables unrelated to forecasting or with high missingness (more than 20%), frequent errors, limited predictive value, or poorly defined measures were excluded, resulting in a set of well-defined predictors most relevant for forecasting.\nRange checks were applied to remove physically impossible or implausible values based physical limits and regional context.\nFor example, altitude was limited to 0–1,345 m, the height of Ben Nevis (…), and wind speeds to 176 mph, reflecting the highest recorded gust in the Highlands (…).\nSlope inclines were restricted to 0–90°, and wind directions were constrained to 0–360°. Cloud cover was limited to 0–100%, total snow depth to 0–1,500 cm (with unrealistic spikes removed), and foot penetration depth to 100 cm. Snow temperatures above 0.5 °C were flagged as implausible, since snow begins melting at 0 °C, and maximum temperature gradients were limited to below 25 °C per 10 cm (…). Observations where foot penetration exceeded total snow depth were also removed.\nCircular variables such as wind direction and aspect were transformed into sine and cosine components.\nExploratory data analysis (EDA) was then performed to assess variable distributions, relationships with FAH, multicollinearity, and seasonal and geographic trends using correlation heatmaps, histograms, scatterplots, and boxplots.\n\n2.2 Neural Network Stuff…\n…."
+  },
+  {
+    "objectID": "sections/Abstract.html",
+    "href": "sections/Abstract.html",
+    "title": "",
+    "section": "",
+    "text": "Code"
+  },
+  {
+    "objectID": "sections/Abstract.html#sec-Abstract",
+    "href": "sections/Abstract.html#sec-Abstract",
+    "title": "",
+    "section": "Abstract",
+    "text": "Abstract\nAbstract over here…"
+  },
+  {
+    "objectID": "sections/Introduction.html",
+    "href": "sections/Introduction.html",
+    "title": "",
+    "section": "",
+    "text": "Code"
+  },
+  {
+    "objectID": "sections/Introduction.html#sec-Introduction",
+    "href": "sections/Introduction.html#sec-Introduction",
+    "title": "",
+    "section": "1. Introduction",
+    "text": "1. Introduction\nIntroduction over here…"
   }
 ]
