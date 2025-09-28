@@ -78,11 +78,11 @@ The goal of this project is to construct and evaluate a neural network model tha
 
 | Name | Student Number | Key Contributions |
 | :--- | :--- | :--- |
-| [Group Member 1 Name] | [Student Number] | Data preprocessing, EDA, Model development |
-| [Group Member 2 Name] | [Student Number] | Feature engineering, Hyperparameter tuning, LLM management |
-| [Group Member 3 Name] | [Student Number] | Quarto website development, Writing, Visualization |
-| [Group Member 4 Name] | [Student Number] | Presentation, Model evaluation, Report writing |
-| [Group Member 4 Name] | [Student Number] | Presentation, Model evaluation, Report writing |
+| Ditiro Letsoalo | LTSDIT002 |Model development assistance, report writing and structuring of relevant sections, website help, README documentation |
+| Saadia Abdullah | ABDSAA004 |  Setting up GitHub repository, Data cleaning, and EDA, including the write up for the relevant sections. |
+| Ezra Goliath | GLTEZR001 | Model building, Model tuning, and Model evaluation, including the write up for relevant sections. |
+| Hope Hennessy | HNNHOP001 | Data cleaning, EDA, and Website development, including the write up for the relevant sections. |
+| Rachel Calaz | CLZRAC001 | Website development, write up for the abstract, introduction, literature review, discussion, and conclusion. |
 
 ## Key Findings
 
