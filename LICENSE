@@ -1,21 +1,31 @@
-MIT License
+UNIVERSITY OF CAPE TOWN ACADEMIC LICENSE
 
-Copyright (c) 2025 DS4I Assignment 1
+Copyright (c) 2025 Ditiro Letsoalo, Ezra Goliath, Saadi Abdullah, Hope Hennessy, Rachel Calaz - STA5073Z Data Science for Industry 2025
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This work is submitted as part of the assessment for STA5073Z - Data Science for Industry 2025
+at the University of Cape Town.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+TERMS OF USE:
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+1. ACADEMIC USE:
+   - This work may be used for educational and research purposes by UCT students and staff
+   - Proper attribution must be given to the authors
+
+2. RESTRICTIONS:
+   - This work may not be submitted as original work by other students
+   - Commercial use is prohibited without explicit permission
+   - Redistribution for academic purposes requires maintaining this license
+
+3. ACADEMIC INTEGRITY:
+   - Users must comply with UCT's plagiarism policy and academic integrity rules
+   - This work is provided as a learning resource, not for direct submission
+
+4. DATA USAGE:
+   - The avalanche dataset is used under educational fair use
+   - Original data belongs to Scottish Avalanche Information Service
+
+Department of Statistical Sciences
+University of Cape Town
+Private Bag X3, Rondebosch 7701, South Africa
+
+This license is specific to academic work and does not constitute open source software licensing.
