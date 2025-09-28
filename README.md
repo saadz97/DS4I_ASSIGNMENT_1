@@ -1,7 +1,6 @@
 # Predicting Forecasted Avalanche Hazard with Neural Networks
 
-[![License](https://img.shields.io/github/license/saadz97/DS4I_ASSIGNMENT_1)](https://github.com/saadz97/DS4I_ASSIGNMENT_1/blob/main/LICENSE)
-[![Last Commit](https://img.shields.io/github/last-commit/saadz97/DS4I_ASSIGNMENT_1)](https://github.com/saadz97/DS4I_ASSIGNMENT_1/commits/main)
+[![License](https://img.shields.io/badge/License-UCT_Academic-blue.svg)](https://github.com/saadz97/DS4I_ASSIGNMENT_1/blob/main/LICENSE)[![Last Commit](https://img.shields.io/github/last-commit/saadz97/DS4I_ASSIGNMENT_1)](https://github.com/saadz97/DS4I_ASSIGNMENT_1/commits/main)
 [![Issues](https://img.shields.io/github/issues/saadz97/DS4I_ASSIGNMENT_1)](https://github.com/saadz97/DS4I_ASSIGNMENT_1/issues)
 
 
