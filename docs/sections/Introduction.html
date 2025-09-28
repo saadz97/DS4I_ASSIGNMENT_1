@@ -122,13 +122,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="sec-Introduction" class="level2">
-<h2 class="anchored" data-anchor-id="sec-Introduction">1. Introduction</h2>
-<p>Introduction over here…</p>
+<section id="sec-Introduction_and_Lit_Review" class="level2">
+<h2 class="anchored" data-anchor-id="sec-Introduction_and_Lit_Review">1 Introduction and Lit Review</h2>
+<section id="introduction" class="level3">
+<h3 class="anchored" data-anchor-id="introduction">1.1 Introduction</h3>
+<p>Scotland is a region with frequent snow accumulation as well as a high amount of human activity. It is therefore vital that avalanche forecasting is carried out as a key component of their mountain safety and reducing economic losses. Avalanche forecasting can prove to be difficult as it is dependent on many factors with complex relationships and interactions, such as snow properties, meteorological conditions and terrain features. Usually, avalanche forecasts are predicted using a combination of weather reports as well as field observations to release daily bulletins. Although these are essential, the rapidly expanding historical weather and avalanche datasets have created the oppurtunity for new, data driven methods.</p>
+<p>Machine learning, specifically neural networks, have become strong contenders for avalanche forecasting due to their ability to model complex and multi-dimensional relationships. From the ever growing historical datasets, these methods can uncover patterns that have previously not been utilised in avalanche forecasting. The Scottish Avalanche Information Service (SAIS) provides a large amount of historical data that can be utilised to train neural networks to improve avalanche risk management. In this report, this dataset will be used to train and evaluate neural network models for the potential to forecast avalanches in the Scottish region.</p>
+</section>
+<section id="literature-review" class="level3">
+<h3 class="anchored" data-anchor-id="literature-review">1.2 Literature Review</h3>
+<p>Avalanche forecasting and research spans across snow science, meteorology and data science. Initially, intuition and rules of thumb based on snowfall and temperature were used to predict avalanches. These methods proved to be inconsistent and struggled to generalise diverse snow conditions (LaChapelle, 1980). These methods moved towards statistical and probabilistic methods. This more systematic process could integrate more predictors as well as quantify uncertainty (McClung, 2002).</p>
+<p>Due to the evergrowing amount of data, machine learning methods have been utilised to predict avalanches. Hafner, Bühler and Schweizer (2021) showed that random forrest and support vector machines can be applied to large avalanche datasets and achieve high accuracy, especially compared to more traditional models. This proved the potential for machine learning methods to capture complex and nonlinear relationships between avalanche predictor variables. From machine learning methods, neural networks stand out due to their flexability and ability to work with high dimensional predictors. Deep learning applications related to avalanches are snow depth prediction, snowpack classification and exploratory hazard modelling (Mitterer el al., 2016; Castagneri et al., 2022). Although results have been positive, neural networks have not been fully developed or implemented into avalanche forecasting.</p>
+<p>For avalanche forecasting, snowpack stability indicators are vital. These include temperature gradients and snow temperature profiles (Schweizer and Jamieson, 2007). Additionally, meteorological variables, such as wind speed, air temperature and precipitation, directly affect snow deposition and terrain features, such as aspect and slope angle affect avalanche likelyhood (Bellaire and Jamieson, 2013). These predictors have complex relationships and patterns that traditional methods do not capture however mehtods such as neural networks can uncover these subtle interactions.</p>
+<p>From the literature, it has been shown that avalanche forecasting methods have evolved from intuition and expert-based assessments to statistical methods and then further to machine learning methods. Studies have been completed to confirm the feasibility of data-driven avalanche forecasting however integration into operational practices is underdeveloped.</p>
 
 
 <!-- -->
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -603,11 +614,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">## 1. Introduction {#sec-Introduction}</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">## 1 Introduction and Lit Review {#sec-Introduction_and_Lit_Review}</span></span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>Introduction over here...</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1.1 Introduction</span></span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>Scotland is a region with frequent snow accumulation as well as a high amount of human activity. It is therefore vital that avalanche forecasting is carried out as a key component of their mountain safety and reducing economic losses. Avalanche forecasting can prove to be difficult as it is dependent on many factors with complex relationships and interactions, such as snow properties, meteorological conditions and terrain features. Usually, avalanche forecasts are predicted using a combination of weather reports as well as field observations to release daily bulletins. Although these are essential, the rapidly expanding historical weather and avalanche datasets have created the oppurtunity for new, data driven methods.</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>Machine learning, specifically neural networks, have become strong contenders for avalanche forecasting due to their ability to model complex and multi-dimensional relationships. From the ever growing historical datasets, these methods can uncover patterns that have previously not been utilised in avalanche forecasting. The Scottish Avalanche Information Service (SAIS) provides a large amount of historical data that can be utilised to train neural networks to improve avalanche risk management. In this report, this dataset will be used to train and evaluate neural network models for the potential to forecast avalanches in the Scottish region. </span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1.2 Literature Review</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>Avalanche forecasting and research spans across snow science, meteorology and data science. Initially, intuition and rules of thumb based on snowfall and temperature were used to predict avalanches. These methods proved to be inconsistent and struggled to generalise diverse snow conditions (LaChapelle, 1980). These methods moved towards statistical and probabilistic methods. This more systematic process could integrate more predictors as well as quantify uncertainty (McClung, 2002).</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>Due to the evergrowing amount of data, machine learning methods have been utilised to predict avalanches. Hafner, Bühler and Schweizer (2021) showed that random forrest and support vector machines can be applied to large avalanche datasets and achieve high accuracy, especially compared to more traditional models. This proved the potential for machine learning methods to capture complex and nonlinear relationships between avalanche predictor variables. From machine learning methods, neural networks stand out due to their flexability and ability to work with high dimensional predictors. Deep learning applications related to avalanches are snow depth prediction, snowpack classification and exploratory hazard modelling (Mitterer el al., 2016; Castagneri et al., 2022). Although results have been positive, neural networks have not been fully developed or implemented into avalanche forecasting.</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>For avalanche forecasting, snowpack stability indicators are vital. These include temperature gradients and snow temperature profiles (Schweizer and Jamieson, 2007). Additionally, meteorological variables, such as wind speed, air temperature and precipitation, directly affect snow deposition and terrain features, such as aspect and slope angle affect avalanche likelyhood (Bellaire and Jamieson, 2013). These predictors have complex relationships and patterns that traditional methods do not capture however mehtods such as neural networks can uncover these subtle interactions.</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>From the literature, it has been shown that avalanche forecasting methods have evolved from intuition and expert-based assessments to statistical methods and then further to machine learning methods. Studies have been completed to confirm the feasibility of data-driven avalanche forecasting however integration into operational practices is underdeveloped.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
