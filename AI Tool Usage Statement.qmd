@@ -35,6 +35,7 @@ LLMs were used to help improve the written sections of the report. They assisted
 
 In addition, LLMs were sometimes used to transform sets of bullet points into coherent, well-structured paragraphs, helping to organize ideas in a way that was easy to follow.
 
+LLMs were used for structuring report sections and generating README templates, clearly outlined requirements guided the model's output. In all cases, the results were critically evaluated and refined, with final decisions and implementations made independently.
 # Final paragraph
 
 While LLMs contributed in these ways, all code and written content were carefully reviewed and edited to ensure its accuracy and that it clearly conveyed our thought processes, ideas, and reasonings.
@@ -42,3 +43,4 @@ While LLMs contributed in these ways, all code and written content were carefull
 # Other points
 
 -   They helped summarize and explain other group members’ work, allowing us to quickly stay up to date with the progress made on the project.
+-   For data visualization, an efficiency-driven approach was adopted—specific outcomes were defined in advance, and the LLM was used to generate production-ready code aligned with those goals. For example, in creating plots, detailed prompts such as "Create a professional ggplot that visualizes validation accuracy across different hyperparameter combinations, clearly highlighting the best-performing combination." yielded well-formatted visualizations, saving time on aesthetic adjustments.
