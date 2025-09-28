@@ -485,8 +485,6 @@ The data was split using a 70/30 split, which was stratified using FAH to ensure
 
 ## 3. Results {#sec-Results}
 
-
-
 ```{r packages and libraries, eval=TRUE, include =F}
 library(keras)
 library(kerastuneR)
