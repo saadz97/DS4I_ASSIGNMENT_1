@@ -4,7 +4,9 @@ output: pdf_document
 prefer-html: true
 ---
 
-# Methodology
+## 3 Model building, tuning and evalutation {#sec-model_dt}
+
+### 3.1 Methodology
 
 ```{r, echo=FALSE}
 knitr::opts_chunk$set(echo = FALSE, eval = FALSE, message = FALSE)
@@ -12,7 +14,7 @@ knitr::opts_chunk$set(echo = FALSE, eval = FALSE, message = FALSE)
 
 This section outlines the comprehensive methodology employed for predicting avalanche hazard levels using neural networks. We describe the data preprocessing pipeline, experimental design with four distinct predictor sets, neural network architecture selection process, and hyperparameter tuning strategy. The methodology ensures reproducible results while systematically evaluating the contribution of different variable types to forecasting accuracy.
 
-## Software and Setup
+### 3.2 Software and Setup
 Neural network modelling was implemented using the **`keras`** library, accessed through its R wrapper. Keras is an open-source deep learning framework known for its modularity and relatively gentle learning curve compared to other libraries such as PyTorch. Its modular design makes it well suited for projects that require experimentation with multiple configurations.
 
 Because Keras functions in R act as wrappers around the underlying Python functions, version control is critical to ensure reproducibility. This project was developed in **`R version 4.5.1 (2025-06-13)`** with **`Python version 3.11.6`**.
@@ -50,7 +52,7 @@ rownames(comp_mat) = c('train', 'test')
 save(comp_mat, file = 'test/category_imbalance.RData')
 ```
 
-## Data Preparation
+### 3.3 Data Preparation
 The modelling goal was to predict Forecasted Avalanche Hazard (FAH). To prevent data leakage, the Observed Avalanche Hazard (OAH) variable was excluded from the predictor sets, since this information would not be available in real-world forecasting scenarios.
 
 A 70/30 train–test split was applied, with a fixed random seed to ensure reproducibility. Although a validation set is often held out, Keras provides internal validation handling, so this was not specified manually.
@@ -68,11 +70,11 @@ The table above reports the percentage of each category of FAH that is in the tr
 
 There a few possible methods we can use to mitigate this issue but the method chosen for this project was to define custom class weights so that incorrect predictions have different penalties for each category. The idea is that underrepresented categories have higher weights so that in the training the model gets penalised more heavily and hopefully the final model is better at making predictions for the underpresented categories. The weights chosen were inversely proportional to the percentage of appearance in the training data. A possible area of further experimentation is using bootstrap sampling to equalise the percentages of each category.
 
-## Predictor Sets
+### 3.4 Predictor Sets
 
 For this project there were 4 predictor sets that were evaluated. Predictor set 1 contained variables relating to the location of the observation. Predictor set 2 contained variables relating to the weather conditions of the observation. Predictor set 3 contained variables relating to a snow pack test. Predictor set 4 contained all the varibles in the dataset and thus contained all three predictor sets inside it. The final model will be built using all the available data, so predictor set 4. The remaining three predictor sets serve as yardstick to which we can compare which sets of variables are important.
 
-## Model Development
+### 3.5 Model Development
 
 Neural networks are extremely flexible and configurable models. But this configurability means that there are several parameters that need to be defined before the model can be trained. In order to find the optimal configuration, hyperparameter tuning needs to be done first. Some of the hyperparameters we have control over include: number of layers, number of nodes per layer, the acitvation function to use on each layer, the dropout rate and the learning rate. **`keras`** is flexible and allows the user control of almost every aspect of the model through the parameters. In order to do the hyperameter tuning in R, the **`kerastuneR`** library is used. But in order to do the hyperparameter tuning with **`kerastuneR`** the model needs to be wrapped in a function that accepts as an input the hyperparameter configuration, and outputs a model.
 
@@ -110,7 +112,7 @@ model_builder = function(hp){
 
 For this project, it was decided to tune for the number of layers, number of nodes on each layer and the learning rate. The activation function was chosen to be rectified linear units(Relu) and the dropout rate was set to 0,1. Each dense layer was followed by a dropout layer. The specific values that were tuned across were 1-5 layers(step size of 1) with 30-50(step size of 10) nodes on each layer and 5 equally spaced learning rates \[0,01  - 0,0001\]. Therefore, there were a total of 75 unique models that could be fitted. The metric the Neural Network tries to minimize is the **`metric_categorical_accuracy`**. This was chosen since the target variable has more than 1 category.
 
-## Hyperparameter Tuning
+### 3.6 Hyperparameter Tuning
 
 ```{r model tuning, echo=FALSE, eval=FALSE}
 for (i in 1:4){
@@ -147,11 +149,11 @@ All the results from tuning were saved into folders so that the results can be e
 
 **`kerastuneR`** saves the tuning results as .json files. Each trial will be its own folder and inside that folder there will be a .json file containing information about the configuration of the Neural Network and the validation accuracy it achieved. The results were compiled into a single table containing the top 3 configurations from each of the predictor sets.
 
-# Results
+### 3.7 Results
 
 This section presents the comprehensive outcomes of our neural network approach to avalanche hazard prediction. We begin by examining the performance hierarchy across different predictor sets, followed by detailed analysis of optimal hyperparameter configurations. The section culminates in an evaluation of the final model's predictive capability, with particular attention to class-wise performance across the five avalanche hazard levels.
 
-## Hyperparameter Tuning Outcomes
+### 3.8 Hyperparameter Tuning Outcomes
 
 ```{r, echo=FALSE, eval=FALSE}
 library(dplyr)
@@ -335,7 +337,7 @@ Architecturally, models with 4–5 layers and 30–50 nodes per layer consistent
 
 The optimal configuration from Predictor Set 4—selected for final evaluation—employed 4 hidden layers with [30, 40, 40, 40] nodes and achieved 64.9% validation accuracy, representing the best balance of performance and generalizability.
 
-## Optimal Architecture
+### 3.9 Optimal Architecture
 
 ```{r best_model_plot, fig.cap="Optimal neural network architecture", echo=FALSE, eval=FALSE}
 
@@ -395,9 +397,9 @@ plot_model(best_model, show_shapes = TRUE, show_layer_names = TRUE,
 
 The selected architecture utilizes ReLU activation in hidden layers and softmax output activation, appropriate for the multi-class ordinal nature of avalanche hazard prediction. This configuration represents an optimal balance between model complexity and predictive performance for the comprehensive feature set. This architecture balanced model complexity with predictive accuracy and was used for final evaluation on the test set.
 
-## Model Evaluation 
+### 3.10 Model Evaluation 
 
-### Confusion Matrix
+#### 3.10.1 Confusion Matrix
 
 
 ```{r predictions, echo=FALSE, eval=FALSE}
@@ -466,7 +468,7 @@ kable(con_mat, format = 'html', caption = "Confusion matrix for avalanche hazard
 
 The confusion matrix of the the fitted model is reported in @tbl-confusion. It is clear that category 0 is the best estimated while categories 3 and 4 are estimated the worst. This result was expected since category 3 and 4 are very underepresented in both the training and test data. Concrete metrics of the model performance is given in the table below.
 
-### Class-Level Metrics
+#### 3.10.2 Class-Level Metrics
 
 ```{r tbl-class, results='asis', eval=TRUE, echo=FALSE}
 
@@ -486,14 +488,14 @@ All these values, except for category are quite poor and indicate lack of predic
 
 
 
-## Interpretation
+### 3.11 Interpretation
 
 The results highlight the challenges of severe class imbalance. While class reweighting improved performance somewhat, minority classes remained poorly predicted. This suggests that more aggressive strategies may be necessary, such as resampling (e.g., bootstrapping or SMOTE), expanding the hyperparameter search space, or exploring alternative architectures.
 
 Despite these limitations, the study provides useful insights. It demonstrates that weather variables are the dominant predictors of avalanche hazard and that neural networks can achieve moderate accuracy with relatively simple architectures. However, improving detection of rare but high-consequence hazard categories remains an important direction for future work.
 
 
-# Extra resources
+### 3.12 Extra resources
 
 [`keras`](https://cran.r-project.org/web/packages/keras/vignettes/){target="_blank"}
 

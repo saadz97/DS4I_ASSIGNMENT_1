@@ -11,7 +11,7 @@ execute:
 library(kableExtra)
 ```
 
-## 2. Data and Methods {#sec-Data_and_Methods}
+## 2 Data and Methods {#sec-Data_and_Methods}
 
 The dataset used in this study consists of daily avalanche forecasts for six forecasting regions across Scotland (Creag Meagaidh, Glencoe, Lochaber, Northern Cairngorms, Southern Cairngorms, and Torridon), collected by the Scottish Avalanche Information Service (SAIS) between 2009 and 2025. It contains 10,671 observations and 34 variables including weather conditions, topography, snowpack properties, and avalanche hazard levels.
 
