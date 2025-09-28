@@ -3,6 +3,14 @@ title: "GLTEZR001"
 format: html
 ---
 
+## Abstract {#sec-Abstract}
+
+### Abstract
+
+This study investigates the application of neural networks for avalanche hazard level prediction using a large historical dataset from the Scottish Avalanche Information Service. The models are trained on predictors such as meteorological, snowpack and topographical features. Initially, the historical data was preprocessed into training, validation and tests sets. The model was trained and performance was compared against baseline expectations with feature importance also being investigated.
+
+The results of the model are promissing with the neural networks being able to successfully capture the non-linear and complex interactions between the features. Challenges such as misclassificationrates for high hazard levels and limited interpretability of the model were additionally observed, showing potential for improvement in the future with methods such as resampling. Overall, this investigation shows the potential and limitations of implementing neural networks for avalanche hazard level prediction.
+
 ## 1 Introduction and Lit Review {#sec-Introduction_and_Lit_Review}
 
 ### 1.1 Introduction
@@ -941,6 +949,19 @@ Despite these limitations, the study provides useful insights. It demonstrates t
 
 [`kerastuneR`](https://eagerai.github.io/kerastuneR/){target="_blank"}
 
+## 5. Discussion and Conclusion {#sec-Conclusion}
+
+### 5.1 Discussion
+
+From the results, it can be seen that the neural network are capable and accurate for predicting avalanche hazard levels. They learn and find meaningful patterns and interaction through the diverse predictor sets of meteorological, snowpack and topographical features. 
+
+However, several limitations could be observed. Classification accuracy was uneven across hazard categories. The model was accurate at predicting low and moderate hazard levels however misclassification rates increased for higher hazards. This issue occurs due to class imbalance and reduced training signal due to the scarsity of high level hazards in the dataset. It is therefore suggested that resampling strategies could be implemented to improve the model classification accuracy. Another important limitation is the interpretability of neural networks. Neural networks are treated as black boxes and therefore interpretability is limited for vital decision making.
+
+The results from this investigation are positive for neural networks. This method is however complex and computationally expensive. It is therefore vital that there is collaboration between data scientists and experts to integrate the model to complement existing methods rather than replace them all together.
+
+### 5.2 Conclusion
+
+This project showcased the vital application of data-driven methods, such as neural networks, to predict avalanche hazard levels. The neural network model developed was successful at integrating all predictor features, such as meteorological, snowpack and topographical features, to find patterns and interactions that can be used to predict avalanche hazard levels. Challenges such as class imbalance, limited performance with high hazard levels and interpretability were observed but dispite these challenges, the model was still proven to be highly accurate.
 
 ## References {#sec-References}
 

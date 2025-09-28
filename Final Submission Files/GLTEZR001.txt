@@ -8,5 +8,5 @@ Group members and responsibilities:
 1. Saadia Abdullah (ABDSAA004) - Setting up GitHub repository, Data cleaning, and EDA, including the write up for the relevant sections.
 2. Ezra Goliath (GLTEZR001) - Model building, Model tuning, and Model evaluation, including the write up for relevant sections. 
 3. Hope Hennessy (HNNHOP001) - Data cleaning, EDA, and Website development, including the write up for the relevant sections.
-4. Ditiro Letsoalo () - 
-5. Rachel Calaz () - 
+4. Ditiro Letsoalo () - Setting up GitHub repository, 
+5. Rachel Calaz (CLZRAC001) - Website development, write up for the abstract, introduction, literature review, discussion, and conclusion.
