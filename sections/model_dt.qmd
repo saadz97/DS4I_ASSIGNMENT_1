@@ -19,7 +19,7 @@ Because Keras functions in R act as wrappers around the underlying Python functi
 
 
 
-```{r packages and libraries, eval=TRUE, include =F}
+```{r packages and libraries, eval=TRUE, include=FALSE, echo=FALSE}
 library(keras)
 library(kerastuneR)
 library(tensorflow)
@@ -32,12 +32,12 @@ library(kableExtra)
 library(ggplot2)
 ```
 
-```{r data}
-load('../data/training_data.RData')
-load('../data/testing_data.RData')
+```{r data, echo=FALSE, eval=FALSE}
+load('data/training_data.RData')
+load('data/testing_data.RData')
 
-load('../data/y_train.RData')
-load('../data/y_test.RData')
+load('data/y_train.RData')
+load('data/y_test.RData')
 
 y_train = to_categorical(y_train, num_classes = 5)
 y_test  = to_categorical(y_test, num_classes = 5)
@@ -59,9 +59,8 @@ A \textbf{70/30 train–test split} was applied, with a fixed random seed to ens
 
 To mitigate this, \textbf{custom class weights} were introduced. The weights were set inversely proportional to the prevalence of each category in the training set, so that errors on minority classes carried higher penalties during training. Alternative methods such as bootstrap resampling could also be considered, but were not explored here.
 
-```{r imbalance_matrix, eval=TRUE}
-#| label: tbl-imbalance
-load('../test/category_imbalance.RData')
+```{r tbl-imbalance, eval=TRUE, echo=FALSE}
+load('test/category_imbalance.RData')
 kable(comp_mat, digits = 3, caption = 'Comparison of percentage of each category in the training and test sets')
 ```
 
@@ -77,7 +76,7 @@ For this project there were 4 predictor sets that were evaluated. Predictor set 
 
 Neural networks are extremely flexible and configurable models. But this configurability means that there are several parameters that need to be defined before the model can be trained. In order to find the optimal configuration, hyperparameter tuning needs to be done first. Some of the hyperparameters we have control over include: number of layers, number of nodes per layer, the acitvation function to use on each layer, the dropout rate and the learning rate. **`keras`** is flexible and allows the user control of almost every aspect of the model through the parameters. In order to do the hyperameter tuning in R, the **`kerastuneR`** library is used. But in order to do the hyperparameter tuning with **`kerastuneR`** the model needs to be wrapped in a function that accepts as an input the hyperparameter configuration, and outputs a model.
 
-```{r model building function}
+```{r model building function, echo=FALSE, eval=FALSE}
 model_builder = function(hp){
   
   n_layers = hp$Int('number_of_layers', min_value = 1, max_value = 5, step = 1)
@@ -113,7 +112,7 @@ For this project, it was decided to tune for the number of layers, number of nod
 
 ## Hyperparameter Tuning
 
-```{r model tuning}
+```{r model tuning, echo=FALSE, eval=FALSE}
 for (i in 1:4){
   
   freqs = colSums(y_train) / nrow(y_train)
@@ -154,7 +153,7 @@ This section presents the comprehensive outcomes of our neural network approach 
 
 ## Hyperparameter Tuning Outcomes
 
-```{r}
+```{r, echo=FALSE, eval=FALSE}
 library(dplyr)
 library(tidyr)
 library(jsonlite)
@@ -206,7 +205,7 @@ results_compiler(randomsearch_directories)
 ```
 
 
-```{r}
+```{r, echo=FALSE, eval=FALSE}
 library(dplyr)
 library(keras)
 library(tensorflow)
@@ -244,11 +243,11 @@ df = mutate(df, 'Predictor set' = rep(1:4, each = 3), .before = 'Validation accu
 save(df, file = 'tuning/tuning_summary_table.RData')
 ```
 
-```{r myplot, results='asis', eval=TRUE, fig.cap="Validation accuracy by hyperparameter configuration across four predictor sets"}
+```{r fig-myplot, results='asis', eval=TRUE, fig.cap="Validation accuracy by hyperparameter configuration across four predictor sets", echo=FALSE}
 
-#| label: fig-myplot
+# #| label: fig-myplot
 #| 
-load('../tuning/tuning_summary_table.RData')
+load('tuning/tuning_summary_table.RData')
 
 ### The Tuning plot
 names(df) <- gsub(" ", "_", names(df))
@@ -319,9 +318,9 @@ Systematic hyperparameter tuning across four predictor sets revealed distinct pe
 
 
 
-```{r tuning-table, results='asis', eval=TRUE}
-#| label: tbl-tuning
-load('../tuning/tuning_summary_table.RData')
+```{r tbl-tuning, results='asis', eval=TRUE, echo=FALSE}
+
+load('tuning/tuning_summary_table.RData')
 
 summary_table = kable(df, booktabs = TRUE, caption = "Top hyperparameter configurations per predictor set, ranked by validation accuracy.") %>% 
   kable_styling(full_width = FALSE, position = 'center') %>%
@@ -341,7 +340,7 @@ The optimal configuration from Predictor Set 4—selected for final evaluation�
 
 ## Optimal Architecture
 
-```{r best_model_plot, fig.cap="Optimal neural network architecture"}
+```{r best_model_plot, fig.cap="Optimal neural network architecture", echo=FALSE, eval=FALSE}
 
 model_builder = function(hp){
   
@@ -404,7 +403,7 @@ The selected architecture utilizes ReLU activation in hidden layers and softmax 
 ### Confusion Matrix
 
 
-```{r predictions}
+```{r predictions, echo=FALSE, eval=FALSE}
 
 
 model_builder = function(hp){
@@ -461,9 +460,8 @@ save(con_mat, file = 'test/con_mat.RData')
 save(metrics_mat, file = 'test/metrics_mat.RData')
 ```
 
-```{r confusion, results='asis', eval=TRUE}
-#| label: tbl-confusion
-load('../test/con_mat.RData')
+```{r tbl-confusion, results='asis', eval=TRUE, echo=FALSE}
+load('test/con_mat.RData')
 kable(con_mat, format = 'html', caption = "Confusion matrix for avalanche hazard predictions.") %>%
   kable_styling(full_width = FALSE, position = 'center') %>%
   add_header_above(c(' ' = 1, 'Predicted' = 5))
@@ -473,10 +471,9 @@ The confusion matrix of the the fitted model is reported in @tbl-confusion. It i
 
 ### Class-Level Metrics
 
-```{r metrics matrix, results='asis', eval=TRUE}
-#| label: tbl-class
+```{r tbl-class, results='asis', eval=TRUE, echo=FALSE}
 
-load('../test/metrics_mat.RData')
+load('test/metrics_mat.RData')
 kable(metrics_mat, digits = 3, caption = "Comprehensive classification metrics by avalanche hazard class.") %>%
   kable_styling(full_width = FALSE, position = 'center')
 ```

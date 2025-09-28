@@ -10,3 +10,14 @@ forcats
 lubridate
 knitr
 kableExtra
+corrplot
+gridExtra
+colorspace
+VIM
+mice
+lattice
+caret
+keras
+kerastuneR
+tensorflow
+reticulate
