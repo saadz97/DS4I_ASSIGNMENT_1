@@ -1,8 +1,9 @@
 # Predicting Forecasted Avalanche Hazard with Neural Networks
 
-![GitHub](https://img.shields.io/github/license/saadz97/DS4I_ASSIGNMENT_1)
-![GitHub last commit](https://img.shields.io/github/last-commit/saadz97/DS4I_ASSIGNMENT_1)
-![GitHub issues](https://img.shields.io/github/issues/saadz97/DS4I_ASSIGNMENT_1)
+[![License](https://img.shields.io/badge/License-UCT_Academic-blue.svg)](https://github.com/saadz97/DS4I_ASSIGNMENT_1/blob/main/LICENSE)
+[![Last Commit](https://img.shields.io/github/last-commit/saadz97/DS4I_ASSIGNMENT_1?color=blue)](https://github.com/saadz97/DS4I_ASSIGNMENT_1/commits/main)
+[![Issues](https://img.shields.io/github/issues/saadz97/DS4I_ASSIGNMENT_1?color=blue)](https://github.com/saadz97/DS4I_ASSIGNMENT_1/issues)
+
 
 
 ## Project Overview
@@ -16,7 +17,7 @@ The goal of this project is to construct and evaluate a neural network model tha
 - **Key Predictors:** Topography, Weather, Snow Pack Test results
 - **Model:** Artificial Neural Network (ANN) built with TensorFlow/Keras
 
-**Live Website:** [https://github.com/saadz97/DS4I_ASSIGNMENT_1]  
+**Live Website:** https://saadz97.github.io/DS4I_ASSIGNMENT_1/   
 **Final Report:** [Direct link to the report on your GitHub Pages site]
 
 ## Project Structure
@@ -95,4 +96,4 @@ Our analysis yielded the following key results:
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/saadz97/DS4I_ASSIGNMENT_1.git
-cd [DS4I_ASSIGNMENT_1]
+cd DS4I_ASSIGNMENT_1

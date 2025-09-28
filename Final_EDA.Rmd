@@ -20,7 +20,7 @@ library(ggplot2)
 
 
 ```{r}
-data <- read.csv("data/scotland_avalanche_forecasts_2009_2025.csv", header = TRUE)
+data <- read.csv("scotland_avalanche_forecasts_2009_2025.csv", header = TRUE)
 ```
 
 ```{r, eval=FALSE}
