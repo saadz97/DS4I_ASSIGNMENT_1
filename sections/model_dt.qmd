@@ -13,9 +13,9 @@ knitr::opts_chunk$set(echo = FALSE, eval = FALSE, message = FALSE)
 This section outlines the comprehensive methodology employed for predicting avalanche hazard levels using neural networks. We describe the data preprocessing pipeline, experimental design with four distinct predictor sets, neural network architecture selection process, and hyperparameter tuning strategy. The methodology ensures reproducible results while systematically evaluating the contribution of different variable types to forecasting accuracy.
 
 ## Software and Setup
-Neural network modelling was implemented using the \texttt{keras} library, accessed through its R wrapper. Keras is an open-source deep learning framework known for its modularity and relatively gentle learning curve compared to other libraries such as PyTorch. Its modular design makes it well suited for projects that require experimentation with multiple configurations.
+Neural network modelling was implemented using the **`keras`** library, accessed through its R wrapper. Keras is an open-source deep learning framework known for its modularity and relatively gentle learning curve compared to other libraries such as PyTorch. Its modular design makes it well suited for projects that require experimentation with multiple configurations.
 
-Because Keras functions in R act as wrappers around the underlying Python functions, version control is critical to ensure reproducibility. This project was developed in \texttt{R version 4.5.1 (2025-06-13)} with \texttt{Python version 3.11.6}.
+Because Keras functions in R act as wrappers around the underlying Python functions, version control is critical to ensure reproducibility. This project was developed in **`R version 4.5.1 (2025-06-13)`** with **`Python version 3.11.6`**.
 
 
 
@@ -51,13 +51,13 @@ save(comp_mat, file = 'test/category_imbalance.RData')
 ```
 
 ## Data Preparation
-The modelling goal was to predict \textbf{Forecasted Avalanche Hazard (FAH)}. To prevent data leakage, the \textbf{Observed Avalanche Hazard (OAH)} variable was excluded from the predictor sets, since this information would not be available in real-world forecasting scenarios.
+The modelling goal was to predict Forecasted Avalanche Hazard (FAH). To prevent data leakage, the Observed Avalanche Hazard (OAH) variable was excluded from the predictor sets, since this information would not be available in real-world forecasting scenarios.
 
-A \textbf{70/30 train–test split} was applied, with a fixed random seed to ensure reproducibility. Although a validation set is often held out, Keras provides internal validation handling, so this was not specified manually.
+A 70/30 train–test split was applied, with a fixed random seed to ensure reproducibility. Although a validation set is often held out, Keras provides internal validation handling, so this was not specified manually.
 
 @tbl-imbalance reports the class distribution across training and test sets. The proportions are broadly consistent between the two partitions, but the data exhibits strong class imbalance. Categories 0 and 1 each account for roughly 30\% of the data, category 2 for 23\%, while categories 3 and 4 are severely underrepresented (9\% and 4\% respectively). This imbalance risks biasing the model toward predicting majority classes.
 
-To mitigate this, \textbf{custom class weights} were introduced. The weights were set inversely proportional to the prevalence of each category in the training set, so that errors on minority classes carried higher penalties during training. Alternative methods such as bootstrap resampling could also be considered, but were not explored here.
+To mitigate this, custom class weights were introduced. The weights were set inversely proportional to the prevalence of each category in the training set, so that errors on minority classes carried higher penalties during training. Alternative methods such as bootstrap resampling could also be considered, but were not explored here.
 
 ```{r tbl-imbalance, eval=TRUE, echo=FALSE}
 load('test/category_imbalance.RData')
@@ -313,10 +313,7 @@ ggplot(top_10_shuffled, aes(x = combo_label, y = Validation_accuracy, color = fa
 
 Systematic hyperparameter tuning across four predictor sets revealed distinct performance patterns, visualized in the above figure. The plot shows validation accuracy distributions for various architectural configurations, with Predictor Set 2 (weather conditions) achieving the highest peak performance (~66%), closely followed by Predictor Set 4 (all variables) at ~65%.
 
-
 @tbl-tuning details the top three configurations for each predictor set, confirming the performance hierarchy. The marginal improvement of Set 2 over Set 4 indicates that weather variables capture the most critical forecasting signals, with topographic and snow-pack data providing limited incremental value.
-
-
 
 ```{r tbl-tuning, results='asis', eval=TRUE, echo=FALSE}
 
