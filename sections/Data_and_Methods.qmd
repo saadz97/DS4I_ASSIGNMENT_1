@@ -338,11 +338,11 @@ Lastly, it can be seen that variables with similar correlation patterns have gro
 
 # # FAH Correlation
 # 
-# data_imputed2$FAH_factor <- factor(data_imputed2$FAH,
-#                            levels = 0:4,
-#                            labels = c("Low", "Moderate", "Considerable -", 
-#                                      "Considerable +", "High"))
-# 
+data_imputed2$FAH_factor <- factor(data_imputed2$FAH,
+                           levels = 0:4,
+                           labels = c("Low", "Moderate", "Considerable -", 
+                                     "Considerable +", "High"))
+
 # # Predictor 1
 # 
 # predictor_1 <- pred_1[pred_1 %in% names(data_imputed2)]
