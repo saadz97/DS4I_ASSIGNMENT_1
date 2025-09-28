@@ -6,7 +6,7 @@ Respository link: https://github.com/saadz97/DS4I_ASSIGNMENT_1
 Group members and responsibilities: 
 
 1. Saadia Abdullah (ABDSAA004) - Setting up GitHub repository, Data cleaning, and EDA. Including the write up for the relevant sections, and putting together the final submission files.
-2. Ezra Goliath (GLTEZR001) - Model building, Model tuning, and Model evaluation. Including the write up for relevant sections, and putting together the final submission files. 
+2. Ezra Goliath (GLTEZR001) - Model building, Model tuning, and Model evaluation. Including the write up/website tabs for relevant sections, and putting together the final submission files. 
 3. Hope Hennessy (HNNHOP001) - Data cleaning, EDA, and Website development, including the write up for the relevant sections.
-4. Ditiro Letsoalo (LTSDIT002) - Setting up GitHub repository, Model development assistance, report writing and structuring of relevant sections, website help, README documentation
+4. Ditiro Letsoalo (LTSDIT002) - Setting up GitHub repository, Model development assistance, report writing/website tabs and structuring of relevant sections, website help, README documentation
 5. Rachel Calaz (CLZRAC001) - Website development, write up for the abstract, introduction, literature review, discussion, and conclusion.
