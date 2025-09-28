@@ -14,7 +14,16 @@ library(kableExtra)
 ```
 
 
-## 5. Conclusion {#sec-Conclusion}
+## 5. Discussion and Conclusion {#sec-Conclusion}
 
-Conclusion here
+### 5.1 Discussion
 
+From the results, it can be seen that the neural network are capable and accurate for predicting avalanche hazard levels. They learn and find meaningful patterns and interaction through the diverse predictor sets of meteorological, snowpack and topographical features. 
+
+However, several limitations could be observed. Classification accuracy was uneven across hazard categories. The model was accurate at predicting low and moderate hazard levels however misclassification rates increased for higher hazards. This issue occurs due to class imbalance and reduced training signal due to the scarsity of high level hazards in the dataset. It is therefore suggested that resampling strategies could be implemented to improve the model classification accuracy. Another important limitation is the interpretability of neural networks. Neural networks are treated as black boxes and therefore interpretability is limited for vital decision making.
+
+The results from this investigation are positive for neural networks. This method is however complex and computationally expensive. It is therefore vital that there is collaboration between data scientists and experts to integrate the model to complement existing methods rather than replace them all together.
+
+### 5.2 Conclusion
+
+This project showcased the vital application of data-driven methods, such as neural networks, to predict avalanche hazard levels. The neural network model developed was successful at integrating all predictor features, such as meteorological, snowpack and topographical features, to find patterns and interactions that can be used to predict avalanche hazard levels. Challenges such as class imbalance, limited performance with high hazard levels and interpretability were observed but dispite these challenges, the model was still proven to be highly accurate.
