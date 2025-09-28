@@ -1,8 +1,4 @@
 Version: 1.0
-<<<<<<< HEAD
-ProjectId: 3332dbb3-17dc-4d39-873d-b1c6627d2361
-=======
->>>>>>> Model
 
 RestoreWorkspace: Default
 SaveWorkspace: Default
@@ -15,3 +11,5 @@ Encoding: UTF-8
 
 RnwWeave: Sweave
 LaTeX: pdfLaTeX
+
+ProjectName: DS4I assignment 1
