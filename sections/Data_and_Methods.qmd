@@ -33,8 +33,6 @@ Slope inclines were restricted to 0–90°, and wind directions were constrained
 
 Circular variables such as wind direction and aspect were transformed into sine and cosine components.
 
-### 2.2 Imputation
-
 ```{r, echo=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
@@ -133,7 +131,7 @@ missing_summary
 # dim(data_cleaned)
 ```
 
-### **Predictor sets**
+### 2.2 Predictor Sets
 
 ```{r, echo=FALSE}
 
@@ -161,7 +159,7 @@ Predictor Set 3: Total.Snow.Depth, Foot.Pen, Rain.at.900, Max.Temp.Grad, Max.Har
 
 Other Variables: Month
 
-### **Imputation**
+### 2.3 Imputation
 
 Multiple Imputation by Chained Equations (MICE) handles missing data that creates multiple versions of a dataset rather than selecting the first best guessed value. The MICE function ran under the assumption of Missing at Random (MAR), which means that it was assumed that the probability of a value being missing depends on the observed values in the dataset, but are independent of the unobserved values (Kenward & Carpenter, 2007).
 
@@ -268,7 +266,7 @@ data_imputed2 <- complete(mice_output2, 1)
 
 The variable that did not impute well was removed from the dataset, and the new dataset was refitted using MICE which ensured that the imputations better satisfied the MAR assumption and produced reliable results.
 
-### Outliers
+### 2.4 Outlier Handling
 
 Outlier Capping or Winsorization is a method that handles outliers by converting the extreme high values to the value of the highest data point that is not considered an outlier (Cervinski *et al.*, 2023). This method was used on the imputed dataset to account for any values that were extreme to ensure that the distribution is not skewed.
 
@@ -301,7 +299,7 @@ In addition, outlier handling was intentionally done after imputation, in the ev
 
 Furthermore, it was seen that the need to cap outliers was needed as multiple variables had around \~1% of its data capped, which shows that the data contained extreme values either in the original dataset or from imputation.
 
-### Correlation
+### 2.5 Correlation Analysis
 
 A correlation analysis was performed to examine the patterns in the variables and assess potential multicollinearity effects.
 
@@ -422,7 +420,7 @@ Lastly, it can be seen that variables with similar correlation patterns have gro
 # do.call(grid.arrange, c(plot3, ncol = 2))
 ```
 
-### Scaling
+### 2.6 Data Scaling
 
 Scaling was performed to ensure that variables with different units and scales contributed equally to the model and variables with larger numeric values did not dominate the model.
 
