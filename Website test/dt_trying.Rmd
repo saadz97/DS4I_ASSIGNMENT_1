@@ -1,7 +1,9 @@
 ---
-title: "Model"
-output: pdf_document
-prefer-html: true
+title: "Untitled"
+output:
+  pdf_document: default
+  html_document: default
+date: "2025-09-28"
 ---
 
 ## Methods
@@ -428,7 +430,7 @@ save(metrics_mat, file = 'test/metrics_mat.RData')
 
 ```{r confusion matrix, results='asis', eval=TRUE}
 load('../test/con_mat.RData')
-kable(con_mat, format = 'html', caption = "Confusion matrix for avalanche hazard predictions.") %>%
+kable(con_mat, caption = 'Confusion matrix') %>%
   kable_styling(full_width = FALSE, position = 'center') %>%
   add_header_above(c(' ' = 1, 'Predicted' = 5))
 ```
@@ -437,7 +439,7 @@ The confusion matrix of the the fitted model is reported above. It is clear that
 
 ```{r metrics matrix, results='asis', eval=TRUE}
 load('../test/metrics_mat.RData')
-kable(metrics_mat, digits = 3, caption = "Comprehensive classification metrics by avalanche hazard class.") %>%
+kable(metrics_mat, caption = 'Class metrics', digits = 3) %>%
   kable_styling(full_width = FALSE, position = 'center')
 ```
 
