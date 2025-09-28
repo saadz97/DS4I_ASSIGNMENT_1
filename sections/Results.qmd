@@ -16,5 +16,462 @@ library(kableExtra)
 
 ## 3. Results {#sec-Results}
 
-Results over here...
+
+
+```{r packages and libraries, eval=TRUE, include =F}
+library(keras)
+library(kerastuneR)
+library(tensorflow)
+library(dplyr)
+library(tidyr)
+library(reticulate)
+library(caret)
+library(knitr)
+library(kableExtra)
+library(ggplot2)
+```
+
+```{r data}
+load('../data/training_data.RData')
+load('../data/testing_data.RData')
+
+load('../data/y_train.RData')
+load('../data/y_test.RData')
+
+y_train = to_categorical(y_train, num_classes = 5)
+y_test  = to_categorical(y_test, num_classes = 5)
+
+comp_mat = matrix(c(colSums(y_train) / nrow(y_train), 
+                    colSums(y_test) / nrow(y_test)),
+                  byrow = T, nrow = 2)
+colnames(comp_mat) = paste('category ', 0:4)
+rownames(comp_mat) = c('train', 'test')
+save(comp_mat, file = 'test/category_imbalance.RData')
+```
+
+```{r imbalance_matrix, eval=TRUE, include = F}
+#| label: tbl-imbalance
+load('../test/category_imbalance.RData')
+kable(comp_mat, digits = 3, caption = 'Comparison of percentage of each category in the training and test sets')
+```
+
+```{r model building function, include = F}
+model_builder = function(hp){
+  
+  n_layers = hp$Int('number_of_layers', min_value = 1, max_value = 5, step = 1)
+  lr = hp$Choice('learning_rate', values = seq(from = 1e-2, to = 1e-4, length.out = 5))  
+  
+  n_x   = ncol(x_train)
+  input = layer_input(shape = c(n_x))
+
+  x = input
+  for (i in 1:n_layers){
+    
+    n_nodes = hp$Int(paste0('nodes_layer_', i),
+                      min_value = 30, max_value = 50, step = 10)
+    
+    x = x %>%
+      layer_dense(units = n_nodes, activation = 'relu') %>%
+      layer_dropout(rate = 0.1)
+  }
+  output = x %>% 
+    layer_dense(units = 5, activation = 'softmax')
+  
+  model = keras_model(inputs = input, outputs = output)
+  
+  model %>% compile(loss = 'categorical_crossentropy', 
+                    optimizer = optimizer_adam(learning_rate = lr),
+                    metrics = c(metric_categorical_accuracy()))
+  
+  return(model)
+}
+```
+
+```{r model tuning, include = F}
+for (i in 1:4){
+  
+  freqs = colSums(y_train) / nrow(y_train)
+  weights = sqrt(1 / freqs)
+  class_weights = dict()
+  for (k in 0:(length(weights)-1)) {
+    class_weights[[k]] = weights[k + 1]
+  }
+    
+  x_train = training_data_list[[i]]
+  
+  tuner_randomsearch = kerastuneR::RandomSearch(hypermodel = model_builder,
+                                                objective = 'val_categorical_accuracy',
+                                                max_trials = 75, executions_per_trial = 3,
+                                                directory = 'tuning',
+                                                project_name = paste('randomsearch results', i),
+                                                overwrite = TRUE)
+  
+  tuner_randomsearch %>% fit_tuner(x = x_train,
+                                   y = y_train,
+                                   epochs = 100,
+                                   batch_size = 32,
+                                   class_weight = class_weights,
+                                   validation_split = 0.2,
+                                   shuffle = TRUE)
+}
+```
+
+
+# Results
+
+This section presents the comprehensive outcomes of our neural network approach to avalanche hazard prediction. We begin by examining the performance hierarchy across different predictor sets, followed by detailed analysis of optimal hyperparameter configurations. The section culminates in an evaluation of the final model's predictive capability, with particular attention to class-wise performance across the five avalanche hazard levels.
+
+## Hyperparameter Tuning Outcomes
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(jsonlite)
+
+tuning_results = function(directory, max_layers){
+  
+  json_path = paste0(directory, '/trial.json')
+  tuning_results = fromJSON(txt = json_path)
+  hp               = tuning_results$hyperparameters$values
+  number_of_layers = hp$number_of_layers
+  learning_rate    = hp$learning_rate
+  score            = tuning_results$score
+  
+  layers_nodes     = matrix(rep(NA, max_layers), nrow = 1)
+  colnames(layers_nodes) = paste('nodes on layer ', 1:max_layers)
+  for (i in 1:number_of_layers) {
+    node_name = paste0('nodes_layer_', i)
+    layers_nodes[1, i] = hp[[node_name]]
+  }
+  
+  row_df = data.frame( Val_accuracy = score,  LR = learning_rate, 
+                       layers = number_of_layers, layers_nodes, 
+                       check.names = FALSE)
+  return(row_df)
+}
+
+# Test
+# tuning_results('tuning/randomsearch results 1/trial_19', 5)
+
+directories              = list.dirs('tuning', recursive = FALSE)
+randomsearch_search      = 'randomsearch'
+randomsearch_directories = grep(randomsearch_search, directories, value = TRUE)
+
+results_compiler = function(method_directory){
+
+  for (i in 1:length(method_directory)){
+    trial_directories = list.dirs(method_directory[i])
+    results_df = do.call(rbind, lapply(trial_directories[-1], tuning_results, max_layers = 5))
+    results_df = arrange(results_df, desc(Val_accuracy))
+    save(results_df, file = paste0(method_directory[i], '/summary.RData'))
+  }
+}
+
+# Test
+#results_compiler('tuning/randomsearch results 1')
+
+# the results automatically get saved locally, inside the same tuning folder
+results_compiler(randomsearch_directories)
+```
+
+
+```{r}
+library(dplyr)
+library(keras)
+library(tensorflow)
+library(reticulate)
+library(caret)
+library(knitr)
+library(kableExtra)
+
+files = c('tuning/randomsearch results 1/summary.RData',
+          'tuning/randomsearch results 2/summary.RData',
+          'tuning/randomsearch results 3/summary.RData',
+          'tuning/randomsearch results 4/summary.RData')
+var_names = c('rs_results_1', 'rs_results_2', 'rs_results_3', 'rs_results_4')
+
+for (i in seq_along(files)){
+  temp_env = new.env()                       # temporary environment
+  load(files[i], envir = temp_env)           # load into temp
+  assign(var_names[i], temp_env$results_df)  # assign with custom name
+}
+
+results = list(rs_results_1, rs_results_2, rs_results_3, rs_results_4)
+df = data.frame()
+for (i in 1:4){
+  results_df = results[[i]]
+  top_3_models = results_df[1:3, ]
+  top_3_models = mutate(top_3_models, across(c(Val_accuracy, LR), round, 5))  
+  colnames(top_3_models) = c('Validation accuracy',
+                             'Learning rate',
+                             'Number of layers',
+                             paste('nodes on layer ', 1:5)) # make sure to make this the maximum layers
+  df = bind_rows(df, top_3_models)
+}
+df = mutate(df, 'Predictor set' = rep(1:4, each = 3), .before = 'Validation accuracy')
+
+save(df, file = 'tuning/tuning_summary_table.RData')
+```
+
+```{r myplot, results='asis', eval=TRUE, fig.cap="Validation accuracy by hyperparameter configuration across four predictor sets"}
+
+#| label: fig-myplot
+#| 
+load('../tuning/tuning_summary_table.RData')
+
+### The Tuning plot
+names(df) <- gsub(" ", "_", names(df))
+
+
+set.seed(1)  # for reproducibility of shuffle
+
+top_10_shuffled <- df %>%
+  group_by(Predictor_set) %>%
+  sample_frac(1) %>%  # shuffle rows within each Predictor_set
+  ungroup() %>%
+  rowwise() %>%
+  mutate(
+    combo_label = paste0(
+      "LR=", Learning_rate,
+      ", Layers=", Number_of_layers,
+      ", Nodes=[", 
+      paste(na.omit(c_across(starts_with("nodes_on_layer_"))), collapse = ", "),
+      "]"
+    )
+  ) %>%
+  ungroup()
+
+# Now reorder combo_label factor so predictor sets are grouped but shuffled inside
+top_10_shuffled <- top_10_shuffled %>%
+  arrange(Predictor_set) %>%  # predictor sets grouped in order
+  mutate(combo_label = factor(combo_label, levels = unique(combo_label)))
+
+# Find optimal points per predictor set (same as before)
+optimal_points <- top_10_shuffled %>%
+  group_by(Predictor_set) %>%
+  filter(Validation_accuracy == max(Validation_accuracy)) %>%
+  ungroup()
+
+my_colors <- c(
+  "1" = "#e41a1c",  # bright red
+  "2" = "#377eb8",  # strong blue
+  "3" = "#4daf4a",  # vivid green
+  "4" = "#ff7f00"   # bright orange
+)
+
+
+# Plot
+ggplot(top_10_shuffled, aes(x = combo_label, y = Validation_accuracy, color = factor(Predictor_set))) +
+  geom_point(size = 3) +
+  geom_point(data = optimal_points, aes(x = combo_label, y = Validation_accuracy),
+             color = "black", size = 5, shape = 8) +
+  geom_point(size = 3)+
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 70, hjust = 1),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  ) +
+  xlab("Hyperparameter Combination") +
+  ylab("Validation Accuracy") +
+  scale_color_manual(values = my_colors, name = "Predictor Set")
+###############
+
+
+
+```
+
+Systematic hyperparameter tuning across four predictor sets revealed distinct performance patterns, visualized in the above figure. The plot shows validation accuracy distributions for various architectural configurations, with Predictor Set 2 (weather conditions) achieving the highest peak performance (~66%), closely followed by Predictor Set 4 (all variables) at ~65%.
+
+
+@tbl-tuning details the top three configurations for each predictor set, confirming the performance hierarchy. The marginal improvement of Set 2 over Set 4 indicates that weather variables capture the most critical forecasting signals, with topographic and snow-pack data providing limited incremental value.
+
+
+
+```{r tuning-table, results='asis', eval=TRUE}
+#| label: tbl-tuning
+load('../tuning/tuning_summary_table.RData')
+
+summary_table = kable(df, booktabs = TRUE, caption = "Top hyperparameter configurations per predictor set, ranked by validation accuracy.") %>% 
+  kable_styling(full_width = FALSE, position = 'center') %>%
+  collapse_rows(columns = 1, valign = 'middle')
+
+for (i in seq(3, nrow(df), by = 3)) {
+  summary_table = row_spec(summary_table, i, 
+                           extra_css = "border-bottom: 2px solid black;")
+}
+
+summary_table
+```
+
+Architecturally, models with 4–5 layers and 30–50 nodes per layer consistently outperformed others, with no clear gains beyond 5 layers. The optimal configuration from Predictor Set 4—selected for final evaluation—employed 4 hidden layers with \[30, 40, 40, 40\] nodes and achieved 64.9% validation accuracy.
+
+The optimal configuration from Predictor Set 4—selected for final evaluation—employed 4 hidden layers with [30, 40, 40, 40] nodes and achieved 64.9% validation accuracy, representing the best balance of performance and generalizability.
+
+## Optimal Architecture
+
+```{r best_model_plot, fig.cap="Optimal neural network architecture"}
+
+model_builder = function(hp){
+  
+  n_layers = hp$Int('number_of_layers', min_value = 1, max_value = 3, step = 1)
+  lr = hp$Choice('learning_rate', values = c(1e-2, 1e-3, 1e-4))  
+  
+  n_x   = ncol(x_train)
+  input = layer_input(shape = c(n_x))
+  
+  x = input
+  for (i in 1:n_layers){
+    
+    n_nodes = hp$Int(paste0('nodes_layer_', i),
+                     min_value = 30, max_value = 50, step = 10)
+    
+    x = x %>%
+      layer_dense(units = n_nodes, activation = 'relu') %>%
+      layer_dropout(rate = 0.1)
+  }
+  output = x %>% 
+    layer_dense(units = 5, activation = 'softmax')
+  
+  model = keras_model(inputs = input, outputs = output)
+  
+  model %>% compile(loss = 'categorical_crossentropy', 
+                    optimizer = optimizer_adam(learning_rate = lr),
+                    metrics = c(metric_categorical_accuracy()))
+  
+  return(model)
+}
+
+tuner = kerastuneR::RandomSearch(hypermodel = model_builder, 
+                                 objective = 'val_categorical_accuracy',
+                                 max_trials = 1, 
+                                 executions_per_trial = 1,
+                                 directory = 'tuning',
+                                 project_name = 'randomsearch results 4')
+
+tuner$reload()
+best_model   = tuner$get_best_models(num_models = as.integer(1))[[1]] 
+
+tuner$reload()
+best_model   = tuner$get_best_models(num_models = as.integer(1))[[1]] 
+
+tf = tensorflow::tf
+plot_model = tf$keras$utils$plot_model
+plot_model(best_model, show_shapes = TRUE, show_layer_names = TRUE,
+           expand_nested = FALSE,
+           show_layer_activations = TRUE,
+           dpi = 500,
+           to_file = 'best_model_plot.png')
+```
+
+<img src="best_model_plot.png" alt="Configuration of the best model" width="500"/>
+
+The selected architecture utilizes ReLU activation in hidden layers and softmax output activation, appropriate for the multi-class ordinal nature of avalanche hazard prediction. This configuration represents an optimal balance between model complexity and predictive performance for the comprehensive feature set. This architecture balanced model complexity with predictive accuracy and was used for final evaluation on the test set.
+
+## Model Evaluation 
+
+### Confusion Matrix
+
+
+```{r predictions}
+
+
+model_builder = function(hp){
+  
+  n_layers = hp$Int('number_of_layers', min_value = 1, max_value = 3, step = 1)
+  lr = hp$Choice('learning_rate', values = c(1e-2, 1e-3, 1e-4))  
+  
+  n_x   = ncol(x_train)
+  input = layer_input(shape = c(n_x))
+  
+  x = input
+  for (i in 1:n_layers){
+    
+    n_nodes = hp$Int(paste0('nodes_layer_', i),
+                     min_value = 30, max_value = 50, step = 10)
+    
+    x = x %>%
+      layer_dense(units = n_nodes, activation = 'relu') %>%
+      layer_dropout(rate = 0.1)
+  }
+  output = x %>% 
+    layer_dense(units = 5, activation = 'softmax')
+  
+  model = keras_model(inputs = input, outputs = output)
+  
+  model %>% compile(loss = 'categorical_crossentropy', 
+                    optimizer = optimizer_adam(learning_rate = lr),
+                    metrics = c(metric_categorical_accuracy()))
+  
+  return(model)
+}
+
+tuner = kerastuneR::RandomSearch(hypermodel = model_builder, 
+                                 objective = 'val_categorical_accuracy',
+                                 max_trials = 1, 
+                                 executions_per_trial = 1,
+                                 directory = 'tuning',
+                                 project_name = 'randomsearch results 4')
+
+tuner$reload()
+best_model   = tuner$get_best_models(num_models = as.integer(1))[[1]] 
+
+results      = best_model %>% evaluate(x_test, y_test)
+y_pred_probs = best_model %>% predict(x_test)
+y_pred       = max.col(y_pred_probs) - 1
+true_classes = apply(y_test, 1, which.max) - 1 # it was one-hot encoded so i changed it back
+metrics_list = confusionMatrix(factor(y_pred), factor(true_classes))
+
+con_mat = as.data.frame(metrics_list$table)
+con_mat = rename(con_mat, Predicted = Prediction, Reference = Reference, Count = Freq)
+con_mat =  tidyr::pivot_wider(con_mat, names_from = Reference, values_from = Count,
+                              values_fill = 0)
+save(con_mat, file = 'test/con_mat.RData')
+save(metrics_mat, file = 'test/metrics_mat.RData')
+```
+
+```{r confusion, results='asis', eval=TRUE}
+#| label: tbl-confusion
+load('../test/con_mat.RData')
+kable(con_mat, format = 'html', caption = "Confusion matrix for avalanche hazard predictions.") %>%
+  kable_styling(full_width = FALSE, position = 'center') %>%
+  add_header_above(c(' ' = 1, 'Predicted' = 5))
+```
+
+The confusion matrix of the the fitted model is reported in @tbl-confusion. It is clear that category 0 is the best estimated while categories 3 and 4 are estimated the worst. This result was expected since category 3 and 4 are very underepresented in both the training and test data. Concrete metrics of the model performance is given in the table below.
+
+### Class-Level Metrics
+
+```{r metrics matrix, results='asis', eval=TRUE}
+#| label: tbl-class
+
+load('../test/metrics_mat.RData')
+kable(metrics_mat, digits = 3, caption = "Comprehensive classification metrics by avalanche hazard class.") %>%
+  kable_styling(full_width = FALSE, position = 'center')
+```
+
+Sensitivity gives the percent of the time the model predicted an observation as belonging to a category and it actually belonging to that category. The sensitivity for class 0 is the best with a value of 0,854. There is a steep drop off for the other classes but class 2 is the second highest with a value of 0,557 and the rest are all below 0.5 meaning that more often than not, the model is unable to identify the correct category. An analogy for sensitivity is a test with high sensitivity(close to the maximum of 1) will identify most of the patients with with the flu as having the flu but this may mean that lots of patients without the flu also get identified as having the flu. An extreme case may be if the model predicted all observations as belonging to category 0. Then the sensitivity would be 1,meaning that all observations that belong to category 0 are predicted to be category 0. So there need to be a balance because we do not want this
+
+Specificity gives the percent of time the an observation does not belong to a specific category and the model predicts it as not belonging to that category. High specificity(close to the maximum of 1) is analogous to a test rarely every flagging someone as having the flu when they don't. A perfect model will have high sensitivity with a high specificity, meaning that it is able to identify when observations belong to a category and does not incorrectly predict other observations as belonging to that category. The table above indicates that all the categories have relatively high specificity. Class 4 has a specificity of 0.996 which on the surface looks great but because the sensitivity is so low, this high specificity just means that the model rarely every predicts any observations as belonging to category 4. The same follows for category 3. This is also seen in the extremely low detection rate and prevalence for these categories. These results, specifically for categories 3 and 4 are an indication that perhaps just reweighting the classes was not enough to overcome the imbalance in the data.
+
+A better metric for instances such as this where the data is imbalanced is the F1 score. The F1 score is the harmonic mean of the precision and recall. The precision is the percentage of observations that belonged to a category and were correctly predicted as belonging to that category. The recall is just the sensitivity. The F1 score, same as the other metrics, ranges from 0 to 1 with 0 being the worst and 1 being the best. The F1 score is useful because the harmonic mean because it is less affected by extreme values than the arithmetic mean. Categories 4 and 3 are by far the worst with values of 0,104 and 0,119. Category 0 has the best F1 score with a value of 0,716. Then category 1 has a value of 0,383 and category 3 has a score of 0,487.
+
+
+All these values, except for category are quite poor and indicate lack of predictive power. This is reflected in the fact that the model achieved an accuracy of 51,7% on the test set. The model is better than blindly guessing which we expect to return an accuracy of 20% but the model lacks predictive power.
+
+
+
+## Interpretation
+
+The results highlight the challenges of severe class imbalance. While class reweighting improved performance somewhat, minority classes remained poorly predicted. This suggests that more aggressive strategies may be necessary, such as resampling (e.g., bootstrapping or SMOTE), expanding the hyperparameter search space, or exploring alternative architectures.
+
+Despite these limitations, the study provides useful insights. It demonstrates that weather variables are the dominant predictors of avalanche hazard and that neural networks can achieve moderate accuracy with relatively simple architectures. However, improving detection of rare but high-consequence hazard categories remains an important direction for future work.
+
+
+# Extra resources
+
+[`keras`](https://cran.r-project.org/web/packages/keras/vignettes/){target="_blank"}
+
+[`kerastuneR`](https://eagerai.github.io/kerastuneR/){target="_blank"}
+
 
