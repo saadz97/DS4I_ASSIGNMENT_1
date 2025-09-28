@@ -13,9 +13,9 @@ library(kableExtra)
 ```
 
 
-## 6. Use of Large Language Models (LLMs) {#sec-LLMs_discussion}
+## 5 Use of Large Language Models (LLMs) {#sec-LLMs_discussion}
 
-### 6.1 Data Cleaning & Exploratory Data Analysis (EDA)
+### 5.1 Data Cleaning & Exploratory Data Analysis (EDA)
 
 -   In addition to consulting journals and websites (*references*), LLMs were used to understand the meaning of each variable, their measurement units, plausible value ranges, and to help identify potentially erroneous values in the dataset.
 
@@ -29,30 +29,29 @@ library(kableExtra)
 
 -   Assisted in identifying and fixing coding errors. Example prompt: "Locate the error in this code chunk and return the corrected code: 'code'."
 
-### 6.2 GitHub Support
+### 5.2 GitHub Support
 
 LLMs provided assistance when we were dealing with GitHub issues, including resolving merge conflicts and other version control challenges. Example prompt: "I’m trying to commit my work to the shared Git Hub repository. What does this error from my terminal in R studio mean: ‘error message’."
 
-### 6.3 Website Design
+### 5.3 Website Design
 
 LLMs supported the development of the website by translating design ideas into functional code. They were also useful for troubleshooting rendering issues when the website did not display in the way that its was expected to.
 
-### 6.4 Referencing
+### 5.4 Referencing
 
 LLMs assisted in creating references for the sources we used. We provided the necessary information to Claude.ai, which then formatted the references in Harvard style.
 
-### 6.5 Writing Up
+### 5.5 Writing Up
 
 LLMs were used to help improve the written sections of the report. They assisted with fixing grammar, making text clearer, improving flow, and suggesting more concise wording. Example prompts included: "Grammar check: ...", "Improve the way this sentence is written: ...", and "Make this section flow better: ...".
 
 In addition, LLMs were sometimes used to transform sets of bullet points into coherent, well-structured paragraphs, helping to organize ideas in a way that was easy to follow.
 
 LLMs were used for structuring report sections and generating README templates, clearly outlined requirements guided the model's output. In all cases, the results were critically evaluated and refined, with final decisions and implementations made independently.
-# Final paragraph
 
 While LLMs contributed in these ways, all code and written content were carefully reviewed and edited to ensure its accuracy and that it clearly conveyed our thought processes, ideas, and reasonings.
 
-### 6.6 Other points
+### 5.6 Other points
 
 -   They helped summarise and explain other group members’ work, allowing us to quickly stay up to date with the progress made on the project.
 -   For data visualisation, an efficiency-driven approach was adopted—specific outcomes were defined in advance, and the LLM was used to generate production-ready code aligned with those goals. For example, in creating plots, detailed prompts such as "Create a professional ggplot that visualises validation accuracy across different hyperparameter combinations, clearly highlighting the best-performing combination." yielded well-formatted visualizations, saving time on aesthetic adjustments.
