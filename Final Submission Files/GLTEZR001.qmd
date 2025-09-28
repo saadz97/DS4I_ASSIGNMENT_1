@@ -11,6 +11,10 @@ This study investigates the application of neural networks for avalanche hazard 
 
 The results of the model are promissing with the neural networks being able to successfully capture the non-linear and complex interactions between the features. Challenges such as misclassificationrates for high hazard levels and limited interpretability of the model were additionally observed, showing potential for improvement in the future with methods such as resampling. Overall, this investigation shows the potential and limitations of implementing neural networks for avalanche hazard level prediction.
 
+```{r, echo=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+```
+
 ## 1 Introduction and Lit Review {#sec-Introduction_and_Lit_Review}
 
 ### 1.1 Introduction
@@ -65,7 +69,7 @@ library(ggplot2)
 ```
 
 ```{r, echo=FALSE}
-data <- read.csv("scotland_avalanche_forecasts_2009_2025.csv", header = TRUE)
+data <- read.csv("../data/scotland_avalanche_forecasts_2009_2025.csv", header = TRUE)
 ```
 
 ```{r, echo=FALSE}
@@ -491,9 +495,22 @@ y_test  = test_scaled$FAH
 
 The data was split using a 70/30 split, which was stratified using FAH to ensure that both the training and testing sets follow a similar distribution of the target variable, FAH. Thereafter, the numeric values from the training dataset were used to calculate the mean and standard deviation of each variable using the preProcess() function and was then applied to both the training and test sets using the predict() function. Furthermore, this approach prevents data leakage which occurs when information from the test set goes into the training set.
 
-## 3. Results {#sec-Results}
+## 3 Model building, tuning and evalutation {#sec-model_dt}
 
-```{r packages and libraries, eval=TRUE, include =F}
+### 3.1 Methodology
+
+```{r, echo=FALSE}
+knitr::opts_chunk$set(echo = FALSE, eval = FALSE, message = FALSE)
+```
+
+This section outlines the comprehensive methodology employed for predicting avalanche hazard levels using neural networks. We describe the data preprocessing pipeline, experimental design with four distinct predictor sets, neural network architecture selection process, and hyperparameter tuning strategy. The methodology ensures reproducible results while systematically evaluating the contribution of different variable types to forecasting accuracy.
+
+### 3.2 Software and Setup
+Neural network modelling was implemented using the **`keras`** library, accessed through its R wrapper. Keras is an open-source deep learning framework known for its modularity and relatively gentle learning curve compared to other libraries such as PyTorch. Its modular design makes it well suited for projects that require experimentation with multiple configurations.
+
+Because Keras functions in R act as wrappers around the underlying Python functions, version control is critical to ensure reproducibility. This project was developed in **`R version 4.5.1 (2025-06-13)`** with **`Python version 3.11.6`**.
+
+```{r packages and libraries, eval=TRUE, include=FALSE, echo=FALSE}
 library(keras)
 library(kerastuneR)
 library(tensorflow)
@@ -506,7 +523,7 @@ library(kableExtra)
 library(ggplot2)
 ```
 
-```{r data}
+```{r data, echo=FALSE, eval=FALSE}
 load('../data/training_data.RData')
 load('../data/testing_data.RData')
 
@@ -524,13 +541,34 @@ rownames(comp_mat) = c('train', 'test')
 save(comp_mat, file = 'test/category_imbalance.RData')
 ```
 
-```{r imbalance_matrix, eval=TRUE, include = F}
-#| label: tbl-imbalance
+### 3.3 Data Preparation
+
+The modelling goal was to predict Forecasted Avalanche Hazard (FAH). To prevent data leakage, the Observed Avalanche Hazard (OAH) variable was excluded from the predictor sets, since this information would not be available in real-world forecasting scenarios.
+
+A 70/30 train–test split was applied, with a fixed random seed to ensure reproducibility. Although a validation set is often held out, Keras provides internal validation handling, so this was not specified manually.
+
+@tbl-imbalance reports the class distribution across training and test sets. The proportions are broadly consistent between the two partitions, but the data exhibits strong class imbalance. Categories 0 and 1 each account for roughly 30\% of the data, category 2 for 23\%, while categories 3 and 4 are severely underrepresented (9\% and 4\% respectively). This imbalance risks biasing the model toward predicting majority classes.
+
+To mitigate this, custom class weights were introduced. The weights were set inversely proportional to the prevalence of each category in the training set, so that errors on minority classes carried higher penalties during training. Alternative methods such as bootstrap resampling could also be considered, but were not explored here.
+
+```{r tbl-imbalance, eval=TRUE, echo=FALSE}
 load('../test/category_imbalance.RData')
 kable(comp_mat, digits = 3, caption = 'Comparison of percentage of each category in the training and test sets')
 ```
 
-```{r model building function, include = F}
+The table above reports the percentage of each category of FAH that is in the training and test data. It is important that the percentages are approximately equal in both sets and indeed this is the case. This is good but there is a problem. For the best results there should be approximately the same number of observations from each category in both the training and test sets, which is not the case for this data. Category 0 and 1 both are roughly the same at roughly 30% of total observations each. Category 2 is slightly lower with 23% but category 3 and 4 are hugely unrepresented in the data with only 9% and 4% respectively. This is an issue because big imbalances such as this will cause the model to optimise for correctly identifying observations from categories 0, 1 and 2.
+
+There a few possible methods we can use to mitigate this issue but the method chosen for this project was to define custom class weights so that incorrect predictions have different penalties for each category. The idea is that underrepresented categories have higher weights so that in the training the model gets penalised more heavily and hopefully the final model is better at making predictions for the underpresented categories. The weights chosen were inversely proportional to the percentage of appearance in the training data. A possible area of further experimentation is using bootstrap sampling to equalise the percentages of each category.
+
+### 3.4 Predictor Sets
+
+For this project there were 4 predictor sets that were evaluated. Predictor set 1 contained variables relating to the location of the observation. Predictor set 2 contained variables relating to the weather conditions of the observation. Predictor set 3 contained variables relating to a snow pack test. Predictor set 4 contained all the varibles in the dataset and thus contained all three predictor sets inside it. The final model will be built using all the available data, so predictor set 4. The remaining three predictor sets serve as yardstick to which we can compare which sets of variables are important.
+
+### 3.5 Model Development
+
+Neural networks are extremely flexible and configurable models. But this configurability means that there are several parameters that need to be defined before the model can be trained. In order to find the optimal configuration, hyperparameter tuning needs to be done first. Some of the hyperparameters we have control over include: number of layers, number of nodes per layer, the acitvation function to use on each layer, the dropout rate and the learning rate. **`keras`** is flexible and allows the user control of almost every aspect of the model through the parameters. In order to do the hyperameter tuning in R, the **`kerastuneR`** library is used. But in order to do the hyperparameter tuning with **`kerastuneR`** the model needs to be wrapped in a function that accepts as an input the hyperparameter configuration, and outputs a model.
+
+```{r model building function, echo=FALSE, eval=FALSE}
 model_builder = function(hp){
   
   n_layers = hp$Int('number_of_layers', min_value = 1, max_value = 5, step = 1)
@@ -562,7 +600,11 @@ model_builder = function(hp){
 }
 ```
 
-```{r model tuning, include = F}
+For this project, it was decided to tune for the number of layers, number of nodes on each layer and the learning rate. The activation function was chosen to be rectified linear units(Relu) and the dropout rate was set to 0,1. Each dense layer was followed by a dropout layer. The specific values that were tuned across were 1-5 layers(step size of 1) with 30-50(step size of 10) nodes on each layer and 5 equally spaced learning rates \[0,01  - 0,0001\]. Therefore, there were a total of 75 unique models that could be fitted. The metric the Neural Network tries to minimize is the **`metric_categorical_accuracy`**. This was chosen since the target variable has more than 1 category.
+
+### 3.6 Hyperparameter Tuning
+
+```{r model tuning, echo=FALSE, eval=FALSE}
 for (i in 1:4){
   
   freqs = colSums(y_train) / nrow(y_train)
@@ -591,14 +633,19 @@ for (i in 1:4){
 }
 ```
 
+**`kerastuneR`** has multiple tuning algorithms, we have used the **`RandomSearch`** algorithm. **`RandomSearch`** takes random combinations of the provided hyperparameters and fits the model each time. Since the combination of hyperparameters is random, there is a possibility that the same mode configuration is ran multiple times by the algorithm. The algorithm does attempt to mitigate this but it not guaranteed to stop duplicate runs. We do have some control over this though by setting the **`max_trials`** variable to the total number of unique models that can be specified from our selected tuning ranges. It has also been specified that each model should be fit 3 times by setting **`executions_per_trial = 3`**. This reduces variation in the results since there is an element of randomness in the initialisation of the model. A validation split of 20% was used and **`shuffle = T`** was used. Doing this shuffles the which observations get used as the validation set. This helps reduce the chances of overfitting.
 
-# Results
+All the results from tuning were saved into folders so that the results can be extracted and used for further analysis. The tuning was was undertaken is by no means exhaustive, no tuning can ever be, but the range of values tuned over is relatively small and therefore the results should be taken with a pinch of salt. With more time and perhaps more compute power a better result is possible.
+
+**`kerastuneR`** saves the tuning results as .json files. Each trial will be its own folder and inside that folder there will be a .json file containing information about the configuration of the Neural Network and the validation accuracy it achieved. The results were compiled into a single table containing the top 3 configurations from each of the predictor sets.
+
+### 3.7 Results
 
 This section presents the comprehensive outcomes of our neural network approach to avalanche hazard prediction. We begin by examining the performance hierarchy across different predictor sets, followed by detailed analysis of optimal hyperparameter configurations. The section culminates in an evaluation of the final model's predictive capability, with particular attention to class-wise performance across the five avalanche hazard levels.
 
-## Hyperparameter Tuning Outcomes
+### 3.8 Hyperparameter Tuning Outcomes
 
-```{r}
+```{r, echo=FALSE, eval=FALSE}
 library(dplyr)
 library(tidyr)
 library(jsonlite)
@@ -649,8 +696,7 @@ results_compiler = function(method_directory){
 results_compiler(randomsearch_directories)
 ```
 
-
-```{r}
+```{r, echo=FALSE, eval=FALSE}
 library(dplyr)
 library(keras)
 library(tensorflow)
@@ -688,9 +734,9 @@ df = mutate(df, 'Predictor set' = rep(1:4, each = 3), .before = 'Validation accu
 save(df, file = 'tuning/tuning_summary_table.RData')
 ```
 
-```{r myplot, results='asis', eval=TRUE, fig.cap="Validation accuracy by hyperparameter configuration across four predictor sets"}
+```{r fig-myplot, results='asis', eval=TRUE, fig.cap="Validation accuracy by hyperparameter configuration across four predictor sets", echo=FALSE}
 
-#| label: fig-myplot
+# #| label: fig-myplot
 #| 
 load('../tuning/tuning_summary_table.RData')
 
@@ -758,13 +804,10 @@ ggplot(top_10_shuffled, aes(x = combo_label, y = Validation_accuracy, color = fa
 
 Systematic hyperparameter tuning across four predictor sets revealed distinct performance patterns, visualized in the above figure. The plot shows validation accuracy distributions for various architectural configurations, with Predictor Set 2 (weather conditions) achieving the highest peak performance (~66%), closely followed by Predictor Set 4 (all variables) at ~65%.
 
-
 @tbl-tuning details the top three configurations for each predictor set, confirming the performance hierarchy. The marginal improvement of Set 2 over Set 4 indicates that weather variables capture the most critical forecasting signals, with topographic and snow-pack data providing limited incremental value.
 
+```{r tbl-tuning, results='asis', eval=TRUE, echo=FALSE}
 
-
-```{r tuning-table, results='asis', eval=TRUE}
-#| label: tbl-tuning
 load('../tuning/tuning_summary_table.RData')
 
 summary_table = kable(df, booktabs = TRUE, caption = "Top hyperparameter configurations per predictor set, ranked by validation accuracy.") %>% 
@@ -783,9 +826,9 @@ Architecturally, models with 4–5 layers and 30–50 nodes per layer consistent
 
 The optimal configuration from Predictor Set 4—selected for final evaluation—employed 4 hidden layers with [30, 40, 40, 40] nodes and achieved 64.9% validation accuracy, representing the best balance of performance and generalizability.
 
-## Optimal Architecture
+### 3.9 Optimal Architecture
 
-```{r best_model_plot, fig.cap="Optimal neural network architecture"}
+```{r best_model_plot, fig.cap="Optimal neural network architecture", echo=FALSE, eval=FALSE}
 
 model_builder = function(hp){
   
@@ -839,16 +882,15 @@ plot_model(best_model, show_shapes = TRUE, show_layer_names = TRUE,
            to_file = 'best_model_plot.png')
 ```
 
-<img src="best_model_plot.png" alt="Configuration of the best model" width="500"/>
+<img src="../best_model_plot.png" alt="Configuration of the best model" width="500"/>
 
 The selected architecture utilizes ReLU activation in hidden layers and softmax output activation, appropriate for the multi-class ordinal nature of avalanche hazard prediction. This configuration represents an optimal balance between model complexity and predictive performance for the comprehensive feature set. This architecture balanced model complexity with predictive accuracy and was used for final evaluation on the test set.
 
-## Model Evaluation 
+### 3.10 Model Evaluation 
 
-### Confusion Matrix
+#### 3.10.1 Confusion Matrix
 
-
-```{r predictions}
+```{r predictions, echo=FALSE, eval=FALSE}
 
 
 model_builder = function(hp){
@@ -905,8 +947,7 @@ save(con_mat, file = 'test/con_mat.RData')
 save(metrics_mat, file = 'test/metrics_mat.RData')
 ```
 
-```{r confusion, results='asis', eval=TRUE}
-#| label: tbl-confusion
+```{r tbl-confusion, results='asis', eval=TRUE, echo=FALSE}
 load('../test/con_mat.RData')
 kable(con_mat, format = 'html', caption = "Confusion matrix for avalanche hazard predictions.") %>%
   kable_styling(full_width = FALSE, position = 'center') %>%
@@ -915,11 +956,9 @@ kable(con_mat, format = 'html', caption = "Confusion matrix for avalanche hazard
 
 The confusion matrix of the the fitted model is reported in @tbl-confusion. It is clear that category 0 is the best estimated while categories 3 and 4 are estimated the worst. This result was expected since category 3 and 4 are very underepresented in both the training and test data. Concrete metrics of the model performance is given in the table below.
 
-### Class-Level Metrics
+#### 3.10.2 Class-Level Metrics
 
-```{r metrics matrix, results='asis', eval=TRUE}
-#| label: tbl-class
-
+```{r tbl-class, results='asis', eval=TRUE, echo=FALSE}
 load('../test/metrics_mat.RData')
 kable(metrics_mat, digits = 3, caption = "Comprehensive classification metrics by avalanche hazard class.") %>%
   kable_styling(full_width = FALSE, position = 'center')
@@ -931,19 +970,15 @@ Specificity gives the percent of time the an observation does not belong to a sp
 
 A better metric for instances such as this where the data is imbalanced is the F1 score. The F1 score is the harmonic mean of the precision and recall. The precision is the percentage of observations that belonged to a category and were correctly predicted as belonging to that category. The recall is just the sensitivity. The F1 score, same as the other metrics, ranges from 0 to 1 with 0 being the worst and 1 being the best. The F1 score is useful because the harmonic mean because it is less affected by extreme values than the arithmetic mean. Categories 4 and 3 are by far the worst with values of 0,104 and 0,119. Category 0 has the best F1 score with a value of 0,716. Then category 1 has a value of 0,383 and category 3 has a score of 0,487.
 
-
 All these values, except for category are quite poor and indicate lack of predictive power. This is reflected in the fact that the model achieved an accuracy of 51,7% on the test set. The model is better than blindly guessing which we expect to return an accuracy of 20% but the model lacks predictive power.
 
-
-
-## Interpretation
+### 3.11 Interpretation
 
 The results highlight the challenges of severe class imbalance. While class reweighting improved performance somewhat, minority classes remained poorly predicted. This suggests that more aggressive strategies may be necessary, such as resampling (e.g., bootstrapping or SMOTE), expanding the hyperparameter search space, or exploring alternative architectures.
 
 Despite these limitations, the study provides useful insights. It demonstrates that weather variables are the dominant predictors of avalanche hazard and that neural networks can achieve moderate accuracy with relatively simple architectures. However, improving detection of rare but high-consequence hazard categories remains an important direction for future work.
 
-
-## Extra resources
+### 3.12 Extra resources
 
 [`keras`](https://cran.r-project.org/web/packages/keras/vignettes/){target="_blank"}
 
@@ -962,50 +997,6 @@ The results from this investigation are positive for neural networks. This metho
 ### 5.2 Conclusion
 
 This project showcased the vital application of data-driven methods, such as neural networks, to predict avalanche hazard levels. The neural network model developed was successful at integrating all predictor features, such as meteorological, snowpack and topographical features, to find patterns and interactions that can be used to predict avalanche hazard levels. Challenges such as class imbalance, limited performance with high hazard levels and interpretability were observed but dispite these challenges, the model was still proven to be highly accurate.
-
-## 6. Use of Large Language Models (LLMs) {#sec-LLMs_discussion}
-
-### 6.1 Data Cleaning & Exploratory Data Analysis (EDA)
-
--   In addition to consulting journals and websites (*references*), LLMs were used to understand the meaning of each variable, their measurement units, plausible value ranges, and to help identify potentially erroneous values in the dataset.
-
--   LLMs assisted in assessing the reliability of variables, and whether categorical groupings of certain variables showed signs of being meaningful. Example prompt: "How would I interpret this wetness variable: values -1, 0, 1, 2, 3, 4, 6, 10; respective counts: 51, 363, 6384, 3007, 27, 7, 2, 166."
-
--   Provided suggestions for handling outliers and missing (NA) values.
-
--   Helped write repetitive or time-consuming R code. Example prompt: "Provide R code that will generate side-by-side boxplots for all numeric variables in the dataset."
-
--   Improved visualisation aesthetics. Example prompt: "Improve the presentation of this boxplot: 'code'."
-
--   Assisted in identifying and fixing coding errors. Example prompt: "Locate the error in this code chunk and return the corrected code: 'code'."
-
-### 6.2 GitHub Support
-
-LLMs provided assistance when we were dealing with GitHub issues, including resolving merge conflicts and other version control challenges. Example prompt: "I’m trying to commit my work to the shared Git Hub repository. What does this error from my terminal in R studio mean: ‘error message’."
-
-### 6.3 Website Design
-
-LLMs supported the development of the website by translating design ideas into functional code. They were also useful for troubleshooting rendering issues when the website did not display in the way that its was expected to.
-
-### 6.4 Referencing
-
-LLMs assisted in creating references for the sources we used. We provided the necessary information to Claude.ai, which then formatted the references in Harvard style.
-
-### 6.5 Writing Up
-
-LLMs were used to help improve the written sections of the report. They assisted with fixing grammar, making text clearer, improving flow, and suggesting more concise wording. Example prompts included: "Grammar check: ...", "Improve the way this sentence is written: ...", and "Make this section flow better: ...".
-
-In addition, LLMs were sometimes used to transform sets of bullet points into coherent, well-structured paragraphs, helping to organize ideas in a way that was easy to follow.
-
-LLMs were used for structuring report sections and generating README templates, clearly outlined requirements guided the model's output. In all cases, the results were critically evaluated and refined, with final decisions and implementations made independently.
-# Final paragraph
-
-While LLMs contributed in these ways, all code and written content were carefully reviewed and edited to ensure its accuracy and that it clearly conveyed our thought processes, ideas, and reasonings.
-
-### 6.6 Other points
-
--   They helped summarise and explain other group members’ work, allowing us to quickly stay up to date with the progress made on the project.
--   For data visualisation, an efficiency-driven approach was adopted—specific outcomes were defined in advance, and the LLM was used to generate production-ready code aligned with those goals. For example, in creating plots, detailed prompts such as "Create a professional ggplot that visualises validation accuracy across different hyperparameter combinations, clearly highlighting the best-performing combination." yielded well-formatted visualizations, saving time on aesthetic adjustments.
 
 ## References {#sec-References}
 
