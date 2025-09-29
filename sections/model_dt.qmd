@@ -327,9 +327,7 @@ for (i in seq(3, nrow(df), by = 3)) {
 summary_table
 ```
 
-Architecturally, models with 4–5 layers and 30–50 nodes per layer consistently outperformed others, with no clear gains beyond 5 layers. The optimal configuration from Predictor Set 4, selected for final evaluation, employed 4 hidden layers with [30, 40, 40, 40] nodes and achieved 64.9% validation accuracy.
-
-The optimal configuration from Predictor Set 4, selected for final evaluation, employed 4 hidden layers with [30, 40, 40, 40] nodes and achieved 64.9% validation accuracy, representing the best balance of performance and generalizability.
+Architecturally, models with 4–5 layers and 30–50 nodes per layer consistently outperformed others, with no clear gains beyond 5 layers. The optimal configuration from Predictor Set 4, selected for final evaluation, employed 4 hidden layers with [30, 40, 40, 40] nodes and achieved 64.9% validation accuracy representing the best balance of performance and generalizability..
 
 ### 3.8 Optimal Architecture
 
