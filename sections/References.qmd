@@ -10,32 +10,32 @@ execute:
 
 ## References {#sec-References}
 
-\[1\] Bellaire, S. and Jamieson, J.B. (2013) 'Forecasting avalanche danger: recent advances', *Cold Regions Science and Technology*, 85, pp. 89-102.
+[1] Bellaire, S. and Jamieson, J.B. (2013) 'Forecasting avalanche danger: recent advances', *Cold Regions Science and Technology*, 85, pp. 89-102.
 
-\[2\] Cervinski, M.A., Bietenbeck, A., Katayev, A., Loh, T.P., van Rossum, H.H. and Badrick, T. (2023) 'Advances in clinical chemistry patient-based real-time quality control (PBRTQC)', in Makowski, G.S. (ed.) *Advances in Clinical Chemistry*. 1st ed. Amsterdam: Elsevier, pp. 223-261. doi: 10.1016/bs.acc.2023.08.003.
+[2] Cervinski, M.A., Bietenbeck, A., Katayev, A., Loh, T.P., van Rossum, H.H. and Badrick, T. (2023) 'Advances in clinical chemistry patient-based real-time quality control (PBRTQC)', in Makowski, G.S. (ed.) *Advances in Clinical Chemistry*. 1st ed. Amsterdam: Elsevier, pp. 223-261. doi: 10.1016/bs.acc.2023.08.003.
 
-\[3\] Fierz, C., Armstrong, R.L., Durand, Y., Etchevers, P., Greene, E., McClung, D.M., Nishimura, K., Satyawali, P.K. and Sokratov, S.A. (2009) *The international classification for seasonal snow on the ground*. IHP-VII Technical Documents in Hydrology No. 83, IACS Contribution No. 1. Paris: UNESCO-IHP.
+[3] Fierz, C., Armstrong, R.L., Durand, Y., Etchevers, P., Greene, E., McClung, D.M., Nishimura, K., Satyawali, P.K. and Sokratov, S.A. (2009) *The international classification for seasonal snow on the ground*. IHP-VII Technical Documents in Hydrology No. 83, IACS Contribution No. 1. Paris: UNESCO-IHP.
 
-\[4\] Hafner, E., Bühler, Y. and Schweizer, J. (2021) 'Machine learning in avalanche research: random forests and SVMs for avalanche forecasting', *Natural Hazards and Earth System Sciences*, 21, pp. 223-239.
+[4] Hafner, E., Bühler, Y. and Schweizer, J. (2021) 'Machine learning in avalanche research: random forests and SVMs for avalanche forecasting', *Natural Hazards and Earth System Sciences*, 21, pp. 223-239.
 
-\[5\] Kenward, M.G. and Carpenter, J. (2007) 'Multiple imputation: current perspectives', *Statistical Methods in Medical Research*, 16(3), pp. 199-218. doi: 10.1177/0962280206075304.
+[5] Kenward, M.G. and Carpenter, J. (2007) 'Multiple imputation: current perspectives', *Statistical Methods in Medical Research*, 16(3), pp. 199-218. doi: 10.1177/0962280206075304.
 
-\[6\] King, S. (2024) 'Deadliest, most intense, windiest: Three of the UK's worst storms', *BBC Weather*, 17 October. Available at: https://www.bbc.com/weather/articles/cvglvnyxpx0o (Accessed: 28 September 2025).
+[6] King, S. (2024) 'Deadliest, most intense, windiest: Three of the UK's worst storms', *BBC Weather*, 17 October. Available at: https://www.bbc.com/weather/articles/cvglvnyxpx0o (Accessed: 28 September 2025).
 
-\[7\] LaChapelle, E. (1980) 'The fundamental processes in conventional avalanche forecasting', *Journal of Glaciology*, 26(94), pp. 75-84.
+[7] LaChapelle, E. (1980) 'The fundamental processes in conventional avalanche forecasting', *Journal of Glaciology*, 26(94), pp. 75-84.
 
-\[8\] McClung, D. (2002) 'The elements of applied avalanche forecasting: the human issues', *Natural Hazards*, 26, pp. 111-129.
+[8] McClung, D. (2002) 'The elements of applied avalanche forecasting: the human issues', *Natural Hazards*, 26, pp. 111-129.
 
-\[9\] Mitterer, C. et al. (2016) 'Deep learning approaches for snowpack characterization', *Proceedings of the International Snow Science Workshop*.
+[9] Mitterer, C. et al. (2016) 'Deep learning approaches for snowpack characterization', *Proceedings of the International Snow Science Workshop*.
 
-\[10\] Molenberghs, G. and Kenward, M.G. (2006) *Missing data in clinical studies*. Chichester: Wiley Statistics in Practice.
+[10] Molenberghs, G. and Kenward, M.G. (2006) *Missing data in clinical studies*. Chichester: Wiley Statistics in Practice.
 
-\[11\] Morning, H. (no date) 'Wind speeds in the mountains', *Mountaineering Scotland*. Available at: https://www.mountaineering.scot/safety-and-skills/essential-skills/weather-conditions/wind-speeds (Accessed: 28 September 2025).
+[11] Morning, H. (no date) 'Wind speeds in the mountains', *Mountaineering Scotland*. Available at: https://www.mountaineering.scot/safety-and-skills/essential-skills/weather-conditions/wind-speeds (Accessed: 28 September 2025).
 
-\[12\] SAIS (2014) *Interpreting snow profiles*. \[pdf\] Scottish Avalanche Information Service. Available at: https://www.sais.gov.uk/wp-content/uploads/2014/11/interpreting_snow_profiles.pdf (Accessed: 28 September 2025).
+[12] SAIS (2014) *Interpreting snow profiles*. \[pdf\] Scottish Avalanche Information Service. Available at: https://www.sais.gov.uk/wp-content/uploads/2014/11/interpreting_snow_profiles.pdf (Accessed: 28 September 2025).
 
-\[13\] Schweizer, J. and Jamieson, J.B. (2007) 'A review of stability tests for snow profiles', *Cold Regions Science and Technology*, 47, pp. 14-37.
+[13] Schweizer, J. and Jamieson, J.B. (2007) 'A review of stability tests for snow profiles', *Cold Regions Science and Technology*, 47, pp. 14-37.
 
-\[14\] ScienceDirect (no date) 'Winsorization – an overview', *ScienceDirect Topics*. Available at: https://www.sciencedirect.com/topics/mathematics/winsorization (Accessed: 27 September 2025).
+[14] ScienceDirect (no date) 'Winsorization – an overview', *ScienceDirect Topics*. Available at: https://www.sciencedirect.com/topics/mathematics/winsorization (Accessed: 27 September 2025).
 
-\[15\] Ward, R.G.W., Langmuir, E.D.G. and Beattie, B. (1985) 'Snow profiles and avalanche activity in the Cairngorm Mountains, Scotland', *Journal of Glaciology*, 31(107), pp. 18-27. doi: 10.1177/S0022143000004949.
+[15] Ward, R.G.W., Langmuir, E.D.G. and Beattie, B. (1985) 'Snow profiles and avalanche activity in the Cairngorm Mountains, Scotland', *Journal of Glaciology*, 31(107), pp. 18-27. doi: 10.1177/S0022143000004949.
