@@ -30,11 +30,15 @@ LLMs provided assistance when dealing with GitHub issues, including resolving me
 
 LLMs supported the development of the website by translating design ideas into functional code. They were also useful for troubleshooting rendering issues when the website did not display in the way that its was expected to.
 
-### 5.4 Referencing
+### 5.4 Keras 
+
+LLM's assisted in the implementation of the nueral network through keras. They were used to iron out errors occuring because of mismatched library versions, deprecated libraries and unavailable packages. LLM's were also used to diagnose structural issues that manifested themselves as unexpected outputs or glitchy behaviour. Example prompts: "I have a chunk of code that tunes a keras model over the number of layers, number of nodes per layer and the learning rate. When I check the results from tuning I see that even models with only 3 layers have a value for the number of nodes, have I done anything wrong in the code or am I misunderstanding the outputted results. This is my code for the model tuner: code inserted". Results from the LLM were always analysed and an effort was made to understand each line of code suggested.
+
+### 5.5 Referencing
 
 LLMs assisted in creating references for the sources we used. We provided the necessary information to Claude.ai, which then formatted the references in Harvard style.
 
-### 5.5 Writing Up
+### 5.6 Writing Up
 
 LLMs were used to help improve the written sections of the report. They assisted with fixing grammar, making text clearer, improving flow, and suggesting more concise wording. Example prompts included: "Grammar check: ...", "Improve the way this sentence is written: ...", and "Make this section flow better: ...".
 
