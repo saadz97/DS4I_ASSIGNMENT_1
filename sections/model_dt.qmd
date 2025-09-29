@@ -391,7 +391,7 @@ plot_model(best_model, show_shapes = TRUE, show_layer_names = TRUE,
 
 The selected architecture utilizes ReLU activation in hidden layers and softmax output activation, appropriate for the multi-class ordinal nature of avalanche hazard prediction. This configuration represents an optimal balance between model complexity and predictive performance for the comprehensive feature set. This architecture balanced model complexity with predictive accuracy and was used for final evaluation on the test set.
 
-### #.9 Model Evaluation 
+### 3.9 Model Evaluation 
 
 #### 3.9.1 Confusion Matrix
 
