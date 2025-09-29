@@ -563,8 +563,7 @@ Table&nbsp;2: Top hyperparameter configurations per predictor set, ranked by val
 </div>
 </figure>
 </div>
-<p>Architecturally, models with 4–5 layers and 30–50 nodes per layer consistently outperformed others, with no clear gains beyond 5 layers. The optimal configuration from Predictor Set 4, selected for final evaluation, employed 4 hidden layers with [30, 40, 40, 40] nodes and achieved 64.9% validation accuracy.</p>
-<p>The optimal configuration from Predictor Set 4, selected for final evaluation, employed 4 hidden layers with [30, 40, 40, 40] nodes and achieved 64.9% validation accuracy, representing the best balance of performance and generalizability.</p>
+<p>Architecturally, models with 4–5 layers and 30–50 nodes per layer consistently outperformed others, with no clear gains beyond 5 layers. The optimal configuration from Predictor Set 4, selected for final evaluation, employed 4 hidden layers with [30, 40, 40, 40] nodes and achieved 64.9% validation accuracy representing the best balance of performance and generalizability.</p>
 </section>
 <section id="optimal-architecture" class="level3">
 <h3 class="anchored" data-anchor-id="optimal-architecture">3.8 Optimal Architecture</h3>
@@ -572,7 +571,7 @@ Table&nbsp;2: Top hyperparameter configurations per predictor set, ranked by val
 <p>The selected architecture utilizes ReLU activation in hidden layers and softmax output activation, appropriate for the multi-class ordinal nature of avalanche hazard prediction. This configuration represents an optimal balance between model complexity and predictive performance for the comprehensive feature set. This architecture balanced model complexity with predictive accuracy and was used for final evaluation on the test set.</p>
 </section>
 <section id="model-evaluation" class="level3">
-<h3 class="anchored" data-anchor-id="model-evaluation">#.9 Model Evaluation</h3>
+<h3 class="anchored" data-anchor-id="model-evaluation">3.9 Model Evaluation</h3>
 <section id="confusion-matrix" class="level4">
 <h4 class="anchored" data-anchor-id="confusion-matrix">3.9.1 Confusion Matrix</h4>
 <div id="tbl-confusion" class="cell quarto-float quarto-figure quarto-figure-center anchored">
@@ -759,7 +758,7 @@ Table&nbsp;4: Comprehensive classification metrics by avalanche hazard class.
 </div>
 </figure>
 </div>
-<p>Sensitivity gives the percent of the time the model predicted an observation as belonging to a category and it actually belonging to that category. The sensitivity for class 0 is the best with a value of 0,854. There is a steep drop off for the other classes but class 2 is the second highest with a value of 0,557 and the rest are all below 0.5 meaning that more often than not, the model is unable to identify the correct category. An analogy for sensitivity is a test with high sensitivity(close to the maximum of 1) will identify most of the patients with with the flu as having the flu but this may mean that lots of patients without the flu also get identified as having the flu. An extreme case may be if the model predicted all observations as belonging to category 0. Then the sensitivity would be 1,meaning that all observations that belong to category 0 are predicted to be category 0. So there need to be a balance because we do not want this</p>
+<p>Sensitivity gives the percent of the time the model predicted an observation as belonging to a category and it actually belonging to that category. The sensitivity for class 0 is the best with a value of 0,854. There is a steep drop off for the other classes but class 2 is the second highest with a value of 0,557 and the rest are all below 0.5 meaning that more often than not, the model is unable to identify the correct category. An analogy for sensitivity is a test with high sensitivity (close to the maximum of 1) will identify most of the patients with with the flu as having the flu but this may mean that lots of patients without the flu also get identified as having the flu. An extreme case may be if the model predicted all observations as belonging to category 0. Then the sensitivity would be 1, meaning that all observations that belong to category 0 are predicted to be category 0. So there need to be a balance because we do not want this.</p>
 <p>Specificity gives the percent of time the an observation does not belong to a specific category and the model predicts it as not belonging to that category. High specificity(close to the maximum of 1) is analogous to a test rarely every flagging someone as having the flu when they don’t. A perfect model will have high sensitivity with a high specificity, meaning that it is able to identify when observations belong to a category and does not incorrectly predict other observations as belonging to that category. The table above indicates that all the categories have relatively high specificity. Class 4 has a specificity of 0.996 which on the surface looks great but because the sensitivity is so low, this high specificity just means that the model rarely every predicts any observations as belonging to category 4. The same follows for category 3. This is also seen in the extremely low detection rate and prevalence for these categories. These results, specifically for categories 3 and 4 are an indication that perhaps just reweighting the classes was not enough to overcome the imbalance in the data.</p>
 <p>A better metric for instances such as this where the data is imbalanced is the F1 score. The F1 score is the harmonic mean of the precision and recall. The precision is the percentage of observations that belonged to a category and were correctly predicted as belonging to that category. The recall is just the sensitivity. The F1 score, same as the other metrics, ranges from 0 to 1 with 0 being the worst and 1 being the best. The F1 score is useful because the harmonic mean because it is less affected by extreme values than the arithmetic mean. Categories 4 and 3 are by far the worst with values of 0,104 and 0,119. Category 0 has the best F1 score with a value of 0,716. Then category 1 has a value of 0,383 and category 3 has a score of 0,487.</p>
 <p>All these values, except for category are quite poor and indicate lack of predictive power. This is reflected in the fact that the model achieved an accuracy of 51,7% on the test set. The model is better than blindly guessing which we expect to return an accuracy of 20% but the model lacks predictive power.</p>
@@ -789,20 +788,15 @@ Table&nbsp;4: Comprehensive classification metrics by avalanche hazard class.
 </section>
 </div>
 <div id="tabset-1-6" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-6-tab">
+<p>Large Language Models (LLMs) were used as a collaborative tool to support certain sections by suggesting approaches and handling repetitive tasks as well as optimising and enhancing the R code to run more efficiently and produce more aesthetically pleasing figures.</p>
 <section id="data-cleaning-exploratory-data-analysis-eda" class="level3">
 <h3 class="anchored" data-anchor-id="data-cleaning-exploratory-data-analysis-eda">5.1 Data Cleaning &amp; Exploratory Data Analysis (EDA)</h3>
-<ul>
-<li><p>In addition to consulting journals and websites (<em>references</em>), LLMs were used to understand the meaning of each variable, their measurement units, plausible value ranges, and to help identify potentially erroneous values in the dataset.</p></li>
-<li><p>LLMs assisted in assessing the reliability of variables, and whether categorical groupings of certain variables showed signs of being meaningful. Example prompt: “How would I interpret this wetness variable: values -1, 0, 1, 2, 3, 4, 6, 10; respective counts: 51, 363, 6384, 3007, 27, 7, 2, 166.”</p></li>
-<li><p>Provided suggestions for handling outliers and missing (NA) values.</p></li>
-<li><p>Helped write repetitive or time-consuming R code. Example prompt: “Provide R code that will generate side-by-side boxplots for all numeric variables in the dataset.”</p></li>
-<li><p>Improved visualisation aesthetics. Example prompt: “Improve the presentation of this boxplot: ‘code’.”</p></li>
-<li><p>Assisted in identifying and fixing coding errors. Example prompt: “Locate the error in this code chunk and return the corrected code: ‘code’.”</p></li>
-</ul>
+<p>In addition to consulting journals and websites (<em>references</em>), LLMs were used to understand the meaning of each variable, their measurement units, plausible value ranges, and to help identify potentially erroneous values in the dataset. Furthermore, LLMs assisted in assessing the reliability of variables, and whether categorical groupings of certain variables showed signs of being meaningful. Example prompt: “How would I interpret this wetness variable: values -1, 0, 1, 2, 3, 4, 6, 10; respective counts: 51, 363, 6384, 3007, 27, 7, 2, 166.”</p>
+<p>Moreover, LLMs also provided suggestions for handling outliers and missing (NA) values and helped write repetitive or time-consuming R code. Example prompt: “Provide R code that will generate side-by-side boxplots for all numeric variables in the dataset.” and improved visualisation aesthetics. Example prompt: “Improve the presentation of this boxplot: ‘code’.” “Create a ggplot that visualises validation accuracy across different hyperparameter combinations, clearly highlighting the best-performing combination.” Finally, LLMs assisted in identifying and fixing coding errors. Example prompt: “Locate the error in this code chunk and return the corrected code: ‘code’.”</p>
 </section>
 <section id="github-support" class="level3">
 <h3 class="anchored" data-anchor-id="github-support">5.2 GitHub Support</h3>
-<p>LLMs provided assistance when we were dealing with GitHub issues, including resolving merge conflicts and other version control challenges. Example prompt: “I’m trying to commit my work to the shared Git Hub repository. What does this error from my terminal in R studio mean: ‘error message’.”</p>
+<p>LLMs provided assistance when dealing with GitHub issues, including resolving merge conflicts and other version control challenges. Example prompt: “I’m trying to commit my work to the shared Git Hub repository. What does this error from my terminal in R studio mean: ‘error message’.”</p>
 </section>
 <section id="website-design" class="level3">
 <h3 class="anchored" data-anchor-id="website-design">5.3 Website Design</h3>
@@ -815,16 +809,8 @@ Table&nbsp;4: Comprehensive classification metrics by avalanche hazard class.
 <section id="writing-up" class="level3">
 <h3 class="anchored" data-anchor-id="writing-up">5.5 Writing Up</h3>
 <p>LLMs were used to help improve the written sections of the report. They assisted with fixing grammar, making text clearer, improving flow, and suggesting more concise wording. Example prompts included: “Grammar check: …”, “Improve the way this sentence is written: …”, and “Make this section flow better: …”.</p>
-<p>In addition, LLMs were sometimes used to transform sets of bullet points into coherent, well-structured paragraphs, helping to organize ideas in a way that was easy to follow.</p>
-<p>LLMs were used for structuring report sections and generating README templates, clearly outlined requirements guided the model’s output. In all cases, the results were critically evaluated and refined, with final decisions and implementations made independently.</p>
-<p>While LLMs contributed in these ways, all code and written content were carefully reviewed and edited to ensure its accuracy and that it clearly conveyed our thought processes, ideas, and reasonings.</p>
-</section>
-<section id="other-points" class="level3">
-<h3 class="anchored" data-anchor-id="other-points">5.6 Other points</h3>
-<ul>
-<li>They helped summarise and explain other group members’ work, allowing us to quickly stay up to date with the progress made on the project.</li>
-<li>For data visualisation, an efficiency-driven approach was adopted—specific outcomes were defined in advance, and the LLM was used to generate production-ready code aligned with those goals. For example, in creating plots, detailed prompts such as “Create a professional ggplot that visualises validation accuracy across different hyperparameter combinations, clearly highlighting the best-performing combination.” yielded well-formatted visualizations, saving time on aesthetic adjustments.</li>
-</ul>
+<p>In addition, LLMs were sometimes used to transform sets of bullet points into coherent, well-structured paragraphs, helping to organise ideas in a way that was easy to follow. Furthermore, LLMs were used for structuring report sections and generating README templates, clearly outlined requirements guided the model’s output. In all cases, the results were critically evaluated and refined, with final decisions and implementations made independently.</p>
+<p>It is important to note that whilst LLMs contributed in these ways, all code and written content were carefully reviewed and edited to ensure its accuracy and that it clearly conveyed our thought processes, ideas, and reasonings.</p>
 </section>
 </div>
 <div id="tabset-1-7" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-7-tab">
