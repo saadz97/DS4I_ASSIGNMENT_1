@@ -1,7 +1,11 @@
 ---
-title: "References"
+title: ""
 format: html
-editor: visual
+
+execute:
+  echo: true
+  warning: false
+  message: false
 ---
 
 ## References {#sec-References}
