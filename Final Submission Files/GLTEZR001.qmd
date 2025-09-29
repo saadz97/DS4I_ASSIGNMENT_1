@@ -991,27 +991,32 @@ Large Language Models (LLMs) were used as a collaborative tool to support certai
 
 ### 5.1 Data Cleaning & Exploratory Data Analysis (EDA)
 
-In addition to consulting journals and websites (*references*), LLMs were used to understand the meaning of each variable, their measurement units, plausible value ranges, and to help identify potentially erroneous values in the dataset. Furthermore, LLMs assisted in assessing the reliability of variables, and whether categorical groupings of certain variables showed signs of being meaningful. Example prompt: "How would I interpret this wetness variable: values -1, 0, 1, 2, 3, 4, 6, 10; respective counts: 51, 363, 6384, 3007, 27, 7, 2, 166."
+In addition to consulting journals and websites (*references*), LLM's were used to understand the meaning of each variable, their measurement units, plausible value ranges, and to help identify potentially erroneous values in the dataset. Furthermore, LLMs assisted in assessing the reliability of variables, and whether categorical groupings of certain variables showed signs of being meaningful. Example prompt: "How would I interpret this wetness variable: values -1, 0, 1, 2, 3, 4, 6, 10; respective counts: 51, 363, 6384, 3007, 27, 7, 2, 166."
 
-Moreover, LLMs also provided suggestions for handling outliers and missing (NA) values and helped write repetitive or time-consuming R code. Example prompt: "Provide R code that will generate side-by-side boxplots for all numeric variables in the dataset." and improved visualisation aesthetics. Example prompt: "Improve the presentation of this boxplot: 'code'." "Create a ggplot that visualises validation accuracy across different hyperparameter combinations, clearly highlighting the best-performing combination." Finally, LLMs assisted in identifying and fixing coding errors. Example prompt: "Locate the error in this code chunk and return the corrected code: 'code'."
+Moreover, LLMs also provided suggestions for handling outliers and missing (NA) values and helped write repetitive or time-consuming R code. Example prompt: "Provide R code that will generate side-by-side boxplots for all numeric variables in the dataset." and improved visualisation aesthetics. Example prompt: "Improve the presentation of this boxplot: 'code'." "Create a ggplot that visualises validation accuracy across different hyperparameter combinations, clearly highlighting the best-performing combination." Finally, LLM's assisted in identifying and fixing coding errors. Example prompt: "Locate the error in this code chunk and return the corrected code: 'code'."
 
 ### 5.2 GitHub Support
 
-LLMs provided assistance when dealing with GitHub issues, including resolving merge conflicts and other version control challenges. Example prompt: "I’m trying to commit my work to the shared Git Hub repository. What does this error from my terminal in R studio mean: ‘error message’."
+LLM's provided assistance when dealing with GitHub issues, including resolving merge conflicts and other version control challenges. Example prompt: "I’m trying to commit my work to the shared Git Hub repository. What does this error from my terminal in R studio mean: ‘error message’."
 
 ### 5.3 Website Design
 
-LLMs supported the development of the website by translating design ideas into functional code. They were also useful for troubleshooting rendering issues when the website did not display in the way that its was expected to.
+LLM's supported the development of the website by translating design ideas into functional code. They were also useful for troubleshooting rendering issues when the website did not display in the way that its was expected to.
 
-### 5.4 Referencing
 
-LLMs assisted in creating references for the sources we used. We provided the necessary information to Claude.ai, which then formatted the references in Harvard style.
+### 5.4 Keras 
 
-### 5.5 Writing Up
+LLM's assisted in the implementation of the nueral network through keras. They were used to iron out errors occuring because of mismatched library versions, deprecated libraries and unavailable packages. LLM's were also used to diagnose structural issues that manifested themselves as unexpected outputs or glitchy behaviour. Example prompts: "I have a chunk of code that tunes a keras model over the number of layers, number of nodes per layer and the learning rate. When I check the results from tuning I see that even models with only 3 layers have a value for the number of nodes, have I done anything wrong in the code or am I misunderstanding the outputted results. This is my code for the model tuner: code inserted". Results from the LLM were always analysed and an effort was made to understand each line of code suggested.
 
-LLMs were used to help improve the written sections of the report. They assisted with fixing grammar, making text clearer, improving flow, and suggesting more concise wording. Example prompts included: "Grammar check: ...", "Improve the way this sentence is written: ...", and "Make this section flow better: ...".
+### 5.5 Referencing
 
-In addition, LLMs were sometimes used to transform sets of bullet points into coherent, well-structured paragraphs, helping to organise ideas in a way that was easy to follow. Furthermore, LLMs were used for structuring report sections and generating README templates, clearly outlined requirements guided the model's output. In all cases, the results were critically evaluated and refined, with final decisions and implementations made independently. 
+LLM's assisted in creating references for the sources we used. We provided the necessary information to Claude.ai, which then formatted the references in Harvard style.
+
+### 5.6 Writing Up
+
+LLM's were used to help improve the written sections of the report. They assisted with fixing grammar, making text clearer, improving flow, and suggesting more concise wording. Example prompts included: "Grammar check: ...", "Improve the way this sentence is written: ...", and "Make this section flow better: ...".
+
+In addition, LLM's were sometimes used to transform sets of bullet points into coherent, well-structured paragraphs, helping to organise ideas in a way that was easy to follow. Furthermore, LLMs were used for structuring report sections and generating README templates, clearly outlined requirements guided the model's output. In all cases, the results were critically evaluated and refined, with final decisions and implementations made independently. 
 
 It is important to note that whilst LLMs contributed in these ways, all code and written content were carefully reviewed and edited to ensure its accuracy and that it clearly conveyed our thought processes, ideas, and reasonings.
 

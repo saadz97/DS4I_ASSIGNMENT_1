@@ -703,6 +703,37 @@ Table&nbsp;4: Comprehensive classification metrics by avalanche hazard class.
 <p>This project showcased the vital application of data-driven methods, such as neural networks, to predict avalanche hazard levels. The neural network model developed was successful at integrating all predictor features, such as meteorological, snowpack and topographical features, to find patterns and interactions that can be used to predict avalanche hazard levels. Challenges such as class imbalance, limited performance with high hazard levels and interpretability were observed but dispite these challenges, the model was still proven to be highly accurate.</p>
 </section>
 </section>
+<section id="sec-LLMs_discussion" class="level2">
+<h2 class="anchored" data-anchor-id="sec-LLMs_discussion">5 Use of Large Language Models (LLMs)</h2>
+<p>Large Language Models (LLMs) were used as a collaborative tool to support certain sections by suggesting approaches and handling repetitive tasks as well as optimising and enhancing the R code to run more efficiently and produce more aesthetically pleasing figures.</p>
+<section id="data-cleaning-exploratory-data-analysis-eda" class="level3">
+<h3 class="anchored" data-anchor-id="data-cleaning-exploratory-data-analysis-eda">5.1 Data Cleaning &amp; Exploratory Data Analysis (EDA)</h3>
+<p>In addition to consulting journals and websites (<em>references</em>), LLM’s were used to understand the meaning of each variable, their measurement units, plausible value ranges, and to help identify potentially erroneous values in the dataset. Furthermore, LLMs assisted in assessing the reliability of variables, and whether categorical groupings of certain variables showed signs of being meaningful. Example prompt: “How would I interpret this wetness variable: values -1, 0, 1, 2, 3, 4, 6, 10; respective counts: 51, 363, 6384, 3007, 27, 7, 2, 166.”</p>
+<p>Moreover, LLMs also provided suggestions for handling outliers and missing (NA) values and helped write repetitive or time-consuming R code. Example prompt: “Provide R code that will generate side-by-side boxplots for all numeric variables in the dataset.” and improved visualisation aesthetics. Example prompt: “Improve the presentation of this boxplot: ‘code’.” “Create a ggplot that visualises validation accuracy across different hyperparameter combinations, clearly highlighting the best-performing combination.” Finally, LLM’s assisted in identifying and fixing coding errors. Example prompt: “Locate the error in this code chunk and return the corrected code: ‘code’.”</p>
+</section>
+<section id="github-support" class="level3">
+<h3 class="anchored" data-anchor-id="github-support">5.2 GitHub Support</h3>
+<p>LLM’s provided assistance when dealing with GitHub issues, including resolving merge conflicts and other version control challenges. Example prompt: “I’m trying to commit my work to the shared Git Hub repository. What does this error from my terminal in R studio mean: ‘error message’.”</p>
+</section>
+<section id="website-design" class="level3">
+<h3 class="anchored" data-anchor-id="website-design">5.3 Website Design</h3>
+<p>LLM’s supported the development of the website by translating design ideas into functional code. They were also useful for troubleshooting rendering issues when the website did not display in the way that its was expected to.</p>
+</section>
+<section id="keras" class="level3">
+<h3 class="anchored" data-anchor-id="keras">5.4 Keras</h3>
+<p>LLM’s assisted in the implementation of the nueral network through keras. They were used to iron out errors occuring because of mismatched library versions, deprecated libraries and unavailable packages. LLM’s were also used to diagnose structural issues that manifested themselves as unexpected outputs or glitchy behaviour. Example prompts: “I have a chunk of code that tunes a keras model over the number of layers, number of nodes per layer and the learning rate. When I check the results from tuning I see that even models with only 3 layers have a value for the number of nodes, have I done anything wrong in the code or am I misunderstanding the outputted results. This is my code for the model tuner: code inserted”. Results from the LLM were always analysed and an effort was made to understand each line of code suggested.</p>
+</section>
+<section id="referencing" class="level3">
+<h3 class="anchored" data-anchor-id="referencing">5.5 Referencing</h3>
+<p>LLM’s assisted in creating references for the sources we used. We provided the necessary information to Claude.ai, which then formatted the references in Harvard style.</p>
+</section>
+<section id="writing-up" class="level3">
+<h3 class="anchored" data-anchor-id="writing-up">5.6 Writing Up</h3>
+<p>LLM’s were used to help improve the written sections of the report. They assisted with fixing grammar, making text clearer, improving flow, and suggesting more concise wording. Example prompts included: “Grammar check: …”, “Improve the way this sentence is written: …”, and “Make this section flow better: …”.</p>
+<p>In addition, LLM’s were sometimes used to transform sets of bullet points into coherent, well-structured paragraphs, helping to organise ideas in a way that was easy to follow. Furthermore, LLMs were used for structuring report sections and generating README templates, clearly outlined requirements guided the model’s output. In all cases, the results were critically evaluated and refined, with final decisions and implementations made independently.</p>
+<p>It is important to note that whilst LLMs contributed in these ways, all code and written content were carefully reviewed and edited to ensure its accuracy and that it clearly conveyed our thought processes, ideas, and reasonings.</p>
+</section>
+</section>
 <section id="sec-References" class="level2">
 <h2 class="anchored" data-anchor-id="sec-References">References</h2>
 <p>[1] Bellaire, S. and Jamieson, J.B. (2013) ‘Forecasting avalanche danger: recent advances’, <em>Cold Regions Science and Technology</em>, 85, pp.&nbsp;89-102.</p>
