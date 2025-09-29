@@ -14,7 +14,6 @@ knitr::opts_chunk$set(echo = FALSE, eval = FALSE, message = FALSE)
 
 This section outlines the comprehensive methodology employed for predicting avalanche hazard levels using neural networks. We describe the data preprocessing pipeline, experimental design with four distinct predictor sets, neural network architecture selection process, and hyperparameter tuning strategy. The methodology ensures reproducible results while systematically evaluating the contribution of different variable types to forecasting accuracy.
 
-
 Neural network modelling was implemented using the **`keras`** library, accessed through its R wrapper. Keras is an open-source deep learning framework known for its modularity and relatively gentle learning curve compared to other libraries such as PyTorch. Its modular design makes it well suited for projects that require experimentation with multiple configurations.
 
 Because Keras functions in R act as wrappers around the underlying Python functions, version control is critical to ensure reproducibility. This project was developed in **`R version 4.5.1 (2025-06-13)`** with **`Python version 3.11.6`**.
@@ -303,8 +302,6 @@ ggplot(top_10_shuffled, aes(x = combo_label, y = Validation_accuracy, color = fa
   scale_color_manual(values = my_colors, name = "Predictor Set")
 ###############
 
-
-
 ```
 
 Systematic hyperparameter tuning across four predictor sets revealed distinct performance patterns, visualized in the above figure. The plot shows validation accuracy distributions for various architectural configurations, with Predictor Set 2 (weather conditions) achieving the highest peak performance (~66%), closely followed by Predictor Set 4 (all variables) at ~65%.
@@ -327,7 +324,7 @@ for (i in seq(3, nrow(df), by = 3)) {
 summary_table
 ```
 
-Architecturally, models with 4–5 layers and 30–50 nodes per layer consistently outperformed others, with no clear gains beyond 5 layers. The optimal configuration from Predictor Set 4, selected for final evaluation, employed 4 hidden layers with [30, 40, 40, 40] nodes and achieved 64.9% validation accuracy representing the best balance of performance and generalizability..
+Architecturally, models with 4–5 layers and 30–50 nodes per layer consistently outperformed others, with no clear gains beyond 5 layers. The optimal configuration from Predictor Set 4, selected for final evaluation, employed 4 hidden layers with [30, 40, 40, 40] nodes and achieved 64.9% validation accuracy representing the best balance of performance and generalizability.
 
 ### 3.8 Optimal Architecture
 
@@ -469,23 +466,19 @@ kable(metrics_mat, digits = 3, caption = "Comprehensive classification metrics b
   kable_styling(full_width = FALSE, position = 'center')
 ```
 
-Sensitivity gives the percent of the time the model predicted an observation as belonging to a category and it actually belonging to that category. The sensitivity for class 0 is the best with a value of 0,854. There is a steep drop off for the other classes but class 2 is the second highest with a value of 0,557 and the rest are all below 0.5 meaning that more often than not, the model is unable to identify the correct category. An analogy for sensitivity is a test with high sensitivity(close to the maximum of 1) will identify most of the patients with with the flu as having the flu but this may mean that lots of patients without the flu also get identified as having the flu. An extreme case may be if the model predicted all observations as belonging to category 0. Then the sensitivity would be 1,meaning that all observations that belong to category 0 are predicted to be category 0. So there need to be a balance because we do not want this
+Sensitivity gives the percent of the time the model predicted an observation as belonging to a category and it actually belonging to that category. The sensitivity for class 0 is the best with a value of 0,854. There is a steep drop off for the other classes but class 2 is the second highest with a value of 0,557 and the rest are all below 0.5 meaning that more often than not, the model is unable to identify the correct category. An analogy for sensitivity is a test with high sensitivity (close to the maximum of 1) will identify most of the patients with with the flu as having the flu but this may mean that lots of patients without the flu also get identified as having the flu. An extreme case may be if the model predicted all observations as belonging to category 0. Then the sensitivity would be 1, meaning that all observations that belong to category 0 are predicted to be category 0. So there need to be a balance because we do not want this.
 
 Specificity gives the percent of time the an observation does not belong to a specific category and the model predicts it as not belonging to that category. High specificity(close to the maximum of 1) is analogous to a test rarely every flagging someone as having the flu when they don't. A perfect model will have high sensitivity with a high specificity, meaning that it is able to identify when observations belong to a category and does not incorrectly predict other observations as belonging to that category. The table above indicates that all the categories have relatively high specificity. Class 4 has a specificity of 0.996 which on the surface looks great but because the sensitivity is so low, this high specificity just means that the model rarely every predicts any observations as belonging to category 4. The same follows for category 3. This is also seen in the extremely low detection rate and prevalence for these categories. These results, specifically for categories 3 and 4 are an indication that perhaps just reweighting the classes was not enough to overcome the imbalance in the data.
 
 A better metric for instances such as this where the data is imbalanced is the F1 score. The F1 score is the harmonic mean of the precision and recall. The precision is the percentage of observations that belonged to a category and were correctly predicted as belonging to that category. The recall is just the sensitivity. The F1 score, same as the other metrics, ranges from 0 to 1 with 0 being the worst and 1 being the best. The F1 score is useful because the harmonic mean because it is less affected by extreme values than the arithmetic mean. Categories 4 and 3 are by far the worst with values of 0,104 and 0,119. Category 0 has the best F1 score with a value of 0,716. Then category 1 has a value of 0,383 and category 3 has a score of 0,487.
 
-
 All these values, except for category are quite poor and indicate lack of predictive power. This is reflected in the fact that the model achieved an accuracy of 51,7% on the test set. The model is better than blindly guessing which we expect to return an accuracy of 20% but the model lacks predictive power.
-
-
 
 ### 3.10 Interpretation
 
 The results highlight the challenges of severe class imbalance. While class reweighting improved performance somewhat, minority classes remained poorly predicted. This suggests that more aggressive strategies may be necessary, such as resampling (e.g., bootstrapping or SMOTE), expanding the hyperparameter search space, or exploring alternative architectures.
 
 Despite these limitations, the study provides useful insights. It demonstrates that weather variables are the dominant predictors of avalanche hazard and that neural networks can achieve moderate accuracy with relatively simple architectures. However, improving detection of rare but high-consequence hazard categories remains an important direction for future work.
-
 
 ### Extra resources
 
