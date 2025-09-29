@@ -23,15 +23,7 @@ Data Cleaning and Preprocessing was done to remove observations that did not mak
 
 The raw dataset underwent extensive cleaning prior to analysis. Initially, rows with missing FAH values (109 rows) were removed, and FAH levels were replaced with a numerical representation from 0 to 4 for compatibility with the neural network software. Other categorical variables, such as precipitation type and forecast region, were similarly transformed into numerical formats. The Date column was transformed into Month to capture seasonal effects.
 
-Variables unrelated to forecasting or with high missingness (more than 20%), frequent errors, limited predictive value, or poorly defined measures were excluded, resulting in a set of well-defined predictors most relevant for forecasting.
-
-Range checks were applied to remove physically impossible or implausible values based physical limits and regional context.
-
-For example, altitude was limited to 0–1,345 m, the height of Ben Nevis, and wind speeds to 176 mph, reflecting the highest recorded gust in the Highlands [11].
-
-Slope inclines were restricted to 0–90°, and wind directions were constrained to 0–360°. Cloud cover was limited to 0–100%, total snow depth to 0–1,500 cm (with unrealistic spikes removed), and foot penetration depth to 100 cm. Snow temperatures above 0.5 °C were flagged as implausible, since snow begins melting at 0 °C, and maximum temperature gradients were limited to below 25 °C per 10 cm [15]. Observations where foot penetration exceeded total snow depth were also removed.
-
-Circular variables such as wind direction and aspect were transformed into sine and cosine components.
+Variables unrelated to forecasting or with high missingness (more than 20%), frequent errors, limited predictive value, or poorly defined measures were excluded, resulting in a set of well-defined predictors most relevant for forecasting. Range checks were applied to remove physically impossible or implausible values based physical limits and regional context. For example, altitude was limited to 0–1,345 m, the height of Ben Nevis, and wind speeds to 176 mph, reflecting the highest recorded gust in the Highlands [11]. Slope inclines were restricted to 0–90°, and wind directions were constrained to 0–360°. Cloud cover was limited to 0–100%, total snow depth to 0–1,500 cm (with unrealistic spikes removed), and foot penetration depth to 100 cm. Snow temperatures above 0.5 °C were flagged as implausible, since snow begins melting at 0 °C, and maximum temperature gradients were limited to below 25 °C per 10 cm [15]. Observations where foot penetration exceeded total snow depth were also removed. Circular variables such as wind direction and aspect were transformed into sine and cosine components.
 
 ```{r, echo=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
