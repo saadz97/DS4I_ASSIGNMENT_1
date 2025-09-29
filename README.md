@@ -18,60 +18,54 @@ The goal of this project is to construct and evaluate a neural network model tha
 - **Model:** Artificial Neural Network (ANN) built with TensorFlow/Keras
 
 **Live Website:** https://saadz97.github.io/DS4I_ASSIGNMENT_1/   
-**Final Report:** [Direct link to the report on your GitHub Pages site]
+**Final Report:** https://github.com/saadz97/DS4I_ASSIGNMENT_1/tree/main/Final%20Submission%20Files
 
 ## Project Structure
 
 ├── data/
 
 
-│ ├── raw/ # Original data (provided by course) - .gitignored
+│ ├── scotland_avalanche_forecasts_2009_2025.csv | **Original data (provided by course) - .gitignored**
 
 
-│ └── processed/ # Cleaned and preprocessed datasets - .gitignored
+│ └── training_data.RData, testing_data.RData | **Cleaned and preprocessed datasets - .gitignored**
 
 
-├── R/ # R scripts for the analysis workflow
+├── qmd | **Quarto documents for analysis workflow**
 
 
-│ ├── 01_data_cleaning.R
+│ ├── index.qmd | **Main scientific paper**
 
 
-│ ├── 02_eda.R
+│ ├── Final_EDA.Rmd | **Cleaning Data**
 
 
-│ ├── 03_preprocessing.R
+│ ├── llm-reflection.qmd | **LLM usage documentation**
 
 
-│ └── 04_modeling.R
+│ ├── tuning | **Hyperparameter tuning results**
 
 
-├── docs/ # Rendered Quarto website for GitHub Pages
+│ └── model_dt.qmd | **Modelling and Results**
 
 
-├── figures/ # Generated plots and visuals
+├── docs | **Rendered Quarto website for GitHub Pages**
 
 
-├── _freeze/ # Quarto freeze directory (cache)
+├── Final Submission Files | **The Final Report**
 
 
-├── _output.yml # Quarto output configuration
+├── _freeze | **Quarto freeze directory (cache)**
 
 
-├── _quarto.yml # Quarto project configuration
+
+├── _quarto.yml | **Quarto project configuration**
 
 
-├── README.md # This file
+├── README.md | **This file**
 
 
-├── requirements.R # R package dependencies
-
-
-├── report.qmd # Main Quarto document for the scientific report
-
-
-└── avalanche_forecasting.Rproj # RStudio Project file (optional but recommended)
-
+└── Assignment 1.Rproj | **RStudio Project file**
 
 
 ## Group Members
@@ -84,12 +78,16 @@ The goal of this project is to construct and evaluate a neural network model tha
 | Hope Hennessy | HNNHOP001 | Data cleaning, EDA, and Website development, including the write up for the relevant sections. |
 | Rachel Calaz | CLZRAC001 | Website development, write up for the abstract, introduction, literature review, discussion, and conclusion. |
 
-## Key Findings
+## 🔑 Key Findings
 
-Our analysis yielded the following key results:
-- The best-performing model was a neural network with [X] hidden layers and [Y] units, achieving a test set accuracy of **[Z]%** and a Mean Absolute Error (MAE) of **[A]**.
-- The most important predictors for the FAH were found to be `[Predictor 1]`, `[Predictor 2]`, and `[Predictor 3]`.
-- The model demonstrates that neural networks can effectively learn the complex relationships used by expert forecasters at SAIS.
+- **Weather variables are most predictive**: Predictor Set 2 (weather conditions) achieved the highest validation accuracy (66%), slightly outperforming the comprehensive feature set
+- **Optimal architecture**: 4 hidden layers with [30, 40, 40, 40] nodes provided the best balance of performance and complexity  
+- **Class imbalance challenge**: Model excels at predicting Low hazard (85% sensitivity) but struggles with High hazard categories (6% sensitivity)
+- **Overall performance**: 51.7% test accuracy, significantly better than random guessing (20%) but limited by severe class imbalance
+- **Feature importance**: Weather data dominates predictive power, with topographic and snow-pack variables providing marginal incremental value
+- **Practical implication**: Neural networks show promise as decision support tools but require human oversight, especially for high-consequence hazard levels
+
+**Best Model**: 64.9% validation accuracy using all available predictors with careful hyperparameter optimization.
 
 ## How to Reproduce the Analysis
 
